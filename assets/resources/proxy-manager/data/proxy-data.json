@@ -1,0 +1,10 @@
+{
+    "color-theme": {
+        "black": "#000000",
+        "white": "#FFFFFF",
+        "color": [
+            "@black",
+            "@white"
+        ]
+    }
+}
