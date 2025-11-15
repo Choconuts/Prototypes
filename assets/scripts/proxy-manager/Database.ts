@@ -1,39 +1,36 @@
-import { _decorator, Component, JsonAsset, Node, path, resources } from 'cc';
+import { _decorator, Asset, Component, Constructor, JsonAsset, Node, path, Prefab, resources } from 'cc';
 import { Completer, Stream } from '../toolkits/Functions';
 const { ccclass, property } = _decorator;
 
 @ccclass('Database')
 export class Database extends Component {
-    static declare instance: Database
-
     @property([String])
     directories: Array<string> = []
     @property
     verbose: boolean = false
 
-    preloadCompleter: Completer<number> = new Completer
-
-    protected onLoad(): void {
-        Database.instance = this;
-        this.loadDirectories(this.directories).then((n) => this.preloadCompleter.complete(n));
+    public async preload(): Promise<void> {
+        this.log('preload')
     }
 
-    public async loadDirectories(directories: string[]): Promise<number> {
-        let total = 0;
+    public async loadDirectories<T extends Asset>(directories: string[], constructor: Constructor<T>): Promise<Map<string, T>> {
+        const output: Map<string, T> = new Map;
         for (const directory of directories) {
-            const num = await this.loadDirectory(directory);
-            if (num > 0) {
-                total += num;
+            const result = await this.loadDirectory(directory, constructor);
+            if (result != null) {
+                result.forEach((value, key, map) => output.set(key, value));
             }
         }
-        return total;
+        return output;
     }
 
-    public async loadDirectory(directory: string): Promise<number> {
-        const completer = new Completer<JsonAsset[]>;
-        const keys = new Stream<string>;
+    public async loadDirectory<T extends Asset>(directory: string, constructor: Constructor<T>): Promise<Map<string, T>> {
+        const completer: Completer<T[]> = new Completer;
+        const keys: Stream<string> = new Stream;
+        const result: Map<string, T> = new Map;
+
         this.log('loading directory:', 'resources/' + directory);
-        resources.loadDir(directory, JsonAsset, 
+        resources.loadDir(directory, constructor, 
             (finished, total, item) => {
                 const filePath = item.info['path'];
                 keys.put(path.basename(filePath));
@@ -43,25 +40,34 @@ export class Database extends Component {
                     completer.complete(data);
                 }
                 else {
-                    console.error('[Factory]', directory, err);
+                    this.error(directory, err)
                     completer.complete(null);
                 }
             });
 
-        const prefabs = await completer.promise;
-        if (prefabs == null) return -1;
-
-        for (const prefab of prefabs) {
+        const dataList = await completer.promise;
+        if (dataList == null || dataList.length == 0) {
+            this.log('directory:', 'resources/' + directory, 'is empty!');
+            return null;
+        }
+        
+        for (const data of dataList) {
             const key = await keys.get();
-            // this.initPrefab(key, prefab, this.initPoolSize);
+            result.set(key, data);
         }
 
-        return prefabs.length;
+        return result;
     }
 
     log(...args: any) {
         if (this.verbose) {
-            console.log('[Factory]', ...args);
+            console.log('[', this.name,']', ...args);
+        }
+    }
+
+    error(...args: any) {
+        if (this.verbose) {
+            console.error('[', this.name,']', ...args);
         }
     }
 }
