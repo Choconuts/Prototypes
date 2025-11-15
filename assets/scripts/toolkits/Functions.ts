@@ -1,7 +1,7 @@
 import { _decorator, Component, Constructor, JsonAsset, Node } from 'cc';
 const { ccclass, property } = _decorator;
 
-export function getOrAddComponent<T extends Component>(target: Component, classConstructor:Constructor<T>): T | null {
+export function getOrAddComponent<T extends Component>(target: Component | Node, classConstructor:Constructor<T>): T | null {
     let component = target.getComponent(classConstructor);
     if (component == null) {
         component = target.addComponent(classConstructor);
@@ -113,6 +113,14 @@ export class Info {
             }
         }
         return value;
+    }
+
+    static Empty(record: Record<string, any> = null): Info {
+        const info = new Info;
+        info.json = null;
+        info.rootTable = record;
+        info.data = record;
+        return info;
     }
 }
 
