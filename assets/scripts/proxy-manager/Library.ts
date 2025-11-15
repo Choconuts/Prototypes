@@ -35,7 +35,7 @@ export class Library extends Database {
         info.json = asset;
         info.rootTable = asset.json;
         info.data = info.rootTable;
-        this.infoMap.set(key, info);
+        this.infoMap.set(asset.name, info);
     }
 
     public get(key: string): Info {

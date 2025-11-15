@@ -1,6 +1,7 @@
-import { _decorator, Color, Component, Label, Node } from 'cc';
+import { _decorator, Color, Component, Label, Node, UITransform, v3 } from 'cc';
 import { Hover } from './Hover';
 import { Proxy } from '../proxy-manager/Proxy';
+import { GameManager } from '../proxy-manager/GameManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('DefaultHover')
@@ -32,9 +33,13 @@ export class DefaultHover extends Component {
         const target = this.getHover().node;
         label.string = target.name;
         this.label = label;
+        this.label.fontSize = 20;
+        const root = GameManager.instance.canvas.node;
+        root.addChild(node);
+        const worldPos = target.getWorldPosition();
 
-        target.addChild(node);
-        node.position = target.position;
+        const rootTransform = root.getComponent(UITransform);
+        node.position = rootTransform.convertToNodeSpaceAR(v3(worldPos.x, worldPos.y, 0));
     }
 
     getHover() {

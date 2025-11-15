@@ -29,6 +29,7 @@ export class Factory extends Database {
     }
 
     public processData(key: string, prefab: Prefab, initPoolSize: number): void {
+        key = prefab.name;
         if (this.prefabMap.has(key)) {
             this.log('prefab', key, 'already exists!');
         }
@@ -50,6 +51,7 @@ export class Factory extends Database {
     }
 
     get(key: string): Node {
+        console.log('ask', key);
         if (!this.prefabMap.has(key)) {
             return null;
         }
@@ -67,6 +69,7 @@ export class Factory extends Database {
     }
 
     put(key: string, node: Node): void {
+        console.log('put', key, node.name);
         if (!this.poolMap.has(key)) {
             node.destroy();
             return;

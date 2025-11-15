@@ -28,12 +28,14 @@ export class Database extends Component {
         const completer: Completer<T[]> = new Completer;
         const keys: Stream<string> = new Stream;
         const result: Map<string, T> = new Map;
-
+        
         this.log('loading directory:', 'resources/' + directory);
         resources.loadDir(directory, constructor, 
             (finished, total, item) => {
-                const filePath = item.info['path'];
-                keys.put(path.basename(filePath));
+                if (item?.info != null) {
+                    const filePath = item.info['path'];
+                    keys.put(path.basename(filePath));
+                }
             }, 
             (err, data) => {
                 if (err == null) {
