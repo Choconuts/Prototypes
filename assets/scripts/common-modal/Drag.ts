@@ -32,7 +32,7 @@ export class Drag extends Component {
     }
 
     dragEnd() {
-        this.proxy = this.proxy.close();
+        this.proxy = this.proxy?.close();
     }
 
     createProxy(): Proxy {

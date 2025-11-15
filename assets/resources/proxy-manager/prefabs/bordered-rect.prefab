@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.Prefab",
-    "_name": "BorderedRect",
+    "_name": "bordered-rect",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_native": "",
@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "BorderedRect",
+    "_name": "bordered-rect",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": null,
@@ -244,6 +244,8 @@
     "__prefab": {
       "__id__": 13
     },
+    "proxyKey": "default-hover",
+    "proxy": null,
     "_id": ""
   },
   {
