@@ -1,6 +1,5 @@
 import { _decorator, Canvas, Component, Node } from 'cc';
 import { Database } from './Database';
-import { Factory } from './Factory';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')
@@ -9,7 +8,7 @@ export class GameManager extends Component {
     canvas: Canvas
 
     protected onLoad(): void {
-        this.preloadAllDatabases();
+        const ready = this.preloadAllDatabases();
     }
 
     public async preloadAllDatabases() {

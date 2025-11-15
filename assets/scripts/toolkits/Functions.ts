@@ -58,6 +58,61 @@ export class Stream<T> {
 export class Info {
     json: JsonAsset
     rootTable: Record<string, any>
+    keyPath: string[] = []
     data: any
+
+    getValueByPath(obj: any, keys: string[], depth: number = -1) {
+        keys.forEach((key, index, array) => {
+            if (index < depth || depth < 0) {
+                obj = this.getValue(obj, key);
+            }
+        });
+        return obj;
+    }
+
+    get(key: string): Info {
+        let newData = this.getValue(this.data, key);
+        newData = this.unref(newData);
+        if (newData == null) return null;
+        const info = new Info;
+        info.json = this.json;
+        info.rootTable = this.rootTable;
+        info.data = newData;
+        info.keyPath = [...this.keyPath];
+        info.keyPath.push(key);
+        return info;
+    }
+
+    getValue(record: any, key: string): any {
+        if (record == null) {
+           return null;
+        }
+        let value: any = record[key];
+        return value;
+    }
+
+    toKeyPath(refKeyString: string) {
+        if (typeof refKeyString === 'string' && refKeyString.startsWith('@')) {
+            const keys = refKeyString.split("@");
+            keys.shift();
+            return keys;
+        }
+        return null;
+    }
+
+    unref(value: any) {
+        let result = undefined;
+        const keyPath = this.toKeyPath(value);
+        if (keyPath != null) {
+            for (let i = this.keyPath.length - 1; i >= 0; i--) {
+                const subTree = this.getValueByPath(this.rootTable, this.keyPath, i);
+                const obj = this.getValueByPath(subTree, keyPath);
+                if (obj != null) {
+                    return obj;
+                }
+            }
+        }
+        return value;
+    }
 }
 

@@ -37,6 +37,10 @@ export class Library extends Database {
         info.data = info.rootTable;
         this.infoMap.set(key, info);
     }
+
+    public get(key: string): Info {
+        return this.infoMap.get(key);
+    }
 }
 
 
