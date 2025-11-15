@@ -61,13 +61,13 @@ export class Database extends Component {
 
     log(...args: any) {
         if (this.verbose) {
-            console.log('[', this.name,']', ...args);
+            console.log('[' + this.constructor.name + ']', ...args);
         }
     }
 
     error(...args: any) {
         if (this.verbose) {
-            console.error('[', this.name,']', ...args);
+            console.error('[' + this.constructor.name + ']', ...args);
         }
     }
 }
