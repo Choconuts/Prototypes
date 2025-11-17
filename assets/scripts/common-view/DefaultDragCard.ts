@@ -4,23 +4,24 @@ import { Proxy } from '../proxy-manager/Proxy';
 import { getOrAddComponent, Info } from '../toolkits/Functions';
 import { Drag } from '../common-modal/Drag';
 import { GameManager } from '../proxy-manager/GameManager';
-import { HandView } from './HandView';
 const { ccclass, property } = _decorator;
 
 @ccclass('DefaultDragCard')
 export class DefaultDragCard extends Component {
     @property
-    duration: number = 0.02
+    duration: number = 0.05
     @property
-    shrinkScale: number = 0.5
+    shrinkScale: number = 0.6
+    @property
+    shrinkDuration: number = 0.1
     @property(CardView)
     card?: CardView
     @property
     slotNode?: Node
     @property
-    hand?: HandView
-    @property
     wrapNode?: Node
+    @property
+    initPosition: Vec3
 
     protected onEnable(): void {
         this.startDrag();
@@ -30,6 +31,7 @@ export class DefaultDragCard extends Component {
     public startDrag() {
         if (this.card == null) {
             this.wrapCardNode();
+            this.shrink();
         }
         this.nextUpdateEvent();
     }
@@ -46,7 +48,10 @@ export class DefaultDragCard extends Component {
     }
 
     public cancelDrag() {
-        this.getDrag().dragEnd();
+        tween(this.wrapNode).to(this.duration, {position: this.initPosition}, {onComplete: () => {
+            this.removeWrapNode();
+            this.getDrag().dragEnd();
+        }}).start();
     }
 
     nextUpdateEvent(info?: Info) {
@@ -55,16 +60,7 @@ export class DefaultDragCard extends Component {
     }
 
     protected onDisable(): void {
-        const card = this.card;
-        this.slotNode?.addChild(card.node);
-        this.slotNode = null;
-        this.card = null;
-        this.wrapNode.destroy();
-        this.wrapNode = null;
 
-        if (this.hand != null) {
-            tween(card.node).to(this.duration, {position: this.hand.getCardPosition(0)}).start();
-        }
     }
 
     getDrag() {
@@ -78,12 +74,10 @@ export class DefaultDragCard extends Component {
     }
 
     wrapCardNode(): Node {
-        this.card = this.getDrag().getComponent(CardView);
-        const initPosition = this.wrapPositionByWorldPosition(this.card.node.getWorldPosition()).subtract(this.getOffset());
+        this.card = this.getDrag().getComponentInChildren(CardView);
+        this.initPosition = this.wrapPositionByWorldPosition(this.card.node.getWorldPosition()).subtract(this.getOffset());
 
         this.slotNode = this.card.node.parent;
-        this.hand = this.card.getContainer(HandView);
-
         this.wrapNode = new Node;
         this.wrapNode.name = 'dragging-card';
         const transform = getOrAddComponent(this.wrapNode, UITransform);
@@ -94,10 +88,18 @@ export class DefaultDragCard extends Component {
 
         this.wrapNode.addChild(this.card.node);
         this.getCanvas().addChild(this.wrapNode);
-        this.wrapNode.position = initPosition;
-
-        this.card.node.position = v3(0, 0, 0);
+        this.wrapNode.position = this.initPosition;
         return this.wrapNode;
+    }
+
+    removeWrapNode() {
+        if (this.card != null && this.wrapNode != null) {
+            this.slotNode?.addChild(this.card.node);
+            this.slotNode = null;
+            this.card = null;
+            this.wrapNode.destroy();
+            this.wrapNode = null;
+        }
     }
 
     getCardSize(): Vec2 {
@@ -110,11 +112,11 @@ export class DefaultDragCard extends Component {
         const anchorX = cardTransform.anchorPoint.x;
         const anchorY = cardTransform.anchorPoint.y;
         const size = this.getCardSize();
-        return v3((anchorX - 0.5) * size.x, (anchorY - 0.5) * size.y, 0);
+        return v3((anchorX - 0.5) * size.x, (anchorY - 0.5) * size.y, 0).multiplyScalar(this.shrinkScale).subtract(this.card.node.position);
     }
 
     shrink() {
-        tween(this.wrapNode).to(this.duration, {scale: v3(0.5)})
+        tween(this.wrapNode).to(this.shrinkDuration, {scale: v3(this.shrinkScale, this.shrinkScale, this.shrinkScale)}).start();
     }
 }
 

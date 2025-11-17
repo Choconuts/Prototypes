@@ -28,6 +28,7 @@ export class DefaultHover extends Component {
 
     createLabel() {
         const node = new Node;
+        node.name = 'hover-label'
         const label = node.addComponent(Label);
         label.color = Color.BLUE;
         const target = this.getHover().node;

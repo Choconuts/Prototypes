@@ -54,7 +54,7 @@ export class Drag extends Component {
                 this.proxy.send(Proxy.Event.UPDATE, info);
             }
             else {
-                this.dragEnd();
+                this.proxy?.send(Proxy.Event.CANCEL);
             }
         }
     }

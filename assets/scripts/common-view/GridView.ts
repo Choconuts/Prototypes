@@ -1,5 +1,6 @@
 import { _decorator, Component, Layers, Layout, Node, Size, UITransform, v2, Vec2, Widget } from 'cc';
 import { SlotView } from './SlotView';
+import { getOrAddComponent } from '../toolkits/Functions';
 const { ccclass, property } = _decorator;
 
 @ccclass('GridView')
@@ -13,6 +14,7 @@ export class GridView extends Component {
     slots: Array<SlotView> = []
 
     protected onLoad(): void {
+        this.setLayout();
         for (let j = 0; j < this.gridNum.y; j++) {
             for (let i = 0; i < this.gridNum.x; i++) {
                 const slot = this.createSlot(i, j);
@@ -22,8 +24,10 @@ export class GridView extends Component {
     }
 
     setLayout() {
-        const layout = this.getComponent(Layout);
+        const layout = getOrAddComponent(this, Layout);
         layout.type = Layout.Type.GRID;
+        layout.resizeMode = Layout.ResizeMode.CONTAINER;
+        layout.startAxis = Layout.AxisDirection.HORIZONTAL;
         layout.constraint = Layout.Constraint.FIXED_COL;
         layout.constraintNum = this.gridNum.x;
     }

@@ -2,6 +2,7 @@ import { _decorator, Component, Layout, Node, Size, tween, UITransform, v2, v3, 
 import { SlotView } from './SlotView';
 import { Completer, getOrAddComponent } from '../toolkits/Functions';
 import { Hover } from '../common-modal/Hover';
+import { Drag } from '../common-modal/Drag';
 const { ccclass, property } = _decorator;
 
 @ccclass('HandView')
@@ -21,6 +22,11 @@ export class HandView extends Component {
 
     @property
     hoverBehavior: string = 'default-hover-card'
+    @property
+    dragBehaviour: string = 'default-drag-card'
+
+    @property
+    liftBySlot: boolean = true
 
     @property([SlotView])
     slots: Array<SlotView> = []
@@ -68,6 +74,8 @@ export class HandView extends Component {
         const widget = this.makeAlign(node);
         widget.isAlignBottom = true;
         widget.bottom = 0;
+        widget.alignMode = Widget.AlignMode.ALWAYS;
+
         slot.coord = v2(i, 0);
         const transform = slot.getComponent(UITransform);
         transform.setContentSize(new Size(0, this.cardSize.y));
@@ -76,16 +84,23 @@ export class HandView extends Component {
         this.slots.push(slot);
         this.node.addChild(slot.node);
         slot.node.setSiblingIndex(i);
-        widget.alignMode = Widget.AlignMode.ALWAYS;
 
         if (this.hoverBehavior.length > 0) {
             const hover = slot.addComponent(Hover);
             hover.proxyKey =  this.hoverBehavior;
         }
+
+        if (this.dragBehaviour.length > 0) {
+            const drag = slot.addComponent(Drag);
+            drag.proxyKey = this.dragBehaviour;
+        }
         return slot;
     }
 
     getCardPosition(lift: number = 0) {
+        if (this.liftBySlot) {
+            return v3(0.5 * this.cardSize.x, 0.5 * this.cardSize.y, 0);
+        }
         return v3(0.5 * this.cardSize.x, 0.5 * this.cardSize.y + lift, 0);
     }
 
@@ -192,7 +207,7 @@ export class HandView extends Component {
             this.focus = null;
         }
         if (this.animaitonDuration > 0) {
-            this.slotAnimation(this.animaitonDuration, slotView, this.cardSize.x + this.foldSize, 0, true, this.animaitonDelay);
+            this.slotAnimation(this.animaitonDuration, slotView, this.cardSize.x + this.foldSize, this.liftBySlot ? this.focusLift : 0, true, this.animaitonDelay);
         }
         else if (slotView.node.children.length > 0) {
             const cardNode = slotView.node.children[0];
@@ -209,8 +224,10 @@ export class HandView extends Component {
         }
 
         const transform = slotView.getComponent(UITransform);
+        const widget = slotView.getComponent(Widget);
         const defaultContentX = this.cardSize.x;
         const defaultContentY = this.cardSize.y;
+        const liftBySlot = this.liftBySlot;
         const completer = new Completer<void>;
 
         tween(cardNode)
@@ -224,6 +241,15 @@ export class HandView extends Component {
                         }
                         else {
                             transform.setContentSize(defaultContentX + (expand - defaultContentX) * ratio / 1.0, defaultContentY);
+                        }
+
+                        if (liftBySlot) {
+                            if (reversed) {
+                                widget.bottom = lift + (0 - lift) * ratio / 1.0;
+                            }
+                            else {
+                                widget.bottom = 0 + (lift - 0) * ratio / 1.0;
+                            }
                         }
                     }, 
                     easing: "quadOut", 
