@@ -15,14 +15,15 @@ export class CardView extends Component {
     cardImage: Sprite
 
     protected onLoad(): void {
-        this.apply(Info.Empty({
-            'card-name': '狮子',
-            'card-color': '#AA8833',
-            'desc-row1': '攻击力很高的',
-            'desc-row2': '食肉动物',
-        }))
+        if (false) {
+            this.apply(Info.Empty({
+                'card-name': '狮子',
+                'card-color': '#AA8833',
+                'desc-row1': '攻击力很高的',
+                'desc-row2': '食肉动物',
+            }));
+        }
     }
-
 
     apply(info: Info) {
         this.cardName.string = info.get('card-name')?.data;

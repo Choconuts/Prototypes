@@ -1,11 +1,16 @@
 import { _decorator, Color, Component, Graphics, Label, Node, Sprite, Vec2, Widget } from 'cc';
 import { Hover } from '../common-modal/Hover';
 import { RectView } from '../toolkits/RectView';
-import { getOrAddComponent } from '../toolkits/Functions';
+import { getOrAddComponent, Info } from '../toolkits/Functions';
+import { Factory } from '../proxy-manager/Factory';
+import { HandView } from './HandView';
+import { CardView } from './CardView';
 const { ccclass, property } = _decorator;
 
 @ccclass('DebugView')
 export class DebugView extends Component {
+    @property
+    cardPath: string = 'default-card-view'
     @property
     debug: boolean = false
 
@@ -37,6 +42,20 @@ export class DebugView extends Component {
         const graphics = getOrAddComponent(widget.node, Graphics);
         graphics.fillColor = this.colors[index % this.colors.length];
         const hover = widget.node.addComponent(Hover);
+    }
+
+    addCard() {
+        const card = Factory.instance.get(this.cardPath);
+        const handView = this.getComponent(HandView);
+        const index = handView.getValidSlots().length;
+        card.getComponent(CardView).apply(Info.Empty({
+            'card-name': 'Card ' + index,
+            'card-color': this.colors[index % this.colors.length].toHEX("#rrggbb"),
+            'desc-row1': '这是新加入的',
+            'desc-row2': '测试卡片',
+        }))
+
+        handView.insertCard(card, 0);
     }
 }
 

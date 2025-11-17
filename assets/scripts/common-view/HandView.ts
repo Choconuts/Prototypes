@@ -39,7 +39,7 @@ export class HandView extends Component {
 
         for (let i = 0; i < this.maxCardNum; i++) {
             const slot = this.createSlot(i);
-            slot.node.active = false;
+            this.dectiveSlot(slot);
             this.node.addChild(slot.node);
         }
     }
@@ -73,6 +73,7 @@ export class HandView extends Component {
     }
 
     public insertCard(card: Node, index?: number): boolean {
+        console.log('insert', index, 'start');
         const slotView = this.firstEmptySlot();
         if (slotView == null) {
             return false;
@@ -80,23 +81,23 @@ export class HandView extends Component {
 
         if (index != null && index < this.maxCardNum) {
             slotView.node.setSiblingIndex(index);
+            this.getComponent(Layout).updateLayout();
         }
 
         slotView.node.addChild(card);
 
         const cardTransform = card.getComponent(UITransform);
-        const slotTransform = slotView.getComponent(UITransform);
 
-        const scaleX = slotTransform.contentSize.x / cardTransform.contentSize.x;
-        const scaleY = slotTransform.contentSize.y / cardTransform.contentSize.y;
+        const scaleX = this.cardSize.x / cardTransform.contentSize.x;
+        const scaleY = this.cardSize.y / cardTransform.contentSize.y;
         const scaleMin = Math.min(scaleX, scaleY);
 
-        const widget = getOrAddComponent(card, Widget);
         cardTransform.setAnchorPoint(0, 0);
-        widget.isAlignBottom = true;
-        widget.bottom = 0;
         card.scale = v3(scaleMin, scaleMin, 1);
         card.position = v3(0, 0, 0);
+
+        console.log('insert', index, 'active');
+        this.activeSlot(slotView);
         return true;
     }
 
@@ -110,7 +111,7 @@ export class HandView extends Component {
 
     activeSlot(slotView: SlotView) {
         if (this.animaitonDuration > 0) {
-            const promise = this.slotAnimation(this.animaitonDuration, slotView, 0, this.focusLift, true, this.animaitonDelay);
+            const promise = this.slotAnimation(this.animaitonDuration, slotView, 0, 0, true, this.animaitonDelay);
             promise.then(() => {
                 slotView.node.active = true;
             });
@@ -138,19 +139,23 @@ export class HandView extends Component {
         }
 
         if (this.animaitonDuration > 0) {
-            const promise = this.slotAnimation(this.animaitonDuration, slotView, 0, 0, false, this.animaitonDelay);
-            promise.then(() => {
-                slotView.node.active = false;
-            });
+            this.slotAnimation(this.animaitonDuration, slotView, this.cardSize.x + this.foldSize, this.focusLift, false, this.animaitonDelay);
         }
-        else {
-            slotView.node.active = false;
+        else if (slotView.node.children.length > 0) {
+         {
+            const cardNode = slotView.node.children[0];
+            cardNode.position = v3(0, this.focusLift, 0);
+        }
         }
     }
 
     unfocusSlot(slotView: SlotView) {
-        if (slotView != null) {
-
+        if (this.animaitonDuration > 0) {
+            this.slotAnimation(this.animaitonDuration, slotView, this.cardSize.x + this.foldSize, 0, true, this.animaitonDelay);
+        }
+        else if (slotView.node.children.length > 0) {
+            const cardNode = slotView.node.children[0];
+            cardNode.position = v3(0, 0, 0);
         }
     }
 
@@ -182,7 +187,7 @@ export class HandView extends Component {
                     }
                     }, 
                     easing: "quadOut", 
-                    onComplete: (target) {
+                    onComplete: (target) => {
                         completer.complete();
                     }
                 }
