@@ -10,7 +10,7 @@ export class GridView extends Component {
     gridSize: Size = new Size(200, 200)
 
     @property([SlotView])
-    slotViews: Array<SlotView> = []
+    slots: Array<SlotView> = []
 
     protected onLoad(): void {
         for (let j = 0; j < this.gridNum.y; j++) {
@@ -30,7 +30,7 @@ export class GridView extends Component {
 
     createSlot(i: number, j: number): SlotView {
         const node = new Node;
-        node.name = this.node.name + '-' + i + '-' + j;
+        node.name = 'slot' + '-' + i + '-' + j;
         const slot = node.addComponent(SlotView);
         const widget = node.addComponent(Widget);
         slot.coord = v2(i, j);
@@ -40,7 +40,7 @@ export class GridView extends Component {
         const totalSize = new Size(this.gridSize.x * this.gridNum.x, this.gridSize.y * this.gridNum.y)
         this.getComponent(UITransform).setContentSize(totalSize);
 
-        this.slotViews.push(slot);
+        this.slots.push(slot);
         return slot;
     }
 
@@ -75,7 +75,7 @@ export class GridView extends Component {
 
     getSlotView(coord: Vec2) {
         if (!this.validCoord(coord)) return null;
-        return this.slotViews[this.coordToIndex(coord)];
+        return this.slots[this.coordToIndex(coord)];
     }
 
     getSlotsNeighbors(slotView: SlotView, allowOutBound: boolean = false) {
