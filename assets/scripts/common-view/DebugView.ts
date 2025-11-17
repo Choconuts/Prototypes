@@ -47,7 +47,7 @@ export class DebugView extends Component {
     addCard() {
         const card = Factory.instance.get(this.cardPath);
         const handView = this.getComponent(HandView);
-        const index = handView.getValidSlots().length;
+        const index = handView.slots.length;
         card.getComponent(CardView).apply(Info.Empty({
             'card-name': 'Card ' + index,
             'card-color': this.colors[index % this.colors.length].toHEX("#rrggbb"),
@@ -55,7 +55,12 @@ export class DebugView extends Component {
             'desc-row2': '测试卡片',
         }))
 
-        handView.insertCard(card, 0);
+        handView.insertCard(card, -1);
+    }
+
+    removeCard() {
+        const handView = this.getComponent(HandView);
+        handView.removeCard(0);
     }
 }
 

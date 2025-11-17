@@ -13,11 +13,11 @@ export class Hover extends Component {
     protected onLoad(): void {
         this.node.on(NodeEventType.MOUSE_ENTER, (event) => {
             this.hoverStart();
-        });
+        }, null, true);
 
         this.node.on(NodeEventType.MOUSE_LEAVE, (event) => {
             this.proxy?.send(Proxy.Event.CANCEL);
-        });
+        }, null, true);
     }
 
     createProxy(): Proxy {

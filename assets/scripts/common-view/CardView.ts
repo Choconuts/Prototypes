@@ -1,4 +1,4 @@
-import { _decorator, Color, Component, Graphics, Label, Node, Sprite } from 'cc';
+import { _decorator, Color, Component, Constructor, Graphics, Label, Node, Sprite } from 'cc';
 import { RectView } from '../toolkits/RectView';
 import { Info } from '../toolkits/Functions';
 const { ccclass, property } = _decorator;
@@ -29,6 +29,17 @@ export class CardView extends Component {
         this.cardName.string = info.get('card-name')?.data;
         this.cardBase.getComponent(Graphics).fillColor = Color.fromHEX(new Color, info.get('card-color')?.data);
         this.description.string = info.get('desc-row1')?.data + '\n' + info.get('desc-row2')?.data;
+    }
+
+    getContainer<T extends Component>(constuctor: Constructor<T>): T {
+        let parent = this.node.parent;
+        while (parent != null) {
+            const container = parent.getComponent(constuctor);
+            if (container != null) {
+                return container;
+            }
+            parent = parent.parent;
+        }
     }
 }
 
