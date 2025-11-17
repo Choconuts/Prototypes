@@ -9,9 +9,12 @@ export class GridView extends Component {
     @property(Size)
     gridSize: Size = new Size(200, 200)
 
+    @property([SlotView])
+    slotViews: Array<SlotView> = []
+
     protected onLoad(): void {
-        for (let i = 0; i < this.gridNum.x; i++) {
-            for (let j = 0; j < this.gridNum.y; j++) {
+        for (let j = 0; j < this.gridNum.y; j++) {
+            for (let i = 0; i < this.gridNum.x; i++) {
                 const slot = this.createSlot(i, j);
                 this.node.addChild(slot.node);
             }
@@ -27,16 +30,62 @@ export class GridView extends Component {
 
     createSlot(i: number, j: number): SlotView {
         const node = new Node;
-        node.name = this.node.name + "-grid-" + i + '-' + j;
+        node.name = this.node.name + '-' + i + '-' + j;
         const slot = node.addComponent(SlotView);
         const widget = node.addComponent(Widget);
-
+        slot.coord = v2(i, j);
         const transform = slot.getComponent(UITransform);
         transform.setContentSize(this.gridSize);
 
         const totalSize = new Size(this.gridSize.x * this.gridNum.x, this.gridSize.y * this.gridNum.y)
         this.getComponent(UITransform).setContentSize(totalSize);
+
+        this.slotViews.push(slot);
         return slot;
+    }
+
+    coordToIndex(coord: Vec2) {
+        return coord.y * this.gridNum.x + coord.x;
+    }
+
+    indexToCoord(index: number) {
+        const j = index % this.gridNum.x;
+        return v2((index - j) / this.gridNum.x, j);
+    }
+
+    validCoord(coord: Vec2) {
+        const xOut = coord.x < 0 || coord.x >= this.gridNum.x;
+        const yOut = coord.y < 0 || coord.y >= this.gridNum.y;
+        return !(xOut || yOut);
+    }
+
+    getNeighborCoords(coord: Vec2, allowOutBound: boolean = false) {
+        const neighborCoords: Array<Vec2> = [];
+        for (let dx = -1; dx <= 1; dx++) {
+            for (let dy = -1; dy <= 1; dy++) {
+                if (dx == 0 && dy == 0) continue;
+                const neighborCoord = v2(coord.x + dx, coord.y + dy);
+                if (allowOutBound || this.validCoord(neighborCoord)) {
+                    neighborCoords.push(neighborCoord);
+                }
+            }
+        }
+        return neighborCoords;
+    }
+
+    getSlotView(coord: Vec2) {
+        if (!this.validCoord(coord)) return null;
+        return this.slotViews[this.coordToIndex(coord)];
+    }
+
+    getSlotsNeighbors(slotView: SlotView, allowOutBound: boolean = false) {
+        const neighborSlotViews: Array<SlotView> = [];
+        const neighbors = this.getNeighborCoords(slotView.coord, allowOutBound);
+        for (const neighborCoord of neighbors) {
+            const neighborSlotView = this.getSlotView(neighborCoord);
+            neighborSlotViews.push(neighborSlotView);
+        }
+        return neighborSlotViews;
     }
 }
 

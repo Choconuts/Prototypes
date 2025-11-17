@@ -390,6 +390,11 @@
     },
     "_enabled": true,
     "__prefab": null,
+    "coord": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": 0
+    },
     "_id": "8aDUmzgXRHH6WDLB0CT2n3"
   },
   {
@@ -505,6 +510,11 @@
     },
     "_enabled": true,
     "__prefab": null,
+    "coord": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": 0
+    },
     "_id": "fcVXr1TsdB34AF+leTssd3"
   },
   {
@@ -620,6 +630,11 @@
     },
     "_enabled": true,
     "__prefab": null,
+    "coord": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": 0
+    },
     "_id": "b7sx5SD99G7ac62l1fv6Lj"
   },
   {
@@ -880,6 +895,7 @@
       "width": 150,
       "height": 150
     },
+    "slotViews": [],
     "_id": "04AWWKOxtIq6izEgPmOhd+"
   },
   {
@@ -892,7 +908,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "debug": true,
+    "debug": false,
     "colors": [
       {
         "__type__": "cc.Color",

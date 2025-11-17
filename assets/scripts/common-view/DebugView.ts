@@ -1,4 +1,4 @@
-import { _decorator, Color, Component, Graphics, Label, Node, Sprite, Widget } from 'cc';
+import { _decorator, Color, Component, Graphics, Label, Node, Sprite, Vec2, Widget } from 'cc';
 import { Hover } from '../common-modal/Hover';
 import { RectView } from '../toolkits/RectView';
 import { getOrAddComponent } from '../toolkits/Functions';
@@ -7,7 +7,7 @@ const { ccclass, property } = _decorator;
 @ccclass('DebugView')
 export class DebugView extends Component {
     @property
-    debug: boolean = true
+    debug: boolean = false
 
     @property([Color])
     colors: Array<Color> = []
