@@ -5,6 +5,7 @@ import { getOrAddComponent, Info } from '../toolkits/Functions';
 import { Factory } from '../proxy-manager/Factory';
 import { HandView } from './HandView';
 import { CardView } from './CardView';
+import { ProgressView } from './ProgressView';
 const { ccclass, property } = _decorator;
 
 @ccclass('DebugView')
@@ -61,6 +62,11 @@ export class DebugView extends Component {
     removeCard() {
         const handView = this.getComponent(HandView);
         handView.removeCard(0);
+    }
+
+    setBar() {
+        const bar = this.getComponent(ProgressView);
+        bar.value -= 0.1;
     }
 }
 

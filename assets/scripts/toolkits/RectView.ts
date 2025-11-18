@@ -58,8 +58,8 @@ export class RectView extends Component {
             size = new Size(contentSizeX * size.width / 100, contentSizeY * size.height / 100);
 
             if (!this.anchorAsCenter) {
-                const originX = (origin.x / 100 - anchorX + 0.5) * size.x;
-                const originY = (origin.y / 100 - anchorY + 0.5) * size.y;
+                const originX = (origin.x / 100 - anchorX + 0.5) * contentSizeX;
+                const originY = (origin.y / 100 - anchorY + 0.5) * contentSizeY;
                 origin = v2(originX, originY);
             }
             else {

@@ -1,4 +1,4 @@
-import { _decorator, Component, Constructor, JsonAsset, Node } from 'cc';
+import { _decorator, Component, Constructor, JsonAsset, Node, Vec2, Widget } from 'cc';
 const { ccclass, property } = _decorator;
 
 export function getOrAddComponent<T extends Component>(target: Component | Node, classConstructor:Constructor<T>): T | null {
@@ -7,6 +7,41 @@ export function getOrAddComponent<T extends Component>(target: Component | Node,
         component = target.addComponent(classConstructor);
     }
     return component;
+}
+
+export function createWidgetChild(target: Component, name?: string, options?: {expandPadding?: number, centerOffset?: Vec2}): Widget {
+    const node = new Node;
+    if (name == null) {
+        name = 'widget';
+    }
+    
+    node.name = name;
+
+    const expand = options.expandPadding != null;
+    const center = !expand && options.centerOffset != null;
+
+    const widget = getOrAddComponent(node, Widget);
+    widget.isAlignTop = expand;
+    widget.isAlignBottom = expand;
+    widget.isAlignLeft = expand;
+    widget.isAlignRight = expand;
+    widget.isAlignHorizontalCenter = center;
+    widget.isAlignVerticalCenter = center;
+
+    if (expand) {
+        widget.top = options.expandPadding;
+        widget.bottom = options.expandPadding;
+        widget.left = options.expandPadding;
+        widget.right = options.expandPadding;
+    }
+
+    if (center) {
+        widget.horizontalCenter = options.centerOffset.x;
+        widget.verticalCenter = options.centerOffset.y;
+    }
+
+    target.node.addChild(node);
+    return widget;
 }
 
 export class Completer<T> {
