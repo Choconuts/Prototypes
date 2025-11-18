@@ -7,6 +7,8 @@ export class SlotView extends Component {
     @property(Vec2)
     coord: Vec2 = v2(0, 0)
 
+    @property
+    selectionMaskView?: Node
 }
 
 

@@ -4,6 +4,7 @@ import { Factory } from './Factory';
 const { ccclass, property } = _decorator;
 
 export enum ProxyEvent {
+    COMMIT = 'event-commit',
     UPDATE = 'event-update',
     CANCEL = 'event-cancel',
 }

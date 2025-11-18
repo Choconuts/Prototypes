@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.Prefab",
-    "_name": "default-drag-card",
+    "_name": "play-card",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_native": "",
@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "default-drag-card",
+    "_name": "play-card",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": null,
@@ -57,7 +57,7 @@
     "_id": ""
   },
   {
-    "__type__": "85667vFvKhD/4vwZcP2ozO/",
+    "__type__": "1b1deLWKgNLCaUzGCtMrOPM",
     "_name": "",
     "_objFlags": 0,
     "__editorExtras__": {},
@@ -75,7 +75,7 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "61lYvQpMlLS4qP+mePPUY2"
+    "fileId": "e57SvLZgxKu7EFheigxLGZ"
   },
   {
     "__type__": "cc.PrefabInfo",

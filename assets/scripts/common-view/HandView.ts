@@ -105,6 +105,7 @@ export class HandView extends Component {
     }
 
     updateLayout() {
+        this.updateSlotIndices();
         const newX = -(this.cardSize.x - this.foldSize) * this.slots.length / 2;
         tween(this.node).to(this.animaitonDuration, {position: v3(newX, 0, 0)}).start();
         this.getComponent(Layout).updateLayout(true);
@@ -164,6 +165,12 @@ export class HandView extends Component {
         this.updateLayout();
         this.lock.complete();
         return true;
+    }
+
+    updateSlotIndices() {
+        this.slots.forEach((slot, index, array) => {
+            slot.coord.x = index;
+        });
     }
 
     async activeSlot(slotView: SlotView): Promise<void> {

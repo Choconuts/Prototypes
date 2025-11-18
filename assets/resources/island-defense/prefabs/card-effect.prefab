@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.Prefab",
-    "_name": "default-drag-card",
+    "_name": "card-effect",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_native": "",
@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "default-drag-card",
+    "_name": "card-effect",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": null,
@@ -57,7 +57,7 @@
     "_id": ""
   },
   {
-    "__type__": "85667vFvKhD/4vwZcP2ozO/",
+    "__type__": "2e61bHs9ZJDAILbOf0zUkzW",
     "_name": "",
     "_objFlags": 0,
     "__editorExtras__": {},
@@ -68,14 +68,11 @@
     "__prefab": {
       "__id__": 3
     },
-    "duration": 0.05,
-    "shrinkScale": 0.6,
-    "shrinkDuration": 0.1,
     "_id": ""
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "61lYvQpMlLS4qP+mePPUY2"
+    "fileId": "569bWsfeVG3Lt6E3TDZNjJ"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -85,8 +82,7 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "4fe7d9n15FvK7XD/unukRL",
-    "instance": null,
+    "fileId": "a6RJDWcGFAA52ZqKkgKyXT",
     "targetOverrides": null
   }
 ]

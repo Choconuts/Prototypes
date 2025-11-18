@@ -65,13 +65,11 @@ export class GridView extends Component {
 
     getNeighborCoords(coord: Vec2, allowOutBound: boolean = false) {
         const neighborCoords: Array<Vec2> = [];
-        for (let dx = -1; dx <= 1; dx++) {
-            for (let dy = -1; dy <= 1; dy++) {
-                if (dx == 0 && dy == 0) continue;
-                const neighborCoord = v2(coord.x + dx, coord.y + dy);
-                if (allowOutBound || this.validCoord(neighborCoord)) {
-                    neighborCoords.push(neighborCoord);
-                }
+        const offsets = [[-1, -1], [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0]];
+        for (const offset of offsets) {
+            const neighborCoord = v2(coord.x + offset[0], coord.y + offset[1]);
+            if (allowOutBound || this.validCoord(neighborCoord)) {
+                neighborCoords.push(neighborCoord);
             }
         }
         return neighborCoords;

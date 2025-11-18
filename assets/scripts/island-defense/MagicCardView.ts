@@ -12,20 +12,21 @@ export class MagicCardView extends Component {
     @property
     cardID: string = '0'
 
-    @property
+    baseInfo: Info
     info: Info
 
     protected onLoad(): void {
         GameManager.instance.gameReady.then(() => {
             const card = this.getComponent(CardView);
-            this.info = Library.instance.get(this.database);
+            this.baseInfo = Library.instance.get(this.database);
             this.cardID = this.randomID();
-            card.apply(this.info.get('card-pool').get(this.cardID).get('block'));
+            this.info = this.baseInfo.get('card-pool').get(this.cardID).get('block');
+            card.apply(this.info);
         });
     }
 
     randomID() {
-        const typeNum = this.info.get('card-pool').data.length;
+        const typeNum = this.baseInfo.get('card-pool').data.length;
         return randomRangeInt(0, typeNum).toString();
     }
 }

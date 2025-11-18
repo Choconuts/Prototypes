@@ -1,4 +1,4 @@
-import { _decorator, Component, Constructor, JsonAsset, Node, Vec2, Widget } from 'cc';
+import { _decorator, Component, Constructor, JsonAsset, Node, v2, Vec2, Widget } from 'cc';
 const { ccclass, property } = _decorator;
 
 export function getOrAddComponent<T extends Component>(target: Component | Node, classConstructor:Constructor<T>): T | null {
@@ -156,6 +156,16 @@ export class Info {
         info.rootTable = record;
         info.data = record;
         return info;
+    }
+
+    get arrayLength(): number | null {
+        return this.data?.length;
+    }
+
+    get vec2(): Vec2 {
+        const x: number = this.get('0').data;
+        const y: number = this.get('1').data;
+        return v2(x, y);
     }
 }
 
