@@ -23,7 +23,7 @@ export class GameMap extends Component {
     database: string = 'magic-card-data'
     @property
     blockKey: string = 'block-view'
-    @property
+    @property(GridView)
     gridView: GridView
 
     @property([BlockView])
@@ -36,15 +36,13 @@ export class GameMap extends Component {
     protected onLoad(): void {
         GameMap.instance = this;
         GameManager.instance.gameReady.then(() => {
-            const grid = this.getComponent(GridView);
             this.baseInfo = Library.instance.get(this.database);
-            grid.slots.forEach((slot, index, array) => {
+            this.gridView.slots.forEach((slot, index, array) => {
                 const block = Factory.instance.get(this.blockKey);
                 slot.node.addChild(block);
                 this.blocks.push(block.getComponent(BlockView));
                 this.createSelectHover(slot);
             });
-            this.gridView = grid;
             this.initLevelMap();
         });
     }

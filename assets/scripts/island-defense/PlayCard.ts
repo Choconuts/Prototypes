@@ -68,7 +68,7 @@ export class PlayCard extends DefaultDragCard {
     }
 
     setGridHover(predict: (slot: SlotView) => boolean) {
-        const gridView = GameMap.instance.getComponent(GridView);
+        const gridView = GameMap.instance.gridView;
         gridView.slots.forEach((slot, index, array) => {
             if (predict(slot) && slot.selectionMaskView != null) {
                 this.visuals.push(slot.selectionMaskView);

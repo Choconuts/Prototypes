@@ -36,6 +36,20 @@
             "block-type": "rock"
         }
     },
+    "animal-type": {
+        "lion": {
+            "card-name": "狮子",
+            "card-color": "#DDAA55",
+            "desc-row1": "攻击力：高",
+            "desc-row2": "魔力：中"
+        }
+    },
+    "animal-pool": [
+        {
+            "animal": "@animal-type@lion",
+            "level": 1
+        }
+    ],
     "magic-type": {
         "thunder": {
             "card-name": "落雷",
