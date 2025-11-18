@@ -49,12 +49,15 @@ export class DebugView extends Component {
         const card = Factory.instance.get(this.cardPath);
         const handView = this.getComponent(HandView);
         const index = handView.slots.length;
-        card.getComponent(CardView).apply(Info.Empty({
-            'card-name': 'Card ' + index,
-            'card-color': this.colors[index % this.colors.length].toHEX("#rrggbb"),
-            'desc-row1': '这是新加入的',
-            'desc-row2': '测试卡片',
-        }))
+
+        if (this.cardPath == 'default-card-view') {
+            card.getComponent(CardView).apply(Info.Empty({
+                'card-name': 'Card ' + index,
+                'card-color': this.colors[index % this.colors.length].toHEX("#rrggbb"),
+                'desc-row1': '这是新加入的',
+                'desc-row2': '测试卡片',
+            }));
+        }
 
         handView.insertCard(card, -1);
     }

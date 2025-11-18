@@ -13,12 +13,14 @@ export class GameManager extends Component {
     @property(Proxy)
     rootProxy: Proxy
 
+    gameReady: Promise<void>
+
     protected onLoad(): void {
         GameManager.instance = this;
         if (this.rootProxy == null) {
             this.rootProxy = getOrAddComponent(this, Proxy);
         }
-        const ready = this.preloadAllDatabases();
+        this.gameReady = this.preloadAllDatabases();
     }
 
     public async preloadAllDatabases() {

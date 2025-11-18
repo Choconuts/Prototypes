@@ -1,0 +1,64 @@
+{
+    "block-type": {
+        "grass": {
+            "card-name": "地形：草原",
+            "card-color": "#99BB77",
+            "desc-row1": "制造一片",
+            "desc-row2": "草地"
+        },
+        "wetland": {
+            "card-name": "地形：水域",
+            "card-color": "#5599BB",
+            "desc-row1": "制造一片",
+            "desc-row2": "湿地"
+        },
+        "sand": {
+            "card-name": "地形：沙漠",
+            "card-color": "#EEDDAA",
+            "desc-row1": "制造一片",
+            "desc-row2": "沙地"
+        },
+        "wood": {
+            "card-name": "地形：森林",
+            "card-color": "#AA6633",
+            "desc-row1": "制造一片",
+            "desc-row2": "林地"
+        },
+        "rock": {
+            "card-name": "地形：山脉",
+            "card-color": "#667788",
+            "desc-row1": "制造一片",
+            "desc-row2": "岩地"
+        }
+    },
+    "magic-type": {
+        "thunder": {
+            "card-name": "落雷",
+            "card-color": "@block-type@grass@card-color",
+            "desc-row1": "造成15伤害",
+            "desc-row2": "（建筑优先）"
+        }
+    },
+    "card-pool": [
+        {
+            "magic": "@magic-type@thunder",
+            "block": "@block-type@grass"
+        },
+        {
+            "magic": "@magic-type@thunder",
+            "block": "@block-type@wetland"
+        },
+        {
+            "magic": "@magic-type@thunder",
+            "block": "@block-type@sand"
+        },
+        {
+            "magic": "@magic-type@thunder",
+            "block": "@block-type@wood"
+        },
+        {
+            "magic": "@magic-type@thunder",
+            "block": "@block-type@rock"
+        }
+    ]
+}

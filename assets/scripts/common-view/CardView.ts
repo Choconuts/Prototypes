@@ -28,6 +28,7 @@ export class CardView extends Component {
     apply(info: Info) {
         this.cardName.string = info.get('card-name')?.data;
         this.cardBase.getComponent(Graphics).fillColor = Color.fromHEX(new Color, info.get('card-color')?.data);
+        this.cardBase.getComponent(RectView).draw();
         this.description.string = info.get('desc-row1')?.data + '\n' + info.get('desc-row2')?.data;
     }
 
