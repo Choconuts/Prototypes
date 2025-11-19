@@ -553,8 +553,8 @@
     },
     "gridSize": {
       "__type__": "cc.Size",
-      "width": 150,
-      "height": 150
+      "width": 120,
+      "height": 120
     },
     "slots": [],
     "_id": "04AWWKOxtIq6izEgPmOhd+"
@@ -657,6 +657,7 @@
       "__id__": 15
     },
     "blocks": [],
+    "units": [],
     "visualOpacity": 0.4,
     "_id": "4cff936ZlIpLUqEgbZfV7K"
   },
@@ -2087,6 +2088,7 @@
       "a": 255
     },
     "duration": 0.1,
+    "padding": 5,
     "_id": "510EPRxD5H1LkzWPhkFHFA"
   },
   {

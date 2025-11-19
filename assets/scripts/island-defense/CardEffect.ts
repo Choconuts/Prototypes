@@ -34,10 +34,8 @@ export class CardEffect extends Component {
         const proxy = this.getComponent(Proxy);
         const cardInfo = await proxy?.wait(ProxyEvent.COMMIT);
         const blockType = cardInfo.get('block-type').data;
-        console.log('card-effect:', blockType);
         const coordInfo = await proxy?.wait(ProxyEvent.COMMIT);
         const coord = coordInfo.get('coord').data;
-        console.log('card-effect:', coord);
         const block = GameMap.instance.generateBlock(coord, blockType);
         await proxy?.wait(ProxyEvent.CANCEL);
         proxy?.close();

@@ -1,5 +1,5 @@
 import { _decorator, Color, Component, Graphics, Label, Node, Rect } from 'cc';
-import { Info, setRectColor } from '../toolkits/Functions';
+import { Info, setRectColor, Stream } from '../toolkits/Functions';
 import { PatternView } from './PatternView';
 const { ccclass, property } = _decorator;
 
@@ -16,6 +16,10 @@ export class ConfigView extends Component {
 
     level: number = 0
 
+    eventStream: Stream<Info> = new Stream
+
+    info: Info
+
     configActive(active: boolean) {
         this.nameView.node.active = active;
         this.levelView.node.active = active;
@@ -23,6 +27,7 @@ export class ConfigView extends Component {
     }
 
     apply(info: Info, level: number = 1) {
+        this.info = info;
         if (info != null) {
             this.configActive(true);
             this.nameView.string = info.get('card-name')?.data;
@@ -35,6 +40,8 @@ export class ConfigView extends Component {
             setRectColor(this, this.defaultColorHex)
             this.configActive(false);
         }
+
+        this.eventStream.put(info);
     }
 }
 

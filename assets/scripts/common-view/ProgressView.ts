@@ -16,11 +16,14 @@ export class ProgressView extends Component {
     @property
     duration: number = 0.1
 
+    @property
+    padding: number = 5
+
     declare maxRectLength: number
 
     protected onLoad(): void {
         const bar = this.createBar('bar', this.background, 0);
-        this.progress = this.createBar('progress', this.foreground, 5);
+        this.progress = this.createBar('progress', this.foreground, this.padding);
         this.maxRectLength = this.progress.rect.xMax - this.progress.rect.xMin;
     }
 
