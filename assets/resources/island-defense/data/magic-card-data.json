@@ -16,7 +16,7 @@
         },
         "sand": {
             "card-name": "地形：沙漠",
-            "card-color": "#EEDDAA",
+            "card-color": "#DDCC99",
             "desc-row1": "制造一片",
             "desc-row2": "沙地",
             "block-type": "sand"
@@ -41,7 +41,159 @@
             "card-name": "狮子",
             "card-color": "#DDAA55",
             "desc-row1": "攻击力：高",
-            "desc-row2": "魔力：中"
+            "desc-row2": "魔力：中",
+            "region-display": [
+                null,   null,   null,   "wood",   null,
+                null,   null,   "grass",   null,   null,
+                null,   "grass",   null,   null,   null
+            ],
+            "region-targets": [11],
+            "region": [
+                {
+                    "display": [null, null, null, "wood", null, null, null, "grass", "grass"],
+                    "target": 7,
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "grass"
+                        },
+                        {
+                            "offset": [1, 0],
+                            "type": "grass"
+                        },
+                        {
+                            "offset": [2, 0],
+                            "type": "wood"
+                        }
+                    ]
+                }
+            ],
+            "attributes": {
+                "cost": 10,
+                "purify": 3,
+                "health": 12,
+                "attack": 8
+            }
+        },
+        "turtoise": {
+            "card-name": "乌龟",
+            "card-color": "#448855",
+            "desc-row1": "生命值：高",
+            "desc-row2": "魔力：高",
+            "region-display": [
+                null,   "wetland",   null,   "wetland",   null,
+                null,   null,   "rock",   null,   null,
+                null,   null,   null,   null,   null
+            ],
+            "region-targets": [7],
+            "region": [
+                {
+                    "display": [null, "wetland", null, "wetland", null, null, null, null, "rock"],
+                    "target": 7,
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "rock"
+                        },
+                        {
+                            "offset": [1, 0],
+                            "type": "wetland"
+                        },
+                        {
+                            "offset": [0, 1],
+                            "type": "wetland"
+                        }
+                    ]
+                }
+            ],
+            "attributes": {
+                "cost": 10,
+                "purify": 5,
+                "health": 25,
+                "attack": 0
+            }
+        },
+        "fox": {
+            "card-name": "狐狸",
+            "card-color": "#DD5544",
+            "desc-row1": "攻击力：低",
+            "desc-row2": "魔力：中",
+            "region-display": [
+                null,   "sand",   null,   null,   null,
+                null,   null,   "wood",   null,   null,
+                null,   null,   null,   null,   null
+            ],
+            "region-targets": [7],
+            "region": [
+                {
+                    "display": [null, null, null, "sand", null, null, null, null, "wood"],
+                    "target": 7,
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "wood"
+                        },
+                        {
+                            "offset": [1, 0],
+                            "type": "sand"
+                        }
+                    ]
+                }
+            ],
+            "attributes": {
+                "cost": 10,
+                "purify": 3,
+                "health": 10,
+                "attack": 0
+            }
+        },
+        "lizard": {
+            "card-name": "沙蜥蜴",
+            "card-color": "#99AA44",
+            "desc-row1": "生命值：低",
+            "desc-row2": "魔力：低",
+            "region-display": [
+                null,   "rock",   null,   null,   "sand",
+                "sand",   null,   "or",   null,   null,
+                null,   null,   null,   null,   "rock"
+            ],
+            "region-targets": [4, 5],
+            "region": [
+                {
+                    "display": [null, null, null, "rock", null, null, null, null, "sand"],
+                    "target": 7,
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "sand"
+                        },
+                        {
+                            "offset": [1, 0],
+                            "type": "rock"
+                        }
+                    ]
+                },
+                {
+                    "display": [null, null, "rock", null, null, null, null, null, "sand"],
+                    "target": 7,
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "sand"
+                        },
+                        {
+                            "offset": [1, 1],
+                            "type": "rock"
+                        }
+                    ]
+                }
+            ],
+            "attributes": {
+                "cost": 10,
+                "purify": 2,
+                "health": 6,
+                "attack": 0
+            }
         }
     },
     "animal-pool": [

@@ -14,7 +14,13 @@ export class GridView extends Component {
     slots: Array<SlotView> = []
 
     protected onLoad(): void {
+        this.regenerateGrids();
+    }
+
+    regenerateGrids() {
         this.setLayout();
+        this.slots.forEach((slot, index, array) => slot.node.destroy());
+        this.slots.length = 0;
         for (let j = 0; j < this.gridNum.y; j++) {
             for (let i = 0; i < this.gridNum.x; i++) {
                 const slot = this.createSlot(i, j);

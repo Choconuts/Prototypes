@@ -1,4 +1,5 @@
-import { _decorator, Component, Constructor, JsonAsset, Node, v2, Vec2, Widget } from 'cc';
+import { _decorator, Color, Component, Constructor, Graphics, JsonAsset, Node, UITransform, v2, Vec2, Widget } from 'cc';
+import { RectView } from './RectView';
 const { ccclass, property } = _decorator;
 
 export function getOrAddComponent<T extends Component>(target: Component | Node, classConstructor:Constructor<T>): T | null {
@@ -167,5 +168,33 @@ export class Info {
         const y: number = this.get('1').data;
         return v2(x, y);
     }
+
+    get base(): Info {
+        const info = new Info;
+        info.json = this.json;
+        info.rootTable = this.rootTable;
+        info.data = this.rootTable;
+        return info;
+    }
 }
 
+
+export function createRectWidget(parent: Component, colorHex: string, name?: string, padding: number = 0, radius: number = 0): RectView {
+    if (name == null) {
+        name = 'rect';
+    }
+    const widget = createWidgetChild(parent, name, {expandPadding: padding});
+    const graphics = widget.addComponent(Graphics);
+    const rect = widget.addComponent(RectView);
+    rect.radius = radius;
+    graphics.fillColor = Color.fromHEX(new Color, colorHex);
+    graphics.lineWidth = 3;
+    return rect;
+}
+
+export function setRectColor(target: Component, colorHex: string) {
+    const graphics = getOrAddComponent(target, Graphics);
+    const rect = getOrAddComponent(target, RectView);
+    graphics.fillColor = Color.fromHEX(new Color, colorHex);
+    rect.draw();
+}
