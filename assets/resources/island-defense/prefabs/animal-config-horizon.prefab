@@ -1477,7 +1477,7 @@
     "__prefab": {
       "__id__": 69
     },
-    "unitKey": "default-unit",
+    "unitKey": "animal-unit",
     "coolDownMask": {
       "__id__": 13
     },

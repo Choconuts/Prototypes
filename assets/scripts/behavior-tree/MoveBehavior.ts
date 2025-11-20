@@ -1,7 +1,7 @@
-import { _decorator, Component, Enum, Node, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
+import { _decorator, Component, Enum, Node, randomRangeInt, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
 import { Behavior, ChoiceStrategy } from './Behavior';
 import { GameMap } from '../island-defense/GameMap';
-import { Info } from '../toolkits/Functions';
+import { Completer, Info } from '../toolkits/Functions';
 import { UnitView } from '../island-defense/UnitView';
 import { SlotView } from '../common-view/SlotView';
 const { ccclass, property } = _decorator;
@@ -14,35 +14,30 @@ export class MoveBehavior extends Behavior {
     velocity: number = 20
     @property
     matchInfoKeyPath: string = "sea"
+    @property
+    declare exclude: Set<SlotView>
 
     matchInfo: Info = null
 
-    @property(UnitView)
-    unit: UnitView = null
+    matchCache: SlotView = null
 
-    protected onLoad(): void {
-        if (this.unit == null) {
-            let parent = this.node;
-            while (parent != null) {
-                this.unit = parent.getComponent(UnitView);
-                if (this.unit != null) {
-                    break;
-                }
-                parent = parent.parent;
-            }
-        }
+    completer: Completer<void> = new Completer
+
+    protected start(): void {
+        this.exclude = new Set;
     }
 
-    getMatch(): SlotView {
+    restart() {
+        this.completer = new Completer;
+        this.matchCache = null;
+    }
+
+    getMatch(): Array<SlotView> {
         if (this.matchInfoKeyPath == 'any') {
-            if (this.strategy == ChoiceStrategy.NEAREST) {
-                return GameMap.instance.nearestBlock(this.unit.node.worldPosition);
-            }
+            return GameMap.instance.neighborBlocks(this.unit.node.worldPosition, this.exclude);
         }
         else if (this.matchInfoKeyPath == 'sea') {
-            if (this.strategy == ChoiceStrategy.NEAREST) {
-                return GameMap.instance.nearestSea(this.unit.node.worldPosition);
-            }
+            return GameMap.instance.nearestSeas(this.unit.node.worldPosition);
         }
 
         let info = this.matchInfo;
@@ -62,15 +57,33 @@ export class MoveBehavior extends Behavior {
         const vector = targetPosition.clone().subtract(currentPosition);
         if (vector.length() <= deltaTime * this.velocity) {
             this.unit.node.position = targetPosition;
+            this.completer.complete();
         }
         else {
             this.unit.node.position = this.unit.node.position.add(vector.normalize().multiplyScalar(deltaTime * this.velocity));
         }
+
+        this.unit.orient = vector.x;
+    }
+
+    chooseMatch(): SlotView {
+        const matches = this.getMatch();
+        if (matches.length == 0) {
+            return null;
+        }
+        return matches[randomRangeInt(0, matches.length)];
+    }
+
+    enterCondition(): boolean {
+        if (this.matchCache == null) {
+            this.matchCache = this.chooseMatch();
+        }
+        return this.matchCache != null && this.matchCache.node.worldPosition != this.unit.node.worldPosition;
     }
 
     program(deltaTime: number): void {
         if (this.unit == null) return;
-        const slot = this.getMatch();
+        const slot = this.matchCache == null ? this.chooseMatch() : this.matchCache;
         if (slot != null) {
             this.march(slot.node.worldPosition, deltaTime);
         }

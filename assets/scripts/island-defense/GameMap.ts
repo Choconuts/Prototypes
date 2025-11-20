@@ -35,8 +35,9 @@ export class GameMap extends Component {
     @property([UnitView])
     units: Array<UnitView> = []
 
-    animalMap: Map<Vec2, UnitView> = new Map
-    blockMap: Map<Vec2, BlockView> = new Map
+    animalMap: Map<number, UnitView> = new Map
+    enemyArray: Array<UnitView> = new Array
+    blockMap: Map<number, BlockView> = new Map
 
     @property
     visualOpacity: number = 0.4
@@ -101,7 +102,7 @@ export class GameMap extends Component {
         if (!this.gridView.validCoord(coord)) return null;
         const block = this.blocks[this.gridView.coordToIndex(coord)];
         block?.addBlock(blockType);
-        this.blockMap.set(coord, block);
+        this.blockMap.set(this.gridView.coordToIndex(coord), block);
         return block;
     }
 
@@ -215,7 +216,7 @@ export class GameMap extends Component {
         node.position = relative;
     }
 
-    generateUnit(coord: Vec2, unitKey:string, isAnimal: boolean): UnitView {
+    generateUnit(coord: Vec2, unitKey: string, isAnimal: boolean): UnitView {
         if (!this.gridView.validCoord(coord)) return;
         const slot = this.gridView.slots[this.gridView.coordToIndex(coord)]
         const node = Factory.instance.get(unitKey);
@@ -229,8 +230,13 @@ export class GameMap extends Component {
         this.units.push(unit);
 
         if (isAnimal) {
-            this.animalMap.set(slot.coord, unit);
+            this.animalMap.set(this.gridView.coordToIndex(slot.coord), unit);
         }
+        else {
+            this.enemyArray.push(unit);
+        }
+
+        unit.spawn(unitKey, isAnimal);
         return unit;
     }
 
@@ -241,7 +247,7 @@ export class GameMap extends Component {
 
         if (isAnimal) {
             matchSlots = matchSlots.filter((slot, index, array) => {
-                return !this.animalMap.has(slot.coord);
+                return !this.hasAnimal(slot);
             });
         }
 
@@ -262,39 +268,131 @@ export class GameMap extends Component {
         return relative;
     }
 
-    nearestBlock(worldPosition: Vec3): SlotView {
+    nearestBlocks(worldPosition: Vec3, exclude?: Set<SlotView>): Array<SlotView> {
         let minDist = Infinity;
-        let minSlot = null;
+        let minSlots: Array<SlotView> = [];
 
         for (const block of this.blockMap.values()) {
             const slot = block.node.parent.getComponent(SlotView);
             const dist = slot.node.worldPosition.clone().subtract(worldPosition).length();
-            if (minDist > dist) {
+
+            if (exclude != null) {
+                if (exclude.has(slot)) {
+                    continue;
+                }
+            }
+
+            if (minDist == dist) {
+                minSlots.push(slot);
+            }
+            else if (minDist > dist) {
                 minDist = dist;
-                minSlot = slot;
+                minSlots = [slot];
             }
         }
-        return minSlot;
+
+        return minSlots;
     }
 
-    nearestSea(worldPosition: Vec3): SlotView {
+    neighborBlocks(worldPosition: Vec3, exclude?: Set<SlotView>): Array<SlotView> {
+        let slots: Array<SlotView> = [];
+        const coord = this.worldPositionToCoord(worldPosition);
+
+        for (const neighborCoord of this.gridView.getNeighborCoords(coord, false, true)) {
+            const neighborSlot = this.coordToSlot(neighborCoord);
+            if (exclude != null) {
+                if (exclude.has(neighborSlot)) {
+                    continue;
+                }
+            }
+            if (this.isBlock(neighborSlot)) {
+                slots.push(neighborSlot);
+            }
+        }
+        return slots;
+    }
+
+    nearestSeas(worldPosition: Vec3): Array<SlotView> {
         let minDist = Infinity;
-        let minSlot = null;
+        let minSlots: Array<SlotView> = [];
 
         for (const block of this.blockMap.values()) {
             const slot = block.node.parent.getComponent(SlotView);
 
             for (const neighborCoord of this.gridView.getNeighborCoords(slot.coord, false, true)) {
                 const neighborSlot = this.coordToSlot(neighborCoord);
-                if (this.blockMap.has(neighborSlot.coord)) continue;
+                if (this.isBlock(neighborSlot)) continue;
                 const dist = neighborSlot.node.worldPosition.clone().subtract(worldPosition).length();
-                if (minDist > dist) {
+                if (minDist == dist) {
+                    minSlots.push(neighborSlot);
+                }
+                else if (minDist > dist) {
                     minDist = dist;
-                    minSlot = neighborSlot;
+                    minSlots = [neighborSlot];
                 }
             }
         }
-        return minSlot;
+        return minSlots;
+    }
+
+    worldPositionToCoord(worldPosition: Vec3): Vec2 {
+        if (this.gridView.slots.length < 4) return undefined;
+
+        const startSlot = this.gridView.slots[0];
+        const endSlot = this.gridView.slots[this.gridView.slots.length - 1];
+        
+        const diff = worldPosition.clone().subtract(startSlot.node.worldPosition).toVec2();
+        const totalDiff = endSlot.node.worldPosition.clone().subtract(startSlot.node.worldPosition).toVec2();
+        const diffNorm = diff.divide(totalDiff).multiply(this.gridView.gridNum.clone().subtract2f(1, 1));
+        
+        const idX = Math.round(diffNorm.x)
+        const idY = Math.round(diffNorm.y);
+        return v2(idX, idY);
+    }
+
+    isBlock(slot: SlotView): boolean {
+        return this.blockMap.has(this.gridView.coordToIndex(slot.coord));
+    }
+
+    hasAnimal(slot: SlotView): boolean {
+        return this.animalMap.has(this.gridView.coordToIndex(slot.coord));
+    }
+
+    getAnimals(slot: SlotView): Array<UnitView> {
+        const animal = this.animalMap.get(this.gridView.coordToIndex(slot.coord));
+        if (animal == null) return [];
+        return [animal];
+    }
+
+    getEnemies(slot: SlotView): Array<UnitView> {
+        console.log(this.enemyArray.length);
+        const result = this.enemyArray.filter((enemy, index, array) => {
+            return this.worldPositionToCoord(enemy.node.worldPosition).equals(slot.coord);
+        });
+        return result;
+    }
+
+    findAnimalIndex(unit: UnitView) {
+        for (const pair of this.animalMap) {
+            if (pair[1] == unit) {
+                return pair[0];
+            }
+        }
+        return null;
+    }
+
+    removeUnit(unit: UnitView) {
+        if (unit.isAnimal) {
+            const idx = this.findAnimalIndex(unit);
+            this.animalMap.delete(idx);
+        }
+        else {
+            this.enemyArray.filter((enemy, index, array) => {
+                return enemy != unit;
+            });
+        }
+        unit.node.removeFromParent();
+        Factory.instance.put(unit.unitKey, unit.node);
     }
 }
 

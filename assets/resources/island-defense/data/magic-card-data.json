@@ -243,23 +243,9 @@
                 "type": "grass"
             },
             {
-                "coord": [11, 2],
+                "coord": [9, 4],
                 "type": "boat"
             }
         ]
-    },
-    "behavior": {
-        "boat-sail": {
-            "region": [
-                {
-                    "match": [
-                        {
-                            "offset": [0, 0],
-                            "type": "any"
-                        }
-                    ]
-                }
-            ]
-        }
     }
 }
