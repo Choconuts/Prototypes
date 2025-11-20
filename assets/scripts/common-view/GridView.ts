@@ -69,9 +69,9 @@ export class GridView extends Component {
         return !(xOut || yOut);
     }
 
-    getNeighborCoords(coord: Vec2, allowOutBound: boolean = false) {
+    getNeighborCoords(coord: Vec2, allowOutBound: boolean = false, noCorner: boolean = false) {
         const neighborCoords: Array<Vec2> = [];
-        const offsets = [[-1, -1], [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0]];
+        const offsets = noCorner? [[0, -1], [1, 0], [0, 1], [-1, 0]] : [[-1, -1], [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0]];
         for (const offset of offsets) {
             const neighborCoord = v2(coord.x + offset[0], coord.y + offset[1]);
             if (allowOutBound || this.validCoord(neighborCoord)) {

@@ -653,6 +653,7 @@
     "__prefab": null,
     "database": "magic-card-data",
     "blockKey": "block-view",
+    "boatKey": "boat-unit",
     "gridView": {
       "__id__": 15
     },

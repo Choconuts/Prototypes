@@ -1,14 +1,15 @@
 import { _decorator, Component, Node } from 'cc';
+import { Behavior } from '../behavior-tree/Behavior';
 const { ccclass, property } = _decorator;
 
 @ccclass('UnitView')
 export class UnitView extends Component {
-    start() {
+    @property(Behavior)
+    behavior: Behavior
 
-    }
-
-    update(deltaTime: number) {
-        
+    protected update(dt: number): void {
+        this.behavior.program(dt);
     }
 }
-
+
+

@@ -24,6 +24,8 @@ export class GameMap extends Component {
     database: string = 'magic-card-data'
     @property
     blockKey: string = 'block-view'
+    @property
+    boatKey: string = 'boat-unit'
     @property(GridView)
     gridView: GridView
 
@@ -34,6 +36,7 @@ export class GameMap extends Component {
     units: Array<UnitView> = []
 
     animalMap: Map<Vec2, UnitView> = new Map
+    blockMap: Map<Vec2, BlockView> = new Map
 
     @property
     visualOpacity: number = 0.4
@@ -65,23 +68,40 @@ export class GameMap extends Component {
         slot.selectionMaskView = visual.node;
     }
 
+    initBlock(coord: Vec2, blockType: string) {
+        if (blockType == 'boat') {
+            const boat = this.generateUnit(coord, this.boatKey, false);
+        }
+        else {
+            this.generateBlock(coord, blockType);
+        }
+    }
+
     initLevelMap() {
-        const mapInfo = this.baseInfo.get("level-config").get('map');
+        const mapInfo = this.baseInfo.get('level-config').get('map');
         for (let i = 0; i < mapInfo.arrayLength; i++) {
             const info = mapInfo.get(i.toString());
             if (info != null) {
                 const coord = info.get('coord').vec2;
                 const blockType = info.get('type').data;
-                this.blocks[this.gridView.coordToIndex(coord)].addBlock(blockType);
+                this.initBlock(coord, blockType);
             }
         }
         this.lock.complete();
+    }
+
+    coordToSlot(coord: Vec2): SlotView {
+        if(this.gridView.validCoord(coord)) {
+            return this.gridView.slots[this.gridView.coordToIndex(coord)];
+        }
+        return null;
     }
 
     generateBlock(coord: Vec2, blockType: string): BlockView {
         if (!this.gridView.validCoord(coord)) return null;
         const block = this.blocks[this.gridView.coordToIndex(coord)];
         block?.addBlock(blockType);
+        this.blockMap.set(coord, block);
         return block;
     }
 
@@ -195,7 +215,26 @@ export class GameMap extends Component {
         node.position = relative;
     }
 
-    async generateCreature(info: Info, unitKey: string, isAnimal: boolean = true): Promise<UnitView> {
+    generateUnit(coord: Vec2, unitKey:string, isAnimal: boolean): UnitView {
+        if (!this.gridView.validCoord(coord)) return;
+        const slot = this.gridView.slots[this.gridView.coordToIndex(coord)]
+        const node = Factory.instance.get(unitKey);
+        const unit = node?.getComponent(UnitView);
+        if (unit == null) {
+            Factory.instance.put(unitKey, node);
+            this.lock.complete();
+            return null;
+        }
+        this.putOnMap(node, slot.node.worldPosition);
+        this.units.push(unit);
+
+        if (isAnimal) {
+            this.animalMap.set(slot.coord, unit);
+        }
+        return unit;
+    }
+
+    async generateCreature(info: Info, unitKey: string, isAnimal: boolean): Promise<UnitView> {
         await this.lock.promise;
         this.lock = new Completer;
         let matchSlots = this.matchSlots(info);
@@ -209,24 +248,53 @@ export class GameMap extends Component {
         if (matchSlots.length > 0) {
             const index = randomRangeInt(0, matchSlots.length);
             const slot = matchSlots[index];
-            const node = Factory.instance.get(unitKey);
-            const unit = node?.getComponent(UnitView);
-            if (unit == null) {
-                Factory.instance.put(unitKey, node);
-                this.lock.complete();
-                return null;
-            }
-            this.putOnMap(node, slot.node.worldPosition);
-            this.units.push(unit);
-
-            if (isAnimal) {
-                this.animalMap.set(slot.coord, unit);
-            }
+            const unit = this.generateUnit(slot.coord, unitKey, isAnimal);
             this.lock.complete();
             return unit;
         }
         this.lock.complete();
         return null;
+    }
+
+    worldToMapPosition(worldPosition: Vec3): Vec3 {
+        const transform = GameMap.instance.getComponent(UITransform);
+        const relative = transform.convertToNodeSpaceAR(v3(worldPosition.x, worldPosition.y, 0));
+        return relative;
+    }
+
+    nearestBlock(worldPosition: Vec3): SlotView {
+        let minDist = Infinity;
+        let minSlot = null;
+
+        for (const block of this.blockMap.values()) {
+            const slot = block.node.parent.getComponent(SlotView);
+            const dist = slot.node.worldPosition.clone().subtract(worldPosition).length();
+            if (minDist > dist) {
+                minDist = dist;
+                minSlot = slot;
+            }
+        }
+        return minSlot;
+    }
+
+    nearestSea(worldPosition: Vec3): SlotView {
+        let minDist = Infinity;
+        let minSlot = null;
+
+        for (const block of this.blockMap.values()) {
+            const slot = block.node.parent.getComponent(SlotView);
+
+            for (const neighborCoord of this.gridView.getNeighborCoords(slot.coord, false, true)) {
+                const neighborSlot = this.coordToSlot(neighborCoord);
+                if (this.blockMap.has(neighborSlot.coord)) continue;
+                const dist = neighborSlot.node.worldPosition.clone().subtract(worldPosition).length();
+                if (minDist > dist) {
+                    minDist = dist;
+                    minSlot = neighborSlot;
+                }
+            }
+        }
+        return minSlot;
     }
 }
 

@@ -43,7 +43,7 @@ export class AnimalConfig extends Component {
     }
 
     async tryWork(): Promise<boolean> {
-        const creature = await GameMap.instance.generateCreature(this.workingInfo, this.unitKey);
+        const creature = await GameMap.instance.generateCreature(this.workingInfo, this.unitKey, true);
         return creature != null;
     }
 
