@@ -11,6 +11,8 @@ const { ccclass, property } = _decorator;
 export class AttackBehavior extends Behavior {
     @property
     interval: number = 1
+    @property
+    initialDelay: number = 0
 
     delay = 0
 
@@ -22,6 +24,7 @@ export class AttackBehavior extends Behavior {
     protected onLoad(): void {
         super.onLoad();
         this.objectUnits = [];
+        this.delay = this.initialDelay;
     }
 
     enterCondition(): boolean {
@@ -30,7 +33,7 @@ export class AttackBehavior extends Behavior {
             return true;
         }
         else {
-            this.delay = 0;
+            this.delay = this.initialDelay;
             return false;
         }
     }

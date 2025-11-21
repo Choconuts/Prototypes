@@ -614,7 +614,7 @@
     "selective": true,
     "unit": null,
     "interval": 1,
-    "isAnimal": false,
+    "initialDelay": 0.5,
     "_id": ""
   },
   {
@@ -773,6 +773,7 @@
       "__id__": 0
     },
     "fileId": "64411Wc49K4INAj2j56Y/v",
+    "instance": null,
     "targetOverrides": null
   }
 ]

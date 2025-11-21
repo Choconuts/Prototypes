@@ -5,7 +5,7 @@ const { ccclass, property } = _decorator;
 
 @ccclass('EnemyUnit')
 export class EnemyUnit extends Component {
-    start() {
+    onEnable() {
         const move = this.getComponentInChildren(MoveBehavior);
         this.restartMove(move);
     }

@@ -70,7 +70,7 @@ export class PlayCard extends DefaultDragCard {
     setGridHover(predict: (slot: SlotView) => boolean) {
         const gridView = GameMap.instance.gridView;
         gridView.slots.forEach((slot, index, array) => {
-            if (predict(slot) && slot.selectionMaskView != null) {
+            if (predict(slot) && slot.selectionMaskView != null && !GameMap.instance.hasEnemy(slot)) {
                 this.visuals.push(slot.selectionMaskView);
                 slot.selectionMaskView.active = true;
                 const hover = slot.selectionMaskView.addComponent(Hover);

@@ -17,6 +17,14 @@ export class Behavior extends Component {
     unit: UnitView = null
 
     protected onLoad(): void {
+        this.findUnit();
+    }
+
+    protected onEnable(): void {
+        this.findUnit();
+    }
+
+    findUnit() {
         if (this.unit == null) {
             let parent = this.node;
             while (parent != null) {

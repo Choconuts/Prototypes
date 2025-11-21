@@ -27,9 +27,17 @@ export class MoveBehavior extends Behavior {
         this.exclude = new Set;
     }
 
+    protected onEnable(): void {
+        if (this.completer != null) {
+            this.completer.complete();
+        }
+        this.restart();
+    }
+
     restart() {
         this.completer = new Completer;
         this.matchCache = null;
+        this.exclude = new Set;
     }
 
     getMatch(): Array<SlotView> {

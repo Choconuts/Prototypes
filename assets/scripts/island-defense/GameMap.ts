@@ -247,7 +247,7 @@ export class GameMap extends Component {
 
         if (isAnimal) {
             matchSlots = matchSlots.filter((slot, index, array) => {
-                return !this.hasAnimal(slot);
+                return !this.hasAnimal(slot) && !this.hasEnemy(slot);
             });
         }
 
@@ -358,6 +358,10 @@ export class GameMap extends Component {
         return this.animalMap.has(this.gridView.coordToIndex(slot.coord));
     }
 
+    hasEnemy(slot: SlotView): boolean {
+        return this.getEnemies(slot).length > 0;
+    }
+
     getAnimals(slot: SlotView): Array<UnitView> {
         const animal = this.animalMap.get(this.gridView.coordToIndex(slot.coord));
         if (animal == null) return [];
@@ -386,7 +390,7 @@ export class GameMap extends Component {
             this.animalMap.delete(idx);
         }
         else {
-            this.enemyArray.filter((enemy, index, array) => {
+            this.enemyArray = this.enemyArray.filter((enemy, index, array) => {
                 return enemy != unit;
             });
         }
