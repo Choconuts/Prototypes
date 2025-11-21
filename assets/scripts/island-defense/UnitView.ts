@@ -21,7 +21,8 @@ export class UnitView extends Component {
     maxHealth: number = 10
     @property
     attack: number = 3
-
+    @property
+    purify: number = 0
     @property
     health: number = 10
 
@@ -85,11 +86,20 @@ export class UnitView extends Component {
         const healthBar = this.getComponentInChildren(ProgressView);
         if (healthBar != null) {
             healthBar.value = this.health / this.maxHealth;
+
+            if (this.health >= this.maxHealth || this.health <= 0) {
+                healthBar.node.active = false;
+            }
+            else {
+                healthBar.node.active = true;
+            }
         }
 
         if (this.health == 0) {
             this.dead();
         }
+
+
     }
 
     dead() {

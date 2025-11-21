@@ -9,6 +9,7 @@ import { RectView } from '../toolkits/RectView';
 import { Hover } from '../common-modal/Hover';
 import { BlockView } from './BlockView';
 import { UnitView } from './UnitView';
+import { AnimalUnit } from './AnimalUnit';
 const { ccclass, property } = _decorator;
 
 export class BlockPattern {
@@ -255,6 +256,9 @@ export class GameMap extends Component {
             const index = randomRangeInt(0, matchSlots.length);
             const slot = matchSlots[index];
             const unit = this.generateUnit(slot.coord, unitKey, isAnimal);
+            if (isAnimal) {
+                unit.getComponent(AnimalUnit)?.apply(info);
+            }
             this.lock.complete();
             return unit;
         }

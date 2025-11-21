@@ -13,6 +13,8 @@ export class DeriveBehavior extends Behavior {
     deriveKey: string = 'default-unit'
     @property
     interval: number = 10
+    @property
+    maxNum: number = -1
 
     @property(UnitView)
     unit: UnitView = null
@@ -25,13 +27,21 @@ export class DeriveBehavior extends Behavior {
         return this.deriveMode;
     }
 
-    program(deltaTime: number): void {
-        if (this.delay - deltaTime < 0) {
+    derive() {
+        if (this.maxNum != 0) {
             const coord = GameMap.instance.worldPositionToCoord(this.unit.node.worldPosition);
             const derived = GameMap.instance.generateUnit(coord, this.deriveKey, false);
             this.completer.complete();
-            this.delay = this.interval + this.delay - deltaTime;
             derived.orient = this.unit.orient;
+
+            if (this.maxNum > 0) this.maxNum--;
+        }
+    }
+
+    program(deltaTime: number): void {
+        if (this.delay - deltaTime < 0) {
+            this.derive();
+            this.delay = this.interval + this.delay - deltaTime;
         }
         else {
             this.delay -= deltaTime;

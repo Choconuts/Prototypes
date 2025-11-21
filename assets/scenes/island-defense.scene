@@ -25,6 +25,9 @@
     ],
     "_active": true,
     "_components": [],
+    "_prefab": {
+      "__id__": 96
+    },
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
@@ -54,7 +57,7 @@
     },
     "autoReleaseAssets": false,
     "_globals": {
-      "__id__": 96
+      "__id__": 97
     },
     "_id": "91814f96-149a-4533-abec-1e2238bfa70f"
   },
@@ -3351,30 +3354,38 @@
     "_id": "c5V1EV8IpMtrIvY1OE9t2u"
   },
   {
+    "__type__": "cc.PrefabInfo",
+    "root": null,
+    "asset": null,
+    "fileId": "91814f96-149a-4533-abec-1e2238bfa70f",
+    "instance": null,
+    "targetOverrides": null
+  },
+  {
     "__type__": "cc.SceneGlobals",
     "ambient": {
-      "__id__": 97
-    },
-    "shadows": {
       "__id__": 98
     },
-    "_skybox": {
+    "shadows": {
       "__id__": 99
     },
-    "fog": {
+    "_skybox": {
       "__id__": 100
     },
-    "octree": {
+    "fog": {
       "__id__": 101
     },
-    "skin": {
+    "octree": {
       "__id__": 102
     },
-    "lightProbeInfo": {
+    "skin": {
       "__id__": 103
     },
-    "postSettings": {
+    "lightProbeInfo": {
       "__id__": 104
+    },
+    "postSettings": {
+      "__id__": 105
     },
     "bakedWithStationaryMainLight": false,
     "bakedWithHighpLightmap": false
