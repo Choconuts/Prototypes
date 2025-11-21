@@ -9,7 +9,7 @@ import { RectView } from '../toolkits/RectView';
 import { Hover } from '../common-modal/Hover';
 import { BlockView } from './BlockView';
 import { UnitView } from './UnitView';
-import { AnimalUnit } from './AnimalUnit';
+import { Unit } from './Unit';
 const { ccclass, property } = _decorator;
 
 export class BlockPattern {
@@ -61,7 +61,7 @@ export class GameMap extends Component {
     }
 
     createSelectHover(slot: SlotView) {
-        const visual = createWidgetChild(slot, 'visual', {expandPadding: 0});
+        const visual = createWidgetChild(slot, 'visual', { expandPadding: 0 });
         const graphics = visual.addComponent(Graphics);
         const color = Color.fromHEX(new Color, '#88FF88');
         graphics.fillColor = new Color(color.r, color.g, color.b, this.visualOpacity * 255);
@@ -72,7 +72,7 @@ export class GameMap extends Component {
 
     initBlock(coord: Vec2, blockType: string) {
         if (blockType == 'boat') {
-            const boat = this.generateUnit(coord, this.boatKey, false);
+            const boat = this.generateUnit(coord, this.boatKey, false, false);
         }
         else {
             this.generateBlock(coord, blockType);
@@ -93,7 +93,7 @@ export class GameMap extends Component {
     }
 
     coordToSlot(coord: Vec2): SlotView {
-        if(this.gridView.validCoord(coord)) {
+        if (this.gridView.validCoord(coord)) {
             return this.gridView.slots[this.gridView.coordToIndex(coord)];
         }
         return null;
@@ -136,7 +136,7 @@ export class GameMap extends Component {
             const blockType = this.getBlockType(coord);
             const neighborCoords = this.gridView.getNeighborCoords(coord, true);
             if (this.matchBlock(blockType, pattern.target)) {
-                for(let i = 0; i < 4; i++) {
+                for (let i = 0; i < 4; i++) {
                     if (this.matchRotation(i * 2, pattern.neighbors, neighborCoords)) return true;
                 }
             }
@@ -217,7 +217,7 @@ export class GameMap extends Component {
         node.position = relative;
     }
 
-    generateUnit(coord: Vec2, unitKey: string, isAnimal: boolean): UnitView {
+    generateUnit(coord: Vec2, unitKey: string, isAnimal: boolean, isBuilding: boolean): UnitView {
         if (!this.gridView.validCoord(coord)) return;
         const slot = this.gridView.slots[this.gridView.coordToIndex(coord)]
         const node = Factory.instance.get(unitKey);
@@ -227,7 +227,17 @@ export class GameMap extends Component {
             this.lock.complete();
             return null;
         }
-        this.putOnMap(node, slot.node.worldPosition);
+
+        const initPosition = slot.node.worldPosition.clone();
+
+        if (isAnimal) {
+            initPosition.add3f(0, -20, 0);
+        }
+        else if (isBuilding) {
+            initPosition.add3f(0, 20, 0);
+        }
+
+        this.putOnMap(node, initPosition);
         this.units.push(unit);
 
         if (isAnimal) {
@@ -237,11 +247,11 @@ export class GameMap extends Component {
             this.enemyArray.push(unit);
         }
 
-        unit.spawn(unitKey, isAnimal);
+        unit.spawn(unitKey, isAnimal, isBuilding);
         return unit;
     }
 
-    async generateCreature(info: Info, unitKey: string, isAnimal: boolean): Promise<UnitView> {
+    async generateCreature(info: Info, unitKey: string, isAnimal: boolean, isBuilding: boolean = false): Promise<UnitView> {
         await this.lock.promise;
         this.lock = new Completer;
         let matchSlots = this.matchSlots(info);
@@ -251,14 +261,26 @@ export class GameMap extends Component {
                 return !this.hasAnimal(slot) && !this.hasEnemy(slot);
             });
         }
+        else if (isBuilding) {
+            matchSlots = matchSlots.filter((slot, index, array) => {
+                const enemies = this.getEnemies(slot);
+                if (!this.hasAnimal(slot) && enemies.length > 0) {
+                    for (const enemy of enemies) {
+                        if (enemy.isBuilding) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            });
+        }
 
         if (matchSlots.length > 0) {
             const index = randomRangeInt(0, matchSlots.length);
             const slot = matchSlots[index];
-            const unit = this.generateUnit(slot.coord, unitKey, isAnimal);
-            if (isAnimal) {
-                unit.getComponent(AnimalUnit)?.apply(info);
-            }
+            const unit = this.generateUnit(slot.coord, unitKey, isAnimal, isBuilding);
+            unit.getComponent(Unit)?.apply(info);
             this.lock.complete();
             return unit;
         }
@@ -344,11 +366,11 @@ export class GameMap extends Component {
 
         const startSlot = this.gridView.slots[0];
         const endSlot = this.gridView.slots[this.gridView.slots.length - 1];
-        
+
         const diff = worldPosition.clone().subtract(startSlot.node.worldPosition).toVec2();
         const totalDiff = endSlot.node.worldPosition.clone().subtract(startSlot.node.worldPosition).toVec2();
         const diffNorm = diff.divide(totalDiff).multiply(this.gridView.gridNum.clone().subtract2f(1, 1));
-        
+
         const idX = Math.round(diffNorm.x)
         const idY = Math.round(diffNorm.y);
         return v2(idX, idY);
@@ -379,6 +401,11 @@ export class GameMap extends Component {
         return result;
     }
 
+    getBuilding(slot: SlotView): Array<UnitView> {
+        const enemies = this.getEnemies(slot);
+        return enemies.filter((unit, index, array) => unit.isBuilding);
+    }
+
     findAnimalIndex(unit: UnitView) {
         for (const pair of this.animalMap) {
             if (pair[1] == unit) {
@@ -400,6 +427,11 @@ export class GameMap extends Component {
         }
         unit.node.removeFromParent();
         Factory.instance.put(unit.unitKey, unit.node);
+    }
+
+    getIncompleteBuilding(slot: SlotView) {
+        const buildings = this.getBuilding(slot);
+        return buildings.filter((unit, index, array) => !unit.isBuildingFinished);
     }
 }
 

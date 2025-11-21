@@ -14,29 +14,40 @@ export class PanelView extends Component {
 
     @property
     database: string = 'magic-card-data'
-    
+
+    @property
+    isBuilding: boolean = false
+
     baseInfo: Info
 
     protected onLoad(): void {
         GameManager.instance.gameReady.then(() => {
-                    this.baseInfo = Library.instance.get(this.database);
-                    this.setAnimalSlot(this.baseInfo.get('animal-type').get('lion'), 0);
-                    this.setAnimalSlot(this.baseInfo.get('animal-type').get('turtoise'), 1);
-                    this.setAnimalSlot(this.baseInfo.get('animal-type').get('fox'), 2);
-                    this.setAnimalSlot(this.baseInfo.get('animal-type').get('lizard'), 3);
-                });
+            this.baseInfo = Library.instance.get(this.database);
+
+            if (this.isBuilding) {
+                this.setAnimalSlot(this.baseInfo.get('building-type').get('village'), 0);
+                this.setAnimalSlot(this.baseInfo.get('building-type').get('factory'), 1);
+            }
+            else {
+                this.setAnimalSlot(this.baseInfo.get('animal-type').get('lion'), 0);
+                this.setAnimalSlot(this.baseInfo.get('animal-type').get('turtoise'), 1);
+                this.setAnimalSlot(this.baseInfo.get('animal-type').get('fox'), 2);
+                this.setAnimalSlot(this.baseInfo.get('animal-type').get('lizard'), 3);
+            }
+
+        });
     }
 
     setAnimalSlot(info: Info, slotIndex: number): boolean {
         const slots = this.getComponent(GridView)?.slots;
-        
+
         if (slots == null || slots.length <= slotIndex || slotIndex < 0) {
             return false;
         }
 
         const slot = slots[slotIndex];
         const config = Factory.instance.get(this.configKey);
-        
+
         if (config == null) {
             return false;
         }

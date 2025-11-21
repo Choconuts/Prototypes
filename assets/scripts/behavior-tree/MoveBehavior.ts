@@ -1,4 +1,4 @@
-import { _decorator, Component, Enum, Node, randomRangeInt, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
+import { _decorator, clamp, Component, Enum, Node, random, randomRangeInt, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
 import { Behavior, ChoiceStrategy } from './Behavior';
 import { GameMap } from '../island-defense/GameMap';
 import { Completer, Info } from '../toolkits/Functions';
@@ -21,6 +21,12 @@ export class MoveBehavior extends Behavior {
 
     matchCache: SlotView = null
 
+    @property
+    randomOffset: Vec3 = v3(0, 0, 0)
+
+    @property
+    randomRange: number = 20
+
     completer: Completer<void> = new Completer
 
     protected start(): void {
@@ -38,6 +44,7 @@ export class MoveBehavior extends Behavior {
         this.completer = new Completer;
         this.matchCache = null;
         this.exclude = new Set;
+        this.randomize();
     }
 
     getMatch(): Array<SlotView> {
@@ -82,6 +89,16 @@ export class MoveBehavior extends Behavior {
         return matches[randomRangeInt(0, matches.length)];
     }
 
+    randomize() {
+        const v = this.randomOffset.add(v3(random() * 2 - 1, random() * 2 - 1, 0).multiplyScalar(this.randomRange * 0.5));
+        const a = this.randomRange;
+        this.randomOffset = v3(clamp(v.x, -a, a), clamp(v.y, -a, a), 0);
+    }
+
+    getTargetPosition(slot: SlotView): Vec3 {
+        return slot.node.worldPosition.clone().add(this.randomOffset);
+    }
+
     enterCondition(): boolean {
         if (this.matchCache == null) {
             this.matchCache = this.chooseMatch();
@@ -93,7 +110,7 @@ export class MoveBehavior extends Behavior {
         if (this.unit == null) return;
         const slot = this.matchCache == null ? this.chooseMatch() : this.matchCache;
         if (slot != null) {
-            this.march(slot.node.worldPosition, deltaTime);
+            this.march(this.getTargetPosition(slot), deltaTime);
         }
     }
 }

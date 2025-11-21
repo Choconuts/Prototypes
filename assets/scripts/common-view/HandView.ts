@@ -241,6 +241,7 @@ export class HandView extends Component {
             const tweener = new Tween(pos);
             tweener.to(duration, pos, {
                 onUpdate(target, ratio) {
+                    if (transform == null || widget == null) return;
                     if (reversed) {
                         transform.setContentSize(expand + (defaultContentX - expand) * ratio / 1.0, defaultContentY);
                     }

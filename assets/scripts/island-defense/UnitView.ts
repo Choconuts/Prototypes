@@ -1,8 +1,8 @@
-import { _decorator, clamp, Component, Node, settings, Sorting2D, UITransform, v3 } from 'cc';
+import { _decorator, clamp, Color, Component, Graphics, Node, settings, Sorting2D, UITransform, v3 } from 'cc';
 import { Behavior } from '../behavior-tree/Behavior';
 import { GameMap } from './GameMap';
 import { ProgressView } from '../common-view/ProgressView';
-import { getOrAddComponent } from '../toolkits/Functions';
+import { getOrAddComponent, Info } from '../toolkits/Functions';
 const { ccclass, property } = _decorator;
 
 const sortingLayers = settings.querySettings("engine", "sortingLayers");
@@ -31,6 +31,14 @@ export class UnitView extends Component {
 
     @property
     isAnimal: boolean = false
+    @property
+    isBuilding: boolean = false
+
+    @property
+    buildingInitHealth: number = 10
+
+    @property
+    isBuildingFinished: boolean = false
 
     @property([Sorting2D])
     sortingLayers: Array<Sorting2D>
@@ -82,35 +90,53 @@ export class UnitView extends Component {
     dealDamage(damage: number) {
         this.health -= damage;
         this.health = clamp(this.health, 0, this.maxHealth);
+        this.healthDisplay();
+        if (this.health == 0) {
+            this.dead();
+        }
+    }
 
+    healthDisplay() {
         const healthBar = this.getComponentInChildren(ProgressView);
         if (healthBar != null) {
             healthBar.value = this.health / this.maxHealth;
 
-            if (this.health >= this.maxHealth || this.health <= 0) {
-                healthBar.node.active = false;
+            if (this.isBuilding) {
+                if (this.health >= this.maxHealth) {
+                    this.isBuildingFinished = true;
+                }
+
+                if (this.isBuildingFinished) {
+                    healthBar.setColor(Color.GREEN);
+                }
+                else {
+                    healthBar.setColor(Color.GRAY);
+                }
             }
             else {
-                healthBar.node.active = true;
+                if (this.health >= this.maxHealth || this.health <= 0) {
+                    healthBar.node.active = false;
+                }
+                else {
+                    healthBar.node.active = true;
+                }
             }
         }
-
-        if (this.health == 0) {
-            this.dead();
-        }
-
-
     }
 
     dead() {
         GameMap.instance.removeUnit(this);
     }
 
-    spawn(unitKey: string, isAnimal: boolean) {
+    spawn(unitKey: string, isAnimal: boolean, isBuilding: boolean) {
         this.health = this.maxHealth;
         this.unitKey = unitKey;
         this.isAnimal = isAnimal;
-        this.dealDamage(0);
+        this.isBuilding = isBuilding;
+
+        if (this.isBuilding) {
+            this.health = this.buildingInitHealth;
+        }
     }
 }
 

@@ -16,9 +16,6 @@ export class DeriveBehavior extends Behavior {
     @property
     maxNum: number = -1
 
-    @property(UnitView)
-    unit: UnitView = null
-
     delay = 0
 
     completer: Completer<void> = new Completer
@@ -27,10 +24,17 @@ export class DeriveBehavior extends Behavior {
         return this.deriveMode;
     }
 
+    setInterval(interval: number) {
+        if (interval > 0) {
+            this.interval = interval;
+            this.deriveMode = true;
+        }
+    }
+
     derive() {
         if (this.maxNum != 0) {
             const coord = GameMap.instance.worldPositionToCoord(this.unit.node.worldPosition);
-            const derived = GameMap.instance.generateUnit(coord, this.deriveKey, false);
+            const derived = GameMap.instance.generateUnit(coord, this.deriveKey, false, false);
             this.completer.complete();
             derived.orient = this.unit.orient;
 

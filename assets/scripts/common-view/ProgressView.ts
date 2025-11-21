@@ -49,6 +49,12 @@ export class ProgressView extends Component {
         rect.xMax = this.progress.rect.xMin + newValue * this.maxRectLength;
         tween(this.progress).to(this.duration, {rect: rect}, {onUpdate: () => this.progress.draw()}).start();
     }
+
+    setColor(color: Color) {
+        const graphics = this.progress.getComponent(Graphics);
+        graphics.fillColor = color;
+        this.progress.draw();
+    }
 }
 
 

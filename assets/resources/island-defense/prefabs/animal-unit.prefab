@@ -737,9 +737,11 @@
     },
     "maxHealth": 10,
     "attack": 3,
+    "purify": 0,
     "health": 10,
     "unitKey": "",
     "isAnimal": false,
+    "isBuilding": false,
     "_id": ""
   },
   {

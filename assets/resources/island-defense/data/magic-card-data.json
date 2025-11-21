@@ -34,6 +34,13 @@
             "desc-row1": "制造一片",
             "desc-row2": "岩地",
             "block-type": "rock"
+        },
+        "any": {
+            "card-name": "地形：任意",
+            "card-color": "#9999AA",
+            "desc-row1": "制造一片",
+            "desc-row2": "随即地形",
+            "block-type": "any"
         }
     },
     "animal-type": {
@@ -154,7 +161,7 @@
             "desc-row2": "魔力：低",
             "region-display": [
                 null,   "rock",   null,   null,   "sand",
-                "sand",   null,   "or",   null,   null,
+                "sand",   null,   "  or",   null,   null,
                 null,   null,   null,   null,   "rock"
             ],
             "region-targets": [4, 5],
@@ -208,6 +215,12 @@
             "card-color": "@block-type@grass@card-color",
             "desc-row1": "造成15伤害",
             "desc-row2": "（建筑优先）"
+        },
+        "mudslide": {
+            "card-name": "泥石流",
+            "card-color": "@block-type@rock@card-color",
+            "desc-row1": "造成5伤害",
+            "desc-row2": "（全体）"
         }
     },
     "card-pool": [
@@ -247,5 +260,97 @@
                 "type": "boat"
             }
         ]
+    },
+    "building-type": {
+        "factory": {
+            "card-name": "工坊",
+            "card-color": "#DDCC77",
+            "desc-row1": "提升探索",
+            "desc-row2": "者的属性",
+            "region-display": [
+                null,   "any",   null,   null,   null,
+                "wood",   null,   "or",   null,   "any",
+                null,  null,   null,   "rock",   null
+            ],
+            "region-targets": [1, 9],
+            "region": [
+                {
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "any"
+                        },
+                        {
+                            "offset": [1, 0],
+                            "type": "rock"
+                        }
+                    ]
+                },
+                {
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "any"
+                        },
+                        {
+                            "offset": [1, 0],
+                            "type": "wood"
+                        }
+                    ]
+                }
+            ],
+            "attributes": {
+                "cost": 10,
+                "purify": 3,
+                "health": 30,
+                "attack": 0,
+                "derive-interval": -1
+            }
+        },
+        "village": {
+            "card-name": "村庄",
+            "card-color": "#DDCC77",
+            "desc-row1": "产生更多",
+            "desc-row2": "的探索者",
+            "region-display": [
+                null,   "any",   null,   null,   null,
+                "wetland",   null,   "or",   null,   "any",
+                null,  null,   null,   "grass",   null
+            ],
+            "region-targets": [1, 9],
+            "region": [
+                {
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "any"
+                        },
+                        {
+                            "offset": [1, 0],
+                            "type": "wetland"
+                        }
+                    ]
+                },
+                {
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "any"
+                        },
+                        {
+                            "offset": [1, 0],
+                            "type": "grass"
+                        }
+                    ]
+                }
+            ],
+            "attributes": {
+                "cost": 10,
+                "purify": 3,
+                "health": 30,
+                "attack": 0,
+                "derive-interval": 10
+            }
+        }
     }
 }

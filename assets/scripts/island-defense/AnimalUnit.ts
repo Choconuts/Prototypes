@@ -1,10 +1,11 @@
 import { _decorator, Component, Node } from 'cc';
 import { Info } from '../toolkits/Functions';
 import { UnitView } from './UnitView';
+import { Unit } from './Unit';
 const { ccclass, property } = _decorator;
 
 @ccclass('AnimalUnit')
-export class AnimalUnit extends Component {
+export class AnimalUnit extends Unit {
     start() {
 
     }
@@ -19,6 +20,8 @@ export class AnimalUnit extends Component {
         unit.health = unit.maxHealth;
         unit.attack = info.get('attributes').get('attack').data;
         unit.purify = info.get('attributes').get('purify').data;
+
+        unit.dealDamage(0);
     }
 }
 

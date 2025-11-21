@@ -1,13 +1,16 @@
 import { _decorator, Component, Node } from 'cc';
 import { MoveBehavior } from '../behavior-tree/MoveBehavior';
 import { Completer } from '../toolkits/Functions';
+import { UnitView } from './UnitView';
+import { Unit } from './Unit';
 const { ccclass, property } = _decorator;
 
 @ccclass('EnemyUnit')
-export class EnemyUnit extends Component {
+export class EnemyUnit extends Unit {
     onEnable() {
         const move = this.getComponentInChildren(MoveBehavior);
         this.restartMove(move);
+        this.getComponent(UnitView).dealDamage(0);
     }
 
     restartMove(move: MoveBehavior) {

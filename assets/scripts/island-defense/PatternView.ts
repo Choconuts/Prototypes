@@ -36,13 +36,10 @@ export class PatternView extends Component {
     box(info: Info, index: number, tag: string, target: boolean = false) {
         const slotNode = this.gridView.slots[index];
 
-        if (tag == 'any') {
-
-        }
-        else if (tag == 'or') {
+        if (tag == 'or' || tag == ' or' || tag == '  or') {
             const widget = createWidgetChild(slotNode, 'target', {centerOffset: v2(0, 0)});
             const label = widget.addComponent(Label);
-            label.string = '  or';
+            label.string = tag;
             label.color = Color.BLACK;
             label.fontSize = 24;
             label.isBold = true;
