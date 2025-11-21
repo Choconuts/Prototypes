@@ -1,8 +1,14 @@
-import { _decorator, clamp, Component, Node, v3 } from 'cc';
+import { _decorator, clamp, Component, Node, settings, Sorting2D, UITransform, v3 } from 'cc';
 import { Behavior } from '../behavior-tree/Behavior';
 import { GameMap } from './GameMap';
 import { ProgressView } from '../common-view/ProgressView';
+import { getOrAddComponent } from '../toolkits/Functions';
 const { ccclass, property } = _decorator;
+
+const sortingLayers = settings.querySettings("engine", "sortingLayers");
+const default_layer = sortingLayers[0].value;
+const map_layer = sortingLayers[1].value;
+const unit_layer = sortingLayers[2].value;
 
 @ccclass('UnitView')
 export class UnitView extends Component {
@@ -25,13 +31,39 @@ export class UnitView extends Component {
     @property
     isAnimal: boolean = false
 
+    @property([Sorting2D])
+    sortingLayers: Array<Sorting2D>
+
     protected onLoad(): void {
         if (this.behavior == null) {
             this.behavior = this.getComponentInChildren(Behavior);
         }
     }
 
+    protected start(): void {
+        this.addSortingLayer();
+    }
+
+    addSortingLayer() {
+        const transforms = this.getComponentsInChildren(UITransform);
+        const layers = transforms.map((transform, index, array) => {
+            const layer = getOrAddComponent(transform, Sorting2D);
+            layer.sortingOrder = -this.node.worldPosition.y;
+            layer.sortingLayer = unit_layer;
+            return layer;
+        });
+        this.sortingLayers = layers;
+    }
+
+    updateSortingLayer() {
+        this.sortingLayers.forEach((layer, index, array) => {
+            layer.sortingOrder = -this.node.worldPosition.y;
+            layer.sortingLayer = unit_layer;
+        });
+    }
+
     protected update(dt: number): void {
+        this.updateSortingLayer();
         this.behavior?.program(dt);
     }
 
