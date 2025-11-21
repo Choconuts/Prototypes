@@ -55,8 +55,8 @@ export class DefaultDragCard extends Component {
     }
 
     nextUpdateEvent(info?: Info) {
-        this.updateDrag(info);
-        this.getComponent(Proxy).wait(Proxy.Event.UPDATE).then((info) => this.nextUpdateEvent(info));
+        this?.updateDrag(info);
+        this?.getComponent(Proxy).wait(Proxy.Event.UPDATE).then((info) => this?.nextUpdateEvent(info));
     }
 
     protected onDisable(): void {
@@ -70,7 +70,9 @@ export class DefaultDragCard extends Component {
     wrapPositionByWorldPosition(worldPosition: Vec3): Vec3 {
         const transform = this.getCanvas().getComponent(UITransform);
         const relative = transform.convertToNodeSpaceAR(v3(worldPosition.x, worldPosition.y, 0));
-        return relative.add(this.getOffset());
+        const offset = this.getOffset();
+        if (offset == null) return null;
+        return relative.add(offset);
     }
 
     wrapCardNode(): Node {
@@ -103,11 +105,13 @@ export class DefaultDragCard extends Component {
     }
 
     getCardSize(): Vec2 {
+        if (this.card == null) return null;
         const cardTransform = this.card.getComponent(UITransform);
         return v2(cardTransform.contentSize.x * this.card.node.scale.x, cardTransform.contentSize.y * this.card.node.scale.y);
     }
 
     getOffset(): Vec3 {
+        if (this.card == null) return null;
         const cardTransform = this.card.getComponent(UITransform);
         const anchorX = cardTransform.anchorPoint.x;
         const anchorY = cardTransform.anchorPoint.y;

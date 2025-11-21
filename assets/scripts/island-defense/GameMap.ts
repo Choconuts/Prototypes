@@ -365,7 +365,6 @@ export class GameMap extends Component {
     }
 
     getEnemies(slot: SlotView): Array<UnitView> {
-        console.log(this.enemyArray.length);
         const result = this.enemyArray.filter((enemy, index, array) => {
             return this.worldPositionToCoord(enemy.node.worldPosition).equals(slot.coord);
         });

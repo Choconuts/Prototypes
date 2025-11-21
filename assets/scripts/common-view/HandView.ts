@@ -1,4 +1,4 @@
-import { _decorator, Component, Layout, Node, Size, tween, UITransform, v2, v3, Vec2, Widget } from 'cc';
+import { _decorator, Component, Layout, Node, Size, Tween, tween, UITransform, v2, v3, Vec2, Widget } from 'cc';
 import { SlotView } from './SlotView';
 import { Completer, getOrAddComponent } from '../toolkits/Functions';
 import { Hover } from '../common-modal/Hover';
@@ -39,7 +39,7 @@ export class HandView extends Component {
         this.createLayout();
     }
 
-    makeAlign(target: Component | Node, ): Widget {
+    makeAlign(target: Component | Node,): Widget {
         const widget = getOrAddComponent(target, Widget);
         widget.isAlignTop = false;
         widget.isAlignBottom = false;
@@ -55,7 +55,7 @@ export class HandView extends Component {
         const transform = this.getComponent(UITransform);
         transform.setContentSize(this.cardSize);
         transform.setAnchorPoint(0, 0);
-        
+
         const layout = getOrAddComponent(this, Layout);
         layout.type = Layout.Type.HORIZONTAL;
         layout.resizeMode = Layout.ResizeMode.CONTAINER;
@@ -87,7 +87,7 @@ export class HandView extends Component {
 
         if (this.hoverBehavior.length > 0) {
             const hover = slot.addComponent(Hover);
-            hover.proxyKey =  this.hoverBehavior;
+            hover.proxyKey = this.hoverBehavior;
         }
 
         if (this.dragBehaviour.length > 0) {
@@ -107,7 +107,7 @@ export class HandView extends Component {
     updateLayout() {
         this.updateSlotIndices();
         const newX = -(this.cardSize.x - this.foldSize) * this.slots.length / 2;
-        tween(this.node).to(this.animaitonDuration, {position: v3(newX, 0, 0)}).start();
+        tween(this.node).to(this.animaitonDuration, { position: v3(newX, 0, 0) }).start();
         this.getComponent(Layout).updateLayout(true);
     }
 
@@ -155,7 +155,6 @@ export class HandView extends Component {
             this.lock.complete();
             return false;
         }
-
         const slot = this.slots[index];
         this.slots = this.slots.filter((slot, i, arr) => i != index);
 
@@ -237,35 +236,64 @@ export class HandView extends Component {
         const liftBySlot = this.liftBySlot;
         const completer = new Completer<void>;
 
-        tween(cardNode)
-            .delay(delay)
-            .to(duration, 
-                {position:newPosition}, 
-                {
-                    onUpdate(target, ratio) {
+        if (this.liftBySlot) {
+            const pos = v3(0, 0, 0);
+            const tweener = new Tween(pos);
+            tweener.to(duration, pos, {
+                onUpdate(target, ratio) {
+                    if (reversed) {
+                        transform.setContentSize(expand + (defaultContentX - expand) * ratio / 1.0, defaultContentY);
+                    }
+                    else {
+                        transform.setContentSize(defaultContentX + (expand - defaultContentX) * ratio / 1.0, defaultContentY);
+                    }
+
+                    if (liftBySlot) {
                         if (reversed) {
-                            transform.setContentSize(expand + (defaultContentX - expand) * ratio / 1.0, defaultContentY);
+                            widget.bottom = lift + (0 - lift) * ratio / 1.0;
                         }
                         else {
-                            transform.setContentSize(defaultContentX + (expand - defaultContentX) * ratio / 1.0, defaultContentY);
+                            widget.bottom = 0 + (lift - 0) * ratio / 1.0;
                         }
-
-                        if (liftBySlot) {
+                    }
+                },
+                easing: "quadOut",
+                onComplete: (target) => {
+                    completer.complete();
+                }
+            });
+            tweener.start();
+        }
+        else {
+            tween(cardNode)
+                .delay(delay)
+                .to(duration,
+                    { position: newPosition },
+                    {
+                        onUpdate(target, ratio) {
                             if (reversed) {
-                                widget.bottom = lift + (0 - lift) * ratio / 1.0;
+                                transform.setContentSize(expand + (defaultContentX - expand) * ratio / 1.0, defaultContentY);
                             }
                             else {
-                                widget.bottom = 0 + (lift - 0) * ratio / 1.0;
+                                transform.setContentSize(defaultContentX + (expand - defaultContentX) * ratio / 1.0, defaultContentY);
                             }
-                        }
-                    }, 
-                    easing: "quadOut", 
-                    onComplete: (target) => {
-                        completer.complete();
+
+                            if (liftBySlot) {
+                                if (reversed) {
+                                    widget.bottom = lift + (0 - lift) * ratio / 1.0;
+                                }
+                                else {
+                                    widget.bottom = 0 + (lift - 0) * ratio / 1.0;
+                                }
+                            }
+                        },
+                        easing: "quadOut",
+                        onComplete: (target) => {
+                            completer.complete();
+                        },
                     }
-                }
-            ).start();
-        
+                ).start();
+        }
         return completer.promise;
     }
 }
