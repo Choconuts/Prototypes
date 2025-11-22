@@ -92,6 +92,10 @@ export class MagicCardView extends Component {
     getType() {
         return this.cardInfo()?.get('card-type').data;
     }
+
+    getKey() {
+        return 'animal-unit';
+    }
 }
 
 

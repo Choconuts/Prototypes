@@ -230,6 +230,10 @@ export class Deck extends Component {
 
         return cards;
     }
+
+    getHandSlots() {
+        return this.handView.slots.sort((a, b) => a.node.worldPosition.x - b.node.worldPosition.x);
+    }
 }
 
 

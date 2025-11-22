@@ -195,6 +195,7 @@
     "mode": "interaction-idle",
     "generateBlock": null,
     "previewKey": "block-preview-remake",
+    "visuals": [],
     "_id": "23xgNjubpMyKT1XAx/Bnbd"
   },
   {
@@ -2805,7 +2806,7 @@
     },
     "component": "",
     "_componentId": "5f27fFgI8JDv7p6tdWCVpLc",
-    "handler": "nextTurn",
+    "handler": "nextTurnAuto",
     "customEventData": ""
   },
   {

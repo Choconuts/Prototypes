@@ -1,4 +1,4 @@
-import { _decorator, assert, Component, Enum, Node } from 'cc';
+import { _decorator, assert, Component, Enum, Node, tween } from 'cc';
 import { SlotView } from '../../common-view/SlotView';
 import { BlockView } from '../BlockView';
 import { GameMap } from '../GameMap';
@@ -99,12 +99,12 @@ export class InteractionManager extends Component {
         this.generateBlock = null;
     }
 
-    async startPlayCard(slot: SlotView) {
+    async startPlayCard(slot: SlotView, autoCast: boolean = false) {
         const card = slot.getComponentInChildren(MagicCardView);
         if (!card.needTarget()) {
             if (card.gainSpirit() != null) {
                 Deck.instance.gainSpirit(card.gainSpirit());
-                Deck.instance.discard(slot);
+                await Deck.instance.discard(slot);
             }
 
         }
@@ -131,6 +131,14 @@ export class InteractionManager extends Component {
             visual.active = false;
         }
         this.visuals = [];
+        if (commit) {
+            const card = this.generateBlock.getComponentInChildren(MagicCardView);
+            const unit = GameMap.instance.generateCreature(card.cardInfo(), card.getKey(), card.getType() == 'animal', card.getType() == 'building');
+
+            if (unit == null) {
+                commit = false;
+            }
+        }
         Deck.instance.finishChooseCards(commit);
         this.mode = InteractionMode.IDLE;
         this.generateBlock = null;
@@ -172,6 +180,22 @@ export class InteractionManager extends Component {
 
     async nextTurn() {
         if (this.mode == InteractionMode.IDLE) {
+            await Deck.instance.refreshHand();
+        }
+    }
+
+    async nextTurnAuto() {
+        if (this.mode == InteractionMode.IDLE) {
+            for (const slot of Deck.instance.getHandSlots()) {
+                await this.startPlayCard(slot, true);
+            }
+
+            const completer = new Completer<void>;
+            setTimeout(() => {
+                completer.complete();
+            }, 300);
+
+            await completer.promise;
             await Deck.instance.refreshHand();
         }
     }

@@ -193,6 +193,13 @@ export class HandView extends Component {
         this.slots.forEach((slot, index, array) => {
             slot.coord.x = index;
         });
+
+        // this.node.children.forEach((child, index, array) => {
+        //     const slot = child.getComponent(SlotView);
+        //     slot.coord.x = index;
+        // });
+
+        // this.slots = this.slots.sort((a, b) => a.coord.x - b.coord.x);
     }
 
     async activeSlot(slotView: SlotView): Promise<void> {
