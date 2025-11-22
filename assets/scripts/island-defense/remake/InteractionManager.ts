@@ -5,6 +5,7 @@ import { GameMap } from '../GameMap';
 import { DeepSea } from './DeepSea';
 import { Deck } from './Deck';
 import { Factory } from '../../proxy-manager/Factory';
+import { MagicCardView } from '../MagicCardView';
 const { ccclass, property } = _decorator;
 
 
@@ -31,7 +32,7 @@ export class InteractionManager extends Component {
         InteractionManager.instance = this;
     }
 
-    canCreateBlock(slot: SlotView): boolean {
+    async canCreateBlock(slot: SlotView): Promise<boolean> {
         if (InteractionManager.instance.mode != InteractionMode.IDLE) {
             return false;
         }
@@ -41,22 +42,22 @@ export class InteractionManager extends Component {
         }
         const deepSea = slot.getComponentInChildren(DeepSea);
         const num = deepSea.depth + 1;
-        const slots = Deck.instance.getFirstCardsSlots(num);
+        const slots = await Deck.instance.getFirstCardsSlots(num);
         return slots.length > 0;
     }
 
-    startGenerateBlock(slot: SlotView): boolean {
+    async startGenerateBlock(slot: SlotView): Promise<boolean> {
         assert(InteractionManager.instance.mode == InteractionMode.IDLE);
 
         const canPlaceBlock = slot != null && !GameMap.instance.isBlock(slot) && !GameMap.instance.hasEnemy(slot);
         const deepSea = slot.getComponentInChildren(DeepSea);
         const num = deepSea.depth + 1;
-        const slots = Deck.instance.getFirstCardsSlots(num);
+        const slots = await Deck.instance.getFirstCardsSlots(num);
 
         if (canPlaceBlock && slots.length > 0) {
             InteractionManager.instance.mode = InteractionMode.PLACE_BLOCK;
             InteractionManager.instance.generateBlock = slot;
-            Deck.instance.chooseCards(slots);
+            await Deck.instance.chooseCards(slots);
         }
         else {
             return false;
@@ -77,16 +78,26 @@ export class InteractionManager extends Component {
         this.preview?.changeBlock(Deck.instance.chosenBlock);
     }
 
-    endGenerateBlock(commit: boolean) {
+    async endGenerateBlock(commit: boolean) {
         this.preview?.node.destroy();
         this.preview = null;
         const success = commit && Deck.instance.chosenBlock != null;
         if (success) {
             GameMap.instance.generateBlock(this.generateBlock.coord, Deck.instance.chosenBlock);
         }
-        Deck.instance.finishChooseCards(success);
+        await Deck.instance.finishChooseCards(success);
         InteractionManager.instance.mode = InteractionMode.IDLE;
         InteractionManager.instance.generateBlock = null;
+    }
+
+    startPlayCard(slot: SlotView) {
+        const card = slot.getComponentInChildren(MagicCardView);
+        if (!card.needTarget()) {
+            if (card.gainSpirit() != null) {
+                Deck.instance.gainSpirit(card.gainSpirit());
+                Deck.instance.discard(slot);
+            }
+        }
     }
 }
 

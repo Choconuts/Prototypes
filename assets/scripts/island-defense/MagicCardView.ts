@@ -44,10 +44,10 @@ export class MagicCardView extends Component {
 
     apply(info: Info) {
         this.info = info;
-        const cardInfo = this.frontFace ? this.info?.get('magic') : this.info?.get('block');
+        const cardInfo = this.cardInfo();
         this.getComponent(CardView).apply(cardInfo);
 
-        if (this.pattern != null) {
+        if (this.pattern != null && this.frontFace) {
             this.pattern.apply(cardInfo);
         }
     }
@@ -61,9 +61,27 @@ export class MagicCardView extends Component {
         return randomRangeInt(0, typeNum).toString();
     }
 
+    cardInfo() {
+        return this.frontFace ? this.info?.get('magic') : this.info?.get('block');
+    }
+
     cardName() {
-        const cardInfo = this.frontFace ? this.info?.get('magic') : this.info?.get('block');
-        return cardInfo?.get('card-name');
+        return this.cardInfo()?.get('card-name');
+    }
+
+    flip(frontFace: boolean) {
+        this.frontFace = frontFace;
+        this.apply(this.info);
+    }
+
+    needTarget() {
+        const strategy = this.cardInfo()?.get('attributes')?.get('strategy');
+        return strategy == null || strategy.data != 'no-target';
+    }
+
+    gainSpirit() {
+        const spirit = this.cardInfo()?.get('attributes')?.get('spirit');
+        return spirit?.data;
     }
 }
 

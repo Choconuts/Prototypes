@@ -28,6 +28,10 @@ export class Hover extends Component {
         return proxy;
     }
 
+    protected onDisable(): void {
+        this.proxy?.close();
+    }
+
     hoverStart() {
         if (this.proxy === null) {
             this.createProxy();

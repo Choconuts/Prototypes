@@ -2,7 +2,7 @@
     "block-type": {
         "grass": {
             "card-type": "block",
-            "card-name": "地形：草原",
+            "card-name": "草原",
             "card-color": "#99BB77",
             "desc-row1": "制造一片",
             "desc-row2": "草地",
@@ -10,7 +10,7 @@
         },
         "wetland": {
             "card-type": "block",
-            "card-name": "地形：水域",
+            "card-name": "水域",
             "card-color": "#5599BB",
             "desc-row1": "制造一片",
             "desc-row2": "湿地",
@@ -18,7 +18,7 @@
         },
         "sand": {
             "card-type": "block",
-            "card-name": "地形：沙漠",
+            "card-name": "沙漠",
             "card-color": "#DDCC99",
             "desc-row1": "制造一片",
             "desc-row2": "沙地",
@@ -26,7 +26,7 @@
         },
         "wood": {
             "card-type": "block",
-            "card-name": "地形：森林",
+            "card-name": "森林",
             "card-color": "#AA6633",
             "desc-row1": "制造一片",
             "desc-row2": "林地",
@@ -34,7 +34,7 @@
         },
         "rock": {
             "card-type": "block",
-            "card-name": "地形：山脉",
+            "card-name": "山脉",
             "card-color": "#667788",
             "desc-row1": "制造一片",
             "desc-row2": "岩地",
@@ -42,7 +42,7 @@
         },
         "any": {
             "card-type": "block",
-            "card-name": "地形：任意",
+            "card-name": "任意",
             "card-color": "#9999AA",
             "desc-row1": "制造一片",
             "desc-row2": "随即地形",

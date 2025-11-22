@@ -36,12 +36,14 @@ export class HoverBlock extends Component {
             this.border.node.active = false;
         }
         else {
-            if (InteractionManager.instance.canCreateBlock(slot)) {
-                this.setLabelColor(Color.WHITE);
-            }
-            else {
-                this.setLabelColor(Color.RED);
-            }
+            InteractionManager.instance.canCreateBlock(slot).then((can) => {
+                if (can) {
+                    this.setLabelColor(Color.WHITE);
+                }
+                else {
+                    this.setLabelColor(Color.RED);
+                }
+            });
         }
     }
 

@@ -1,11 +1,12 @@
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, Label, Node, randomRangeInt } from 'cc';
 import { GameManager } from '../../proxy-manager/GameManager';
 import { Library } from '../../proxy-manager/Library';
-import { Info } from '../../toolkits/Functions';
+import { Completer, Info } from '../../toolkits/Functions';
 import { HandView } from '../../common-view/HandView';
 import { Factory } from '../../proxy-manager/Factory';
 import { MagicCardView } from '../MagicCardView';
 import { SlotView } from '../../common-view/SlotView';
+import { Click } from './Click';
 const { ccclass, property } = _decorator;
 
 @ccclass('Deck')
@@ -31,12 +32,21 @@ export class Deck extends Component {
     @property
     chosenBlock: string = null
 
+    @property
+    spirit = 20
+
+    @property(Label)
+    spiritLabel: Label
+
+    lock: Completer<void> = new Completer
+
     protected onLoad(): void {
         Deck.instance = this;
         GameManager.instance.gameReady.then(() => {
             this.baseInfo = Library.instance.get(this.database);
             this.initDeck();
             this.refreshHand();
+            this.lock.complete();
         });
     }
 
@@ -49,7 +59,9 @@ export class Deck extends Component {
         }
     }
 
-    chooseCards(slots: Array<SlotView>): Array<SlotView> {
+    async chooseCards(slots: Array<SlotView>): Promise<Array<SlotView>> {
+        await this.lock.promise;
+        this.lock = new Completer;
         for (const slot of slots) {
             if (!this.chosenCardMap.has(slot)) {
                 this.chosenCardMap.set(slot, false);
@@ -73,6 +85,11 @@ export class Deck extends Component {
         }
 
         this.handView.setCastMode(chosenSlots);
+
+        for (const slot of this.handView.slots) {
+            slot.getComponentInChildren(MagicCardView).flip(false);
+        }
+        this.lock.complete();
         return chosenSlots;
     }
 
@@ -86,21 +103,32 @@ export class Deck extends Component {
         return chosenSlots;
     }
 
-    finishChooseCards(success: boolean) {
+    async finishChooseCards(success: boolean) {
+        await this.lock.promise;
+        this.lock = new Completer;
         const slots = this.getChosenSlots();
         this.chosenBlock = null;
         this.chosenCardMap.clear();
         this.handView.setCastMode(null);
         if (success) {
-            slots.forEach((slot) => {
-                this.handView.updateSlotIndices();
-                this.handView.removeCard(slot.coord.x);
-            })
+            for (const slot of slots) {
+                await this.dropCard(slot);
+            }
         }
+
+        for (const slot of this.handView.slots) {
+            slot.getComponentInChildren(MagicCardView).flip(true);
+        }
+        this.lock.complete();
     }
 
-    getFirstCardsSlots(num: number): SlotView[] {
-        if (num <= 0) return [];
+    async getFirstCardsSlots(num: number): Promise<Array<SlotView>> {
+        if (num <= 0) {
+            return [];
+        }
+
+        await this.lock.promise;
+        this.lock = new Completer;
         const array = this.handView.slots;
         for (let index = 0; index < array.length; index++) {
             const slot = array[array.length - 1 - index];
@@ -115,18 +143,54 @@ export class Deck extends Component {
             }
 
             if (slots.length >= num) {
+                this.lock.complete();
                 return slots;
             }
         }
+        this.lock.complete();
         return [];
+    }
+
+    gainSpirit(n: number) {
+        this.spirit += n;
+        this.spiritLabel.string = '灵魂\n[' + this.spirit + ']'
+    }
+
+    async discard(slot: SlotView) {
+        await this.lock.promise;
+        this.lock = new Completer;
+        await this.dropCard(slot);
+        this.lock.complete();
+    }
+
+    async dropCard(slot: SlotView) {
+        const info = slot.getComponentInChildren(MagicCardView).info;
+        slot.getComponent(Click).destroy();
+        this.handView.updateSlotIndices();
+        await this.handView.removeCard(slot.coord.x, true);
+        this.discardInfos.push(info);
+    }
+
+    drawCard(): Info {
+        if (this.deckInfos.length == 0) {
+            this.deckInfos = this.discardInfos;
+            this.discardInfos = [];
+            if (this.deckInfos.length == 0) return null;
+        }
+        const info = this.deckInfos[randomRangeInt(0, this.deckInfos.length)];
+        this.deckInfos = this.deckInfos.filter((value) => value != info);
+        return info;
     }
 
     refreshHand() {
         let slot = null;
         for (let index = 0; index < this.handLimit - this.handView.numCards(); index++) {
-            const card = Factory.instance.get(this.cardKey);
-            slot = this.handView.insertCard(card, this.handView.numCards());
-            card.getComponent(MagicCardView).apply(this.deckInfos[index]);
+            const cardInfo = this.drawCard();
+            if (cardInfo != null) {
+                const card = Factory.instance.get(this.cardKey);
+                slot = this.handView.insertCard(card, this.handView.numCards());
+                card.getComponent(MagicCardView).apply(cardInfo);
+            }
         }
     }
 }

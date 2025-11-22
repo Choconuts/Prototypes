@@ -15,8 +15,8 @@ export class DefaultHoverCard extends Component {
 
     protected onDisable(): void {
         const slot = this.getHover().getComponent(SlotView);
-        const handview = slot.node.parent.getComponent(HandView);
-        handview.unfocusSlot(slot);
+        const handview = slot?.node?.parent?.getComponent(HandView);
+        handview?.unfocusSlot(slot);
     }
 
     public startHover() {
@@ -30,7 +30,7 @@ export class DefaultHoverCard extends Component {
     }
 
     getHover() {
-        return this.getComponent(Proxy).target.getComponent(Hover);
+        return this.getComponent(Proxy).target?.getComponent(Hover);
     }
 }
 

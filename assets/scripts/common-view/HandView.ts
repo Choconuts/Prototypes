@@ -162,7 +162,7 @@ export class HandView extends Component {
         return this.slots.length;
     }
 
-    public async removeCard(index: number): Promise<boolean> {
+    public async removeCard(index: number, waitAnimation: boolean = true): Promise<boolean> {
         await this.lock?.promise;
         this.lock = new Completer<void>;
 
@@ -174,10 +174,16 @@ export class HandView extends Component {
         this.slots = this.slots.filter((slot, i, arr) => i != index);
 
         this.dectiveSlot(slot).then(() => {
-            slot.node.destroy();
+            slot.node?.destroy();
+            if (waitAnimation) {
+                this.updateLayout();
+                this.lock.complete();
+            }
         });
-        this.updateLayout();
-        this.lock.complete();
+        if (!waitAnimation) {
+            this.updateLayout();
+            this.lock.complete();
+        }
         return true;
     }
 
@@ -201,7 +207,9 @@ export class HandView extends Component {
         if (this.animaitonDuration > 0) {
             const promise = this.slotAnimation(this.animaitonDuration, slotView, 0, 0, false, this.animaitonDelay);
             return promise.then(() => {
-                slotView.node.active = false;
+                if (slotView?.node != null) {
+                    slotView.node.active = false;
+                }
             });
         }
         else {
@@ -209,7 +217,8 @@ export class HandView extends Component {
         }
     }
 
-    focusSlot(slotView: SlotView) {
+    async focusSlot(slotView: SlotView) {
+        await this.lock?.promise;
         if (this.castMode != null) return;
         if (this.focus != null) {
             this.unfocusSlot(this.focus);
@@ -224,7 +233,8 @@ export class HandView extends Component {
         }
     }
 
-    unfocusSlot(slotView: SlotView) {
+    async unfocusSlot(slotView: SlotView) {
+        await this.lock?.promise;
         if (this.castMode != null) return;
         if (this.focus == slotView) {
             this.focus = null;
@@ -268,7 +278,7 @@ export class HandView extends Component {
             const tweener = new Tween(pos);
             tweener.to(duration, pos, {
                 onUpdate(target, ratio) {
-                    if (transform == null || widget == null) return;
+                    if (transform?.node == null || widget?.node == null) return;
                     if (reversed) {
                         transform.setContentSize(expand + (defaultContentX - expand) * ratio / 1.0, defaultContentY);
                     }

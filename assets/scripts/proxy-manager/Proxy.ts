@@ -44,7 +44,7 @@ export class Proxy extends Component {
     }
 
     close(): Proxy {
-        this.node.destroy()
+        this.node?.destroy()
         return null;
     }
 }

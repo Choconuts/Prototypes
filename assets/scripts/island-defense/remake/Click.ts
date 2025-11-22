@@ -9,6 +9,7 @@ import { DeepSea } from './DeepSea';
 import { Deck } from './Deck';
 import { Factory } from '../../proxy-manager/Factory';
 import { BlockView } from '../BlockView';
+import { MagicCardView } from '../MagicCardView';
 const { ccclass, property } = _decorator;
 
 @ccclass('Click')
@@ -43,19 +44,15 @@ export class Click extends Component {
         InteractionManager.instance.endGenerateBlock(InteractionManager.instance.generateBlock == this.getComponent(SlotView));
     }
 
-    protected onDisable(): void {
-        this.endPlaceBlock();
-    }
-
-    startPlaceBlock() {
+    async startPlaceBlock() {
         const slot = this.getComponent(SlotView);
-        InteractionManager.instance.startGenerateBlock(slot);
+        await InteractionManager.instance.startGenerateBlock(slot);
     }
 
-    protected clickCard(): void {
+    protected async clickCard() {
+        const slot = this.getComponent(SlotView);
         if (InteractionManager.instance.mode == InteractionMode.PLACE_BLOCK) {
-            const slot = this.getComponent(SlotView);
-            const chosen = Deck.instance.chooseCards([slot]);
+            const chosen = await Deck.instance.chooseCards([slot]);
             for (let i = 0; i < chosen.length; i++) {
                 if (Deck.instance.chosenBlock != null) break;
                 if (slot != chosen[i]) {
@@ -63,6 +60,9 @@ export class Click extends Component {
                 }
             }
             InteractionManager.instance.updateGenerateBlock();
+        }
+        else if (InteractionManager.instance.mode == InteractionMode.IDLE) {
+            InteractionManager.instance.startPlayCard(slot);
         }
     }
 }
