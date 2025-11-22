@@ -54,6 +54,9 @@ export class GameMap extends Component {
     @property
     remake: boolean = false
 
+    @property
+    totalPurify: number = 0
+
     lock: Completer<void> = new Completer
 
     protected onLoad(): void {
@@ -164,6 +167,7 @@ export class GameMap extends Component {
         const block = this.blocks[this.gridView.coordToIndex(coord)];
         block?.addBlock(blockType);
         this.blockMap.set(this.gridView.coordToIndex(coord), block);
+        this.recalculatePurifyValue();
         return block;
     }
 
@@ -308,6 +312,8 @@ export class GameMap extends Component {
         }
 
         unit.spawn(unitKey, isAnimal, isBuilding);
+
+        this.recalculatePurifyValue();
         return unit;
     }
 
@@ -514,11 +520,23 @@ export class GameMap extends Component {
         }
         unit.node.removeFromParent();
         Factory.instance.put(unit.unitKey, unit.node);
+        this.recalculatePurifyValue();
     }
 
     getIncompleteBuilding(slot: SlotView) {
         const buildings = this.getBuilding(slot);
         return buildings.filter((unit, index, array) => !unit.isBuildingFinished);
+    }
+
+    recalculatePurifyValue() {
+        let purify = this.blockMap.size;
+
+        for (const pair of this.animalMap) {
+            purify += pair[1].purify;
+        }
+
+        this.totalPurify = purify;
+        return purify;
     }
 }
 

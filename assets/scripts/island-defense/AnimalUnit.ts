@@ -15,6 +15,7 @@ export class AnimalUnit extends Unit {
     }
 
     apply(info: Info) {
+        null.a;
         const unit = this.getComponent(UnitView);
         unit.maxHealth = info.get('attributes').get('health').data;
         unit.health = unit.maxHealth;

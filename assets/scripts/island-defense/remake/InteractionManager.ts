@@ -149,6 +149,7 @@ export class InteractionManager extends Component {
             const card = this.generateBlock.getComponentInChildren(MagicCardView);
             unit = GameMap.instance.generateUnit(slot.coord, card.getKey(), card.getType() == 'animal', card.getType() == 'building');
             unit.getComponent(Unit)?.apply(card.cardInfo());
+            GameMap.instance.recalculatePurifyValue();
         }
 
         Deck.instance.finishChooseCards(unit != null, noAnimation);
