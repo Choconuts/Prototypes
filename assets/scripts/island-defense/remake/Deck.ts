@@ -59,7 +59,7 @@ export class Deck extends Component {
         }
     }
 
-    async chooseCards(slots: Array<SlotView>): Promise<Array<SlotView>> {
+    async chooseCards(slots: Array<SlotView>, forTerrain: boolean = true, targetNum: number = -1): Promise<Array<SlotView>> {
         await this.lock.promise;
         this.lock = new Completer;
         for (const slot of slots) {
@@ -73,11 +73,18 @@ export class Deck extends Component {
 
         if (chosenSlots.length > 0) {
             this.chosenBlock = chosenSlots[0].getComponentInChildren(MagicCardView).blockType();
+            let len = 0;
             for (const slot of chosenSlots) {
                 if (slot.getComponentInChildren(MagicCardView).blockType() != this.chosenBlock) {
                     this.chosenBlock = null;
                     break;
                 }
+                else {
+                    len++;
+                }
+            }
+            if (targetNum > 0 && len != targetNum) {
+                this.chosenBlock = null;
             }
         }
         else {
@@ -86,9 +93,12 @@ export class Deck extends Component {
 
         this.handView.setCastMode(chosenSlots);
 
-        for (const slot of this.handView.slots) {
-            slot.getComponentInChildren(MagicCardView).flip(false);
+        if (forTerrain) {
+            for (const slot of this.handView.slots) {
+                slot.getComponentInChildren(MagicCardView).flip(false);
+            }
         }
+
         this.lock.complete();
         return chosenSlots;
     }
@@ -131,14 +141,14 @@ export class Deck extends Component {
         this.lock = new Completer;
         const array = this.handView.slots;
         for (let index = 0; index < array.length; index++) {
-            const slot = array[array.length - 1 - index];
+            const slot = array[index];
             const card = slot.getComponentInChildren(MagicCardView);
             const blocktype = card.blockType();
             let slots = [slot];
             for (let i = index + 1; i < array.length; i++) {
                 if (slots.length >= num) break;
-                if (array[array.length - 1 - i].getComponentInChildren(MagicCardView).blockType() == blocktype) {
-                    slots.push(array[array.length - 1 - i]);
+                if (array[i].getComponentInChildren(MagicCardView).blockType() == blocktype) {
+                    slots.push(array[i]);
                 }
             }
 
@@ -186,14 +196,15 @@ export class Deck extends Component {
         return info;
     }
 
-    refreshHand() {
-        let slot = null;
-        for (let index = 0; index < this.handLimit - this.handView.numCards(); index++) {
+    async refreshHand() {
+        const initNumCards = this.handView.numCards();
+
+        for (let index = 0; index < this.handLimit - initNumCards; index++) {
             const cardInfo = this.drawCard();
             if (cardInfo != null) {
                 const card = Factory.instance.get(this.cardKey);
-                slot = this.handView.insertCard(card, this.handView.numCards());
                 card.getComponent(MagicCardView).apply(cardInfo);
+                await this.handView.insertCard(card, this.handView.numCards());
             }
         }
     }

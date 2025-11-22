@@ -54,7 +54,6 @@ export class SpiritShop extends Component {
             label.string = '-1 灵魂';
             label.fontSize = 24;
             label.color = new Color(0, 0, 0, 255);
-            console.log(label.color);
             this.costLabels.push(label);
 
             slot.node.on(NodeEventType.MOUSE_ENTER, (event) => {

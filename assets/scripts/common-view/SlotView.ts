@@ -11,11 +11,8 @@ export class SlotView extends Component {
     selectionMaskView?: Node
 
     @property
-    dirty: boolean = true
+    inHand: boolean = false
 
-    protected onEnable(): void {
-        this.dirty = true;
-    }
 }
 
 

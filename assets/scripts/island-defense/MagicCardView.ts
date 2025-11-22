@@ -88,6 +88,10 @@ export class MagicCardView extends Component {
         const cost = this.cardInfo()?.get('attributes')?.get('cost');
         return cost?.data;
     }
+
+    getType() {
+        return this.cardInfo()?.get('card-type').data;
+    }
 }
 
 

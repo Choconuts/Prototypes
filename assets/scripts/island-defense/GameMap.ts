@@ -68,7 +68,7 @@ export class GameMap extends Component {
     }
 
     createSelectHover(slot: SlotView) {
-        const visual = createWidgetChild(slot, 'visual', { expandPadding: 0 });
+        const visual = createWidgetChild(slot, 'visual', { expandPadding: this.remake ? 10 : 0 });
         const graphics = visual.addComponent(Graphics);
         const color = Color.fromHEX(new Color, '#88FF88');
         graphics.fillColor = new Color(color.r, color.g, color.b, this.visualOpacity * 255);
@@ -82,9 +82,7 @@ export class GameMap extends Component {
         slot.node.addChild(block);
         this.blocks.push(block.getComponent(BlockView));
 
-        if (!this.remake) {
-            this.createSelectHover(slot);
-        }
+        this.createSelectHover(slot);
     }
 
     initBlock(coord: Vec2, blockType: string) {
@@ -311,6 +309,33 @@ export class GameMap extends Component {
 
         unit.spawn(unitKey, isAnimal, isBuilding);
         return unit;
+    }
+
+    async getCanGenerateCreatureSlots(info: Info, isAnimal: boolean, isBuilding: boolean): Promise<Array<SlotView>> {
+        await this.lock.promise;
+        let matchSlots = this.matchSlots(info);
+
+        if (isAnimal) {
+            matchSlots = matchSlots.filter((slot, index, array) => {
+                return !this.hasAnimal(slot) && !this.hasEnemy(slot);
+            });
+        }
+        else if (isBuilding) {
+            matchSlots = matchSlots.filter((slot, index, array) => {
+                const enemies = this.getEnemies(slot);
+                if (!this.hasAnimal(slot) && enemies.length > 0) {
+                    for (const enemy of enemies) {
+                        if (enemy.isBuilding) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            });
+        }
+
+        return matchSlots;
     }
 
     async generateCreature(info: Info, unitKey: string, isAnimal: boolean, isBuilding: boolean = false): Promise<UnitView> {

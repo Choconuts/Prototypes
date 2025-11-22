@@ -105,6 +105,8 @@ export class HandView extends Component {
             const click = slot.addComponent(Click);
             click.proxyKey = this.clickBehaviour;
         }
+
+        slot.inHand = true;
         return slot;
     }
 

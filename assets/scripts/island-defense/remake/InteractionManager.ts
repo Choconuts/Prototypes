@@ -6,13 +6,14 @@ import { DeepSea } from './DeepSea';
 import { Deck } from './Deck';
 import { Factory } from '../../proxy-manager/Factory';
 import { MagicCardView } from '../MagicCardView';
-import { Completer } from '../../toolkits/Functions';
+import { Completer, Info } from '../../toolkits/Functions';
 const { ccclass, property } = _decorator;
 
 
 export enum InteractionMode {
     IDLE = 'interaction-idle',
     PLACE_BLOCK = 'interaction-place-block',
+    PLAY_CARD = 'interaction-play-card',
     BUY_CARD = 'interaction-buy-card',
 }
 
@@ -32,6 +33,9 @@ export class InteractionManager extends Component {
 
     @property
     completer: Completer<SlotView> = new Completer
+
+    @property
+    visuals: Array<Node> = []
 
     protected onLoad(): void {
         InteractionManager.instance = this;
@@ -60,8 +64,8 @@ export class InteractionManager extends Component {
         const slots = await Deck.instance.getFirstCardsSlots(num);
 
         if (canPlaceBlock && slots.length > 0) {
-            InteractionManager.instance.mode = InteractionMode.PLACE_BLOCK;
-            InteractionManager.instance.generateBlock = slot;
+            this.mode = InteractionMode.PLACE_BLOCK;
+            this.generateBlock = slot;
             await Deck.instance.chooseCards(slots);
         }
         else {
@@ -91,18 +95,45 @@ export class InteractionManager extends Component {
             GameMap.instance.generateBlock(this.generateBlock.coord, Deck.instance.chosenBlock);
         }
         await Deck.instance.finishChooseCards(success);
-        InteractionManager.instance.mode = InteractionMode.IDLE;
-        InteractionManager.instance.generateBlock = null;
+        this.mode = InteractionMode.IDLE;
+        this.generateBlock = null;
     }
 
-    startPlayCard(slot: SlotView) {
+    async startPlayCard(slot: SlotView) {
         const card = slot.getComponentInChildren(MagicCardView);
         if (!card.needTarget()) {
             if (card.gainSpirit() != null) {
                 Deck.instance.gainSpirit(card.gainSpirit());
                 Deck.instance.discard(slot);
             }
+
         }
+        else {
+            this.mode = InteractionMode.PLAY_CARD;
+            this.completer = new Completer;
+            await Deck.instance.chooseCards([slot], false);
+            this.generateBlock = slot;
+            await this.setSelectable(card);
+        }
+    }
+
+    async setSelectable(card: MagicCardView) {
+        this.visuals = [];
+        const selectables = await GameMap.instance.getCanGenerateCreatureSlots(card.cardInfo(), card.getType() == 'animal', card.getType() == 'building');
+        for (const slot of selectables) {
+            this.visuals.push(slot.selectionMaskView);
+            slot.selectionMaskView.active = true;
+        }
+    }
+
+    async endPlayCard(commit: boolean) {
+        for (const visual of this.visuals) {
+            visual.active = false;
+        }
+        this.visuals = [];
+        Deck.instance.finishChooseCards(commit);
+        this.mode = InteractionMode.IDLE;
+        this.generateBlock = null;
     }
 
     async buyCard(): Promise<boolean> {
@@ -136,6 +167,12 @@ export class InteractionManager extends Component {
             this.mode = InteractionMode.IDLE;
             this.completer.complete(slot);
             return true;
+        }
+    }
+
+    async nextTurn() {
+        if (this.mode == InteractionMode.IDLE) {
+            await Deck.instance.refreshHand();
         }
     }
 }

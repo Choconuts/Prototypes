@@ -22,13 +22,14 @@ export class Click extends Component {
 
     protected onLoad(): void {
         this.node.on(NodeEventType.MOUSE_DOWN, (event) => {
-            if (this.proxyKey == 'click-block') {
-                if (InteractionManager.instance.mode == InteractionMode.IDLE) {
-                    this.startPlaceBlock();
-                }
-                else if (InteractionManager.instance.mode == InteractionMode.PLACE_BLOCK) {
+            if (InteractionManager.instance.mode == InteractionMode.PLAY_CARD) {
+                this.endPlayCard();
+            }
+            else if (this.proxyKey == 'click-block') {
+                if (InteractionManager.instance.mode == InteractionMode.PLACE_BLOCK) {
                     this.endPlaceBlock();
                 }
+                this.startPlaceBlock();
             }
             else if (this.proxyKey == 'click-card') {
                 this.clickCard();
@@ -40,11 +41,18 @@ export class Click extends Component {
         });
     }
 
+    endPlayCard() {
+        InteractionManager.instance.endPlayCard(this.getComponent(SlotView).selectionMaskView?.active);
+    }
+
     endPlaceBlock() {
         InteractionManager.instance.endGenerateBlock(InteractionManager.instance.generateBlock == this.getComponent(SlotView));
     }
 
     async startPlaceBlock() {
+        if (InteractionManager.instance.mode != InteractionMode.IDLE) {
+            return;
+        }
         const slot = this.getComponent(SlotView);
         await InteractionManager.instance.startGenerateBlock(slot);
     }
@@ -52,16 +60,17 @@ export class Click extends Component {
     protected async clickCard() {
         const slot = this.getComponent(SlotView);
         if (InteractionManager.instance.mode == InteractionMode.PLACE_BLOCK) {
-            const chosen = await Deck.instance.chooseCards([slot]);
+            const targetDepth = InteractionManager.instance.generateBlock.getComponentInChildren(DeepSea).depth + 1;
+            const chosen = await Deck.instance.chooseCards([slot], true, targetDepth);
             for (let i = 0; i < chosen.length; i++) {
                 if (Deck.instance.chosenBlock != null) break;
                 if (slot != chosen[i]) {
-                    await Deck.instance.chooseCards([chosen[i]]);
+                    await Deck.instance.chooseCards([chosen[i]], true, targetDepth);
                 }
             }
             InteractionManager.instance.updateGenerateBlock();
         }
-        else if (InteractionManager.instance.mode == InteractionMode.IDLE) {
+        else if (InteractionManager.instance.mode == InteractionMode.IDLE && slot.inHand) {
             InteractionManager.instance.startPlayCard(slot);
         }
         else if (InteractionManager.instance.mode == InteractionMode.BUY_CARD) {
