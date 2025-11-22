@@ -6,12 +6,14 @@ import { DeepSea } from './DeepSea';
 import { Deck } from './Deck';
 import { Factory } from '../../proxy-manager/Factory';
 import { MagicCardView } from '../MagicCardView';
+import { Completer } from '../../toolkits/Functions';
 const { ccclass, property } = _decorator;
 
 
 export enum InteractionMode {
     IDLE = 'interaction-idle',
     PLACE_BLOCK = 'interaction-place-block',
+    BUY_CARD = 'interaction-buy-card',
 }
 
 @ccclass('InteractionManager')
@@ -27,6 +29,9 @@ export class InteractionManager extends Component {
     previewKey: string = 'block-preview-remake'
     @property(BlockView)
     preview: BlockView
+
+    @property
+    completer: Completer<SlotView> = new Completer
 
     protected onLoad(): void {
         InteractionManager.instance = this;
@@ -97,6 +102,40 @@ export class InteractionManager extends Component {
                 Deck.instance.gainSpirit(card.gainSpirit());
                 Deck.instance.discard(slot);
             }
+        }
+    }
+
+    async buyCard(): Promise<boolean> {
+        if (this.mode == InteractionMode.PLACE_BLOCK) {
+            await this.endGenerateBlock(false);
+        }
+
+        if (this.mode == InteractionMode.IDLE) {
+            this.mode = InteractionMode.BUY_CARD;
+            this.completer = new Completer;
+            return true;
+        }
+        else if (this.mode == InteractionMode.BUY_CARD) {
+            this.mode = InteractionMode.IDLE;
+            return false;
+        }
+        else {
+            return false;
+        }
+    }
+
+    async chooseCard(slot: SlotView): Promise<boolean> {
+        if (this.mode == InteractionMode.BUY_CARD) {
+            const card = slot.getComponentInChildren(MagicCardView);
+            const cost = card.getCost();
+            if (!Deck.instance.hasSpirit(cost)) {
+                return;
+            }
+            Deck.instance.deckInfos.push(card.info);
+            Deck.instance.gainSpirit(-cost);
+            this.mode = InteractionMode.IDLE;
+            this.completer.complete(slot);
+            return true;
         }
     }
 }

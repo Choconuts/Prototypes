@@ -18,8 +18,8 @@ export function createWidgetChild(target: Component, name?: string, options?: {e
     
     node.name = name;
 
-    const expand = options.expandPadding != null;
-    const center = !expand && options.centerOffset != null;
+    const expand = options?.expandPadding != null;
+    const center = !expand && options?.centerOffset != null;
 
     const widget = getOrAddComponent(node, Widget);
     widget.isAlignTop = expand;
@@ -30,15 +30,15 @@ export function createWidgetChild(target: Component, name?: string, options?: {e
     widget.isAlignVerticalCenter = center;
 
     if (expand) {
-        widget.top = options.expandPadding;
-        widget.bottom = options.expandPadding;
-        widget.left = options.expandPadding;
-        widget.right = options.expandPadding;
+        widget.top = options?.expandPadding;
+        widget.bottom = options?.expandPadding;
+        widget.left = options?.expandPadding;
+        widget.right = options?.expandPadding;
     }
 
     if (center) {
-        widget.horizontalCenter = options.centerOffset.x;
-        widget.verticalCenter = options.centerOffset.y;
+        widget.horizontalCenter = options?.centerOffset.x;
+        widget.verticalCenter = options?.centerOffset.y;
     }
 
     target.node.addChild(node);

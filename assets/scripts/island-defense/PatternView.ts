@@ -1,6 +1,6 @@
 import { _decorator, Color, Component, Gradient, Graphics, Label, Node, Rect, v2, v3 } from 'cc';
 import { GridView } from '../common-view/GridView';
-import { createRectWidget, createWidgetChild, Info } from '../toolkits/Functions';
+import { Completer, createRectWidget, createWidgetChild, Info } from '../toolkits/Functions';
 import { GameManager } from '../proxy-manager/GameManager';
 import { Library } from '../proxy-manager/Library';
 const { ccclass, property } = _decorator;
@@ -15,6 +15,12 @@ export class PatternView extends Component {
     @property
     cellRadius: number = 20;
 
+    completer: Completer<void> = new Completer
+
+    protected start(): void {
+        this.completer.complete();
+    }
+
     apply(info: Info) {
         const array = info.get("region-display");
         const targets = info.get("region-targets");
@@ -28,7 +34,9 @@ export class PatternView extends Component {
         for (let i = 0; i < array.arrayLength; i++) {
             const tag = array.get(i.toString());
             if (tag != null) {
-                this.box(info, i, tag.data, targetMap[i] != null);
+                this.completer.promise.then(() => {
+                    this.box(info, i, tag.data, targetMap[i] != null);
+                })
             }
         }
     }
@@ -37,7 +45,7 @@ export class PatternView extends Component {
         const slotNode = this.gridView.slots[index];
 
         if (tag == 'or' || tag == ' or' || tag == '  or') {
-            const widget = createWidgetChild(slotNode, 'target', {centerOffset: v2(0, 0)});
+            const widget = createWidgetChild(slotNode, 'target', { centerOffset: v2(0, 0) });
             const label = widget.addComponent(Label);
             label.string = tag;
             label.color = Color.BLACK;
@@ -61,7 +69,7 @@ export class PatternView extends Component {
         }
 
         if (target) {
-            const widget = createWidgetChild(slotNode, 'target', {centerOffset: v2(0, 0)});
+            const widget = createWidgetChild(slotNode, 'target', { centerOffset: v2(0, 0) });
             const label = widget.addComponent(Label);
             label.string = '+';
             label.fontSize = 24;

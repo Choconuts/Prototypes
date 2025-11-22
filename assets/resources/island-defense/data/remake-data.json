@@ -53,7 +53,7 @@
         "lion": {
             "card-type": "animal",
             "card-name": "狮子",
-            "card-color": "#DDAA55",
+            "card-color": "@block-type@grass@card-color",
             "desc-row1": "攻击力：高",
             "desc-row2": "魔力：中",
             "region-display": [
@@ -92,7 +92,7 @@
         "turtoise": {
             "card-type": "animal",
             "card-name": "乌龟",
-            "card-color": "#448855",
+            "card-color": "@block-type@rock@card-color",
             "desc-row1": "生命值：高",
             "desc-row2": "魔力：高",
             "region-display": [
@@ -131,7 +131,7 @@
         "fox": {
             "card-type": "animal",
             "card-name": "狐狸",
-            "card-color": "#DD5544",
+            "card-color": "@block-type@wood@card-color",
             "desc-row1": "攻击力：低",
             "desc-row2": "魔力：中",
             "region-display": [
@@ -165,8 +165,8 @@
         },
         "lizard": {
             "card-type": "animal",
-            "card-name": "沙蜥蜴",
-            "card-color": "#99AA44",
+            "card-name": "沙蜥",
+            "card-color": "@block-type@sand@card-color",
             "desc-row1": "生命值：低",
             "desc-row2": "魔力：低",
             "region-display": [
@@ -215,8 +215,20 @@
     },
     "animal-pool": [
         {
-            "animal": "@animal-type@lion",
-            "level": 1
+            "magic": "@animal-type@lion",
+            "block": "@block-type@grass"
+        },
+        {
+            "magic": "@animal-type@turtoise",
+            "block": "@block-type@rock"
+        },
+        {
+            "magic": "@animal-type@fox",
+            "block": "@block-type@wood"
+        },
+        {
+            "magic": "@animal-type@lizard",
+            "block": "@block-type@sand"
         }
     ],
     "magic-type": {

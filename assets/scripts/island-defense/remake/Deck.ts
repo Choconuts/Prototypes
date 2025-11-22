@@ -151,6 +151,10 @@ export class Deck extends Component {
         return [];
     }
 
+    hasSpirit(n: number) {
+        return this.spirit >= n;
+    }
+
     gainSpirit(n: number) {
         this.spirit += n;
         this.spiritLabel.string = '灵魂\n[' + this.spirit + ']'
@@ -192,6 +196,28 @@ export class Deck extends Component {
                 card.getComponent(MagicCardView).apply(cardInfo);
             }
         }
+    }
+
+    randomCardsFromPool(num: number): Array<MagicCardView> {
+        const cards: Array<MagicCardView> = [];
+        const arrayInfo = this.baseInfo.get('animal-pool');
+        const arrayLength = arrayInfo.arrayLength;
+
+        let candidates = [];
+        for (let i = 0; i < arrayLength; i++) {
+            candidates.push(i);
+        }
+
+        for (let i = 0; i < num; i++) {
+            const k = randomRangeInt(0, candidates.length);
+            const card = Factory.instance.get(this.cardKey)?.getComponent(MagicCardView);
+            const info = arrayInfo.get(candidates[k].toString());
+            card.apply(info);
+            cards.push(card)
+            candidates = candidates.filter((val, idx) => idx != k);
+        }
+
+        return cards;
     }
 }
 

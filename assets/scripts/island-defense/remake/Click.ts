@@ -26,7 +26,7 @@ export class Click extends Component {
                 if (InteractionManager.instance.mode == InteractionMode.IDLE) {
                     this.startPlaceBlock();
                 }
-                else {
+                else if (InteractionManager.instance.mode == InteractionMode.PLACE_BLOCK) {
                     this.endPlaceBlock();
                 }
             }
@@ -56,13 +56,16 @@ export class Click extends Component {
             for (let i = 0; i < chosen.length; i++) {
                 if (Deck.instance.chosenBlock != null) break;
                 if (slot != chosen[i]) {
-                    Deck.instance.chooseCards([chosen[i]]);
+                    await Deck.instance.chooseCards([chosen[i]]);
                 }
             }
             InteractionManager.instance.updateGenerateBlock();
         }
         else if (InteractionManager.instance.mode == InteractionMode.IDLE) {
             InteractionManager.instance.startPlayCard(slot);
+        }
+        else if (InteractionManager.instance.mode == InteractionMode.BUY_CARD) {
+            InteractionManager.instance.chooseCard(slot);
         }
     }
 }

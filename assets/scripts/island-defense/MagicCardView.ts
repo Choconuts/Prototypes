@@ -66,7 +66,7 @@ export class MagicCardView extends Component {
     }
 
     cardName() {
-        return this.cardInfo()?.get('card-name');
+        return this.cardInfo()?.get('card-name').data;
     }
 
     flip(frontFace: boolean) {
@@ -82,6 +82,11 @@ export class MagicCardView extends Component {
     gainSpirit() {
         const spirit = this.cardInfo()?.get('attributes')?.get('spirit');
         return spirit?.data;
+    }
+
+    getCost() {
+        const cost = this.cardInfo()?.get('attributes')?.get('cost');
+        return cost?.data;
     }
 }
 
