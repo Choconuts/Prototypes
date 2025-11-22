@@ -29,7 +29,12 @@ export class Click extends Component {
                 if (InteractionManager.instance.mode == InteractionMode.PLACE_BLOCK) {
                     this.endPlaceBlock();
                 }
-                this.startPlaceBlock();
+                else if (InteractionManager.instance.mode == InteractionMode.BUY_CARD) {
+                    InteractionManager.instance.exitBuyCard();
+                }
+                else {
+                    this.startPlaceBlock();
+                }
             }
             else if (this.proxyKey == 'click-card') {
                 this.clickCard();

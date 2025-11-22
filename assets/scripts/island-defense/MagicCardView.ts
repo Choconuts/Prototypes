@@ -97,7 +97,7 @@ export class MagicCardView extends Component {
     }
 
     getKey() {
-        return 'animal-unit';
+        return 'animal-unit-remake';
     }
 }
 

@@ -36,10 +36,16 @@ export class SpiritShop extends Component {
     regester() {
         InteractionManager.instance.buyCard().then((buy) => {
             this.node.active = buy;
-            InteractionManager.instance.completer.promise.then((slot) => {
-                this.refresh();
-                this.regester();
-            });
+            if (buy) {
+                InteractionManager.instance.completer.promise.then((slot) => {
+                    if (slot == null) {
+                        this.node.active = false;
+                        return;
+                    }
+                    this.refresh();
+                    this.regester();
+                });
+            }
         });
     }
 
