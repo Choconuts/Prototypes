@@ -20,7 +20,14 @@ export class MagicCardView extends Component {
             const card = this.getComponent(CardView);
             this.baseInfo = Library.instance.get(this.database);
             this.cardID = this.randomID();
-            this.info = this.baseInfo.get('card-pool').get(this.cardID).get('block');
+
+            if (random() > 0.3) {
+                this.info = this.baseInfo.get('card-pool').get(this.cardID).get('block');
+            }
+            else {
+                this.info = this.baseInfo.get('card-pool').get(this.cardID).get('magic');
+            }
+
             card.apply(this.info);
         });
     }

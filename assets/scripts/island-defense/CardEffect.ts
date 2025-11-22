@@ -27,7 +27,8 @@ export class CardEffect extends Component {
         const pattern = new BlockPattern;
         pattern.target = 'empty';
         pattern.neighbors.set(3, 'any');
-        return GameMap.instance.matchPattern(slot.coord, pattern);
+        const match = GameMap.instance.matchPattern(slot.coord, pattern);
+        return match && !GameMap.instance.hasEnemy(slot);
     }
 
     async process(): Promise<void> {

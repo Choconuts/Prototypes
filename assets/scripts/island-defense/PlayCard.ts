@@ -20,11 +20,12 @@ export class PlayCard extends DefaultDragCard {
     @property
     effectKey: string = 'card-effect'
     @property
+    magicEffectKey: string = 'magic-card-effect'
+    @property
     hoverKey: string = 'hover-drop'
 
     declare effect: Proxy
     visuals: Node[] = []
-
 
     public startDrag(): void {
         super.startDrag();
@@ -34,7 +35,12 @@ export class PlayCard extends DefaultDragCard {
         }
         
         if (magicCard != null) {
-            this.effect = GameManager.instance.rootProxy.createProxy(this.node, this.effectKey);
+            if (magicCard.info.get('card-type').data == 'magic') {
+                this.effect = GameManager.instance.rootProxy.createProxy(this.node, this.magicEffectKey);
+            }
+            else {
+                this.effect = GameManager.instance.rootProxy.createProxy(this.node, this.effectKey);
+            }
             this.effect?.send(ProxyEvent.COMMIT, magicCard.info);
         }
     }
@@ -70,7 +76,7 @@ export class PlayCard extends DefaultDragCard {
     setGridHover(predict: (slot: SlotView) => boolean) {
         const gridView = GameMap.instance.gridView;
         gridView.slots.forEach((slot, index, array) => {
-            if (predict(slot) && slot.selectionMaskView != null && !GameMap.instance.hasEnemy(slot)) {
+            if (predict(slot) && slot.selectionMaskView != null) {
                 this.visuals.push(slot.selectionMaskView);
                 slot.selectionMaskView.active = true;
                 const hover = slot.selectionMaskView.addComponent(Hover);

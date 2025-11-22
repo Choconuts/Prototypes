@@ -1,6 +1,7 @@
 {
     "block-type": {
         "grass": {
+            "card-type": "block",
             "card-name": "地形：草原",
             "card-color": "#99BB77",
             "desc-row1": "制造一片",
@@ -8,6 +9,7 @@
             "block-type": "grass"
         },
         "wetland": {
+            "card-type": "block",
             "card-name": "地形：水域",
             "card-color": "#5599BB",
             "desc-row1": "制造一片",
@@ -15,6 +17,7 @@
             "block-type": "wetland"
         },
         "sand": {
+            "card-type": "block",
             "card-name": "地形：沙漠",
             "card-color": "#DDCC99",
             "desc-row1": "制造一片",
@@ -22,6 +25,7 @@
             "block-type": "sand"
         },
         "wood": {
+            "card-type": "block",
             "card-name": "地形：森林",
             "card-color": "#AA6633",
             "desc-row1": "制造一片",
@@ -29,6 +33,7 @@
             "block-type": "wood"
         },
         "rock": {
+            "card-type": "block",
             "card-name": "地形：山脉",
             "card-color": "#667788",
             "desc-row1": "制造一片",
@@ -36,6 +41,7 @@
             "block-type": "rock"
         },
         "any": {
+            "card-type": "block",
             "card-name": "地形：任意",
             "card-color": "#9999AA",
             "desc-row1": "制造一片",
@@ -45,6 +51,7 @@
     },
     "animal-type": {
         "lion": {
+            "card-type": "animal",
             "card-name": "狮子",
             "card-color": "#DDAA55",
             "desc-row1": "攻击力：高",
@@ -83,6 +90,7 @@
             }
         },
         "turtoise": {
+            "card-type": "animal",
             "card-name": "乌龟",
             "card-color": "#448855",
             "desc-row1": "生命值：高",
@@ -121,6 +129,7 @@
             }
         },
         "fox": {
+            "card-type": "animal",
             "card-name": "狐狸",
             "card-color": "#DD5544",
             "desc-row1": "攻击力：低",
@@ -155,6 +164,7 @@
             }
         },
         "lizard": {
+            "card-type": "animal",
             "card-name": "沙蜥蜴",
             "card-color": "#99AA44",
             "desc-row1": "生命值：低",
@@ -211,16 +221,76 @@
     ],
     "magic-type": {
         "thunder": {
+            "card-type": "magic",
             "card-name": "落雷",
             "card-color": "@block-type@grass@card-color",
             "desc-row1": "造成15伤害",
-            "desc-row2": "（建筑优先）"
+            "desc-row2": "（建筑优先）",
+            "region-display": [
+                null,   null,   null,   null,   null,
+                null,   null,   "any",   null,   null,
+                null,   "grass",   null,   null,   null
+            ],
+            "region-targets": [7, 11],
+            "region": [
+                {
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "any"
+                        },
+                        {
+                            "offset": [1, 0],
+                            "type": "grass"
+                        }
+                    ]
+                },
+                {
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "grass"
+                        }
+                    ]
+                }
+            ],
+            "attributes": {
+                "strategy": "building-first",
+                "capture": 1,
+                "attack": 15
+            }
         },
         "mudslide": {
+            "card-type": "magic",
             "card-name": "泥石流",
             "card-color": "@block-type@rock@card-color",
             "desc-row1": "造成5伤害",
-            "desc-row2": "（全体）"
+            "desc-row2": "（全体）",
+            "region-display": [
+                null,   null,   null,   null,   null,
+                null,   null,   "any",   null,   null,
+                null,   "rock",   null,   null,   null
+            ],
+            "region-targets": [7],
+            "region": [
+                {
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "any"
+                        },
+                        {
+                            "offset": [1, 0],
+                            "type": "rock"
+                        }
+                    ]
+                }
+            ],
+            "attributes": {
+                "strategy": "all",
+                "capture": -1,
+                "attack": 5
+            }
         }
     },
     "card-pool": [
@@ -229,11 +299,11 @@
             "block": "@block-type@grass"
         },
         {
-            "magic": "@magic-type@thunder",
+            "magic": "@magic-type@mudslide",
             "block": "@block-type@wetland"
         },
         {
-            "magic": "@magic-type@thunder",
+            "magic": "@magic-type@mudslide",
             "block": "@block-type@sand"
         },
         {
@@ -241,7 +311,7 @@
             "block": "@block-type@wood"
         },
         {
-            "magic": "@magic-type@thunder",
+            "magic": "@magic-type@mudslide",
             "block": "@block-type@rock"
         }
     ],
