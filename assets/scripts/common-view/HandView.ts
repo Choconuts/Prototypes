@@ -38,6 +38,9 @@ export class HandView extends Component {
 
     lock?: Completer<void> = null
 
+    @property
+    castMode: Array<SlotView> = null;
+
     protected onLoad(): void {
         this.createLayout();
     }
@@ -207,6 +210,7 @@ export class HandView extends Component {
     }
 
     focusSlot(slotView: SlotView) {
+        if (this.castMode != null) return;
         if (this.focus != null) {
             this.unfocusSlot(this.focus);
         }
@@ -221,15 +225,24 @@ export class HandView extends Component {
     }
 
     unfocusSlot(slotView: SlotView) {
+        if (this.castMode != null) return;
         if (this.focus == slotView) {
             this.focus = null;
         }
         if (this.animaitonDuration > 0) {
-            this.slotAnimation(this.animaitonDuration, slotView, this.cardSize.x + this.foldSize, this.liftBySlot ? this.focusLift : 0, true, this.animaitonDelay);
+            this.slotAnimation(this.animaitonDuration, slotView, this.cardSize.x, this.liftBySlot ? this.focusLift : 0, true, this.animaitonDelay);
         }
         else if (slotView.node.children.length > 0) {
             const cardNode = slotView.node.children[0];
             cardNode.position = this.getCardPosition();
+        }
+    }
+
+    setCastMode(castMode: Array<SlotView>) {
+        this.castMode = castMode;
+        for (const slot of this.slots) {
+            const selected = castMode?.find((s) => s == slot) != null;
+            this.slotAnimation(this.animaitonDuration, slot, this.cardSize.x, selected ? -40 : -80, castMode == null, this.animaitonDelay);
         }
     }
 
@@ -247,6 +260,8 @@ export class HandView extends Component {
         const defaultContentY = this.cardSize.y;
         const liftBySlot = this.liftBySlot;
         const completer = new Completer<void>;
+
+        const currentBottom = widget.bottom;
 
         if (this.liftBySlot) {
             const pos = v3(0, 0, 0);
@@ -266,7 +281,7 @@ export class HandView extends Component {
                             widget.bottom = lift + (0 - lift) * ratio / 1.0;
                         }
                         else {
-                            widget.bottom = 0 + (lift - 0) * ratio / 1.0;
+                            widget.bottom = currentBottom + (lift - currentBottom) * ratio / 1.0;
                         }
                     }
                 },

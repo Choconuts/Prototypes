@@ -26,7 +26,7 @@ export class Click extends Component {
     createProxy(): Proxy {
         this.completer = new Completer;
         const proxy = GameManager.instance.rootProxy.createProxy(this.node, this.proxyKey);
-        if (proxy !== null) {
+        if (proxy != null) {
             this.proxy = proxy;
             this.completer.complete();
         }
@@ -34,7 +34,7 @@ export class Click extends Component {
     }
 
     click() {
-        if (this.proxy === null) {
+        if (this.proxy == null) {
             this.createProxy();
         }
     }
@@ -42,7 +42,6 @@ export class Click extends Component {
     close() {
         if (this.completer == null) {
             this.proxy = this.proxy?.close();
-
         }
         else {
             this.completer.promise.then(() => {

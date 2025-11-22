@@ -6,6 +6,7 @@ import { createRectWidget, createWidgetChild } from '../../toolkits/Functions';
 import { DeepSea } from './DeepSea';
 import { GameMap } from '../GameMap';
 import { SlotView } from '../../common-view/SlotView';
+import { InteractionManager, InteractionMode } from './InteractionManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('HoverBlock')
@@ -16,7 +17,9 @@ export class HoverBlock extends Component {
     border: RectView
 
     protected onEnable(): void {
-        this.startHover();
+        if (InteractionManager.instance.mode == InteractionMode.IDLE) {
+            this.startHover();
+        }
         this.getComponent(Proxy).wait(Proxy.Event.CANCEL).then((_) => this.cancelHover());
     }
 

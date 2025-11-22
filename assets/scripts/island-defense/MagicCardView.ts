@@ -52,6 +52,10 @@ export class MagicCardView extends Component {
         }
     }
 
+    blockType() {
+        return this.info?.get('block')?.get('block-type');
+    }
+
     randomID() {
         const typeNum = this.baseInfo.get('card-pool').data.length;
         return randomRangeInt(0, typeNum).toString();

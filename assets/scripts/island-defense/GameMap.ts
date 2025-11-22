@@ -115,8 +115,14 @@ export class GameMap extends Component {
                         click.proxyKey = this.clickBehavior;
                     }
                     if (this.hoverBehavior.length > 0) {
-                        const click = slot.addComponent(Hover);
-                        click.proxyKey = this.hoverBehavior;
+                        const hover = slot.addComponent(Hover);
+                        hover.proxyKey = this.hoverBehavior;
+                    }
+                    else {
+                        console.error('', this.hoverBehavior);
+                    }
+                    if (slot.getComponent(Hover) == null) {
+                        console.log('hover', );
                     }
                 });
             }
