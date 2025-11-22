@@ -59,7 +59,7 @@ export class Deck extends Component {
         }
     }
 
-    async chooseCards(slots: Array<SlotView>, forTerrain: boolean = true, targetNum: number = -1): Promise<Array<SlotView>> {
+    async chooseCards(slots: Array<SlotView>, forTerrain: boolean = true, targetNum: number = -1, noAnimation: boolean = false): Promise<Array<SlotView>> {
         await this.lock.promise;
         this.lock = new Completer;
         for (const slot of slots) {
@@ -91,7 +91,9 @@ export class Deck extends Component {
             this.chosenBlock = null;
         }
 
-        this.handView.setCastMode(chosenSlots);
+        if (!noAnimation) {
+            this.handView.setCastMode(chosenSlots);
+        }
 
         if (forTerrain) {
             for (const slot of this.handView.slots) {
@@ -113,13 +115,15 @@ export class Deck extends Component {
         return chosenSlots;
     }
 
-    async finishChooseCards(success: boolean) {
+    async finishChooseCards(success: boolean, noAnimation: boolean = false) {
         await this.lock.promise;
         this.lock = new Completer;
         const slots = this.getChosenSlots();
         this.chosenBlock = null;
         this.chosenCardMap.clear();
-        this.handView.setCastMode(null);
+        if (!noAnimation) {
+            this.handView.setCastMode(null);
+        }
         if (success) {
             for (const slot of slots) {
                 await this.dropCard(slot);

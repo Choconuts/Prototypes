@@ -42,7 +42,8 @@ export class Click extends Component {
     }
 
     endPlayCard() {
-        InteractionManager.instance.endPlayCard(this.getComponent(SlotView).selectionMaskView?.active);
+        const slot = this.getComponent(SlotView);
+        InteractionManager.instance.endPlayCard(slot.selectionMaskView?.active? slot : null);
     }
 
     endPlaceBlock() {

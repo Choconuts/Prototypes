@@ -29,13 +29,17 @@ export class SpiritShop extends Component {
 
     toggle() {
         this.updateAllCostLabels();
+        this.regester();
+    }
+
+    regester() {
         InteractionManager.instance.buyCard().then((buy) => {
             this.node.active = buy;
             InteractionManager.instance.completer.promise.then((slot) => {
-                this.node.active = InteractionManager.instance.mode == InteractionMode.BUY_CARD;
                 this.refresh();
+                this.regester();
             });
-        })
+        });
     }
 
     costRefresh() {

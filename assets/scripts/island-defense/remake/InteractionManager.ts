@@ -1,4 +1,4 @@
-import { _decorator, assert, Component, Enum, Node, tween } from 'cc';
+import { _decorator, assert, Component, Enum, Node, randomRangeInt, tween } from 'cc';
 import { SlotView } from '../../common-view/SlotView';
 import { BlockView } from '../BlockView';
 import { GameMap } from '../GameMap';
@@ -7,6 +7,8 @@ import { Deck } from './Deck';
 import { Factory } from '../../proxy-manager/Factory';
 import { MagicCardView } from '../MagicCardView';
 import { Completer, Info } from '../../toolkits/Functions';
+import { Unit } from '../Unit';
+import { UnitView } from '../UnitView';
 const { ccclass, property } = _decorator;
 
 
@@ -14,6 +16,7 @@ export enum InteractionMode {
     IDLE = 'interaction-idle',
     PLACE_BLOCK = 'interaction-place-block',
     PLAY_CARD = 'interaction-play-card',
+    AUTO_PLAY_CARD = 'interaction-auto_play-card',
     BUY_CARD = 'interaction-buy-card',
 }
 
@@ -109,38 +112,49 @@ export class InteractionManager extends Component {
 
         }
         else {
-            this.mode = InteractionMode.PLAY_CARD;
+            if (this.mode == InteractionMode.IDLE) {
+                this.mode = InteractionMode.PLAY_CARD;
+            }
             this.completer = new Completer;
-            await Deck.instance.chooseCards([slot], false);
+            await Deck.instance.chooseCards([slot], false, -1, autoCast);
             this.generateBlock = slot;
-            await this.setSelectable(card);
+            const selectables = await this.setSelectable(card, autoCast);
+
+            if (autoCast) {
+                slot = selectables[randomRangeInt(0, selectables.length)];
+                this.endPlayCard(slot, true);
+            }
         }
     }
 
-    async setSelectable(card: MagicCardView) {
+    async setSelectable(card: MagicCardView, autoCast: boolean = false): Promise<Array<SlotView>> {
         this.visuals = [];
         const selectables = await GameMap.instance.getCanGenerateCreatureSlots(card.cardInfo(), card.getType() == 'animal', card.getType() == 'building');
-        for (const slot of selectables) {
-            this.visuals.push(slot.selectionMaskView);
-            slot.selectionMaskView.active = true;
+        if (!autoCast) {
+            for (const slot of selectables) {
+                this.visuals.push(slot.selectionMaskView);
+                slot.selectionMaskView.active = true;
+            }
         }
+        return selectables;
     }
 
-    async endPlayCard(commit: boolean) {
+    async endPlayCard(slot: SlotView, noAnimation: boolean = false) {
         for (const visual of this.visuals) {
             visual.active = false;
         }
         this.visuals = [];
-        if (commit) {
+        let unit: UnitView = null;
+        if (slot != null) {
             const card = this.generateBlock.getComponentInChildren(MagicCardView);
-            const unit = GameMap.instance.generateCreature(card.cardInfo(), card.getKey(), card.getType() == 'animal', card.getType() == 'building');
-
-            if (unit == null) {
-                commit = false;
-            }
+            unit = GameMap.instance.generateUnit(slot.coord, card.getKey(), card.getType() == 'animal', card.getType() == 'building');
+            unit.getComponent(Unit)?.apply(card.cardInfo());
         }
-        Deck.instance.finishChooseCards(commit);
-        this.mode = InteractionMode.IDLE;
+
+        Deck.instance.finishChooseCards(unit != null, noAnimation);
+        if (this.mode == InteractionMode.PLAY_CARD) {
+            this.mode = InteractionMode.IDLE;
+        }
         this.generateBlock = null;
     }
 
@@ -186,6 +200,7 @@ export class InteractionManager extends Component {
 
     async nextTurnAuto() {
         if (this.mode == InteractionMode.IDLE) {
+            this.mode = InteractionMode.AUTO_PLAY_CARD;
             for (const slot of Deck.instance.getHandSlots()) {
                 await this.startPlayCard(slot, true);
             }
@@ -197,6 +212,7 @@ export class InteractionManager extends Component {
 
             await completer.promise;
             await Deck.instance.refreshHand();
+            this.mode = InteractionMode.IDLE;
         }
     }
 }
