@@ -21,7 +21,7 @@ export class PatternView extends Component {
         this.completer.complete();
     }
 
-    apply(info: Info) {
+    async apply(info: Info): Promise<void> {
         const array = info.get("region-display");
         const targets = info.get("region-targets");
         const targetMap: Array<boolean> = new Array(15);
@@ -39,6 +39,8 @@ export class PatternView extends Component {
                 })
             }
         }
+
+        return this.completer.promise;
     }
 
     box(info: Info, index: number, tag: string, target: boolean = false) {
@@ -48,7 +50,7 @@ export class PatternView extends Component {
             const widget = createWidgetChild(slotNode, 'target', { centerOffset: v2(0, 0) });
             const label = widget.addComponent(Label);
             label.string = tag;
-            label.color = Color.BLACK;
+            label.color = new Color(0, 0, 0, 255);
             label.fontSize = 24;
             label.isBold = true;
         }

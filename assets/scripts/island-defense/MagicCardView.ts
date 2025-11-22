@@ -5,6 +5,7 @@ import { Library } from '../proxy-manager/Library';
 import { GameManager } from '../proxy-manager/GameManager';
 import { PatternView } from './PatternView';
 import { GameMap } from './GameMap';
+import { AutoSortingLayer } from './remake/AutoSortingLayer';
 const { ccclass, property } = _decorator;
 
 @ccclass('MagicCardView')
@@ -48,7 +49,9 @@ export class MagicCardView extends Component {
         this.getComponent(CardView).apply(cardInfo);
 
         if (this.pattern != null && this.frontFace) {
-            this.pattern.apply(cardInfo);
+            this.pattern.apply(cardInfo).then(() => {
+                this.getComponent(AutoSortingLayer)?.updateLayers();
+            });
         }
     }
 

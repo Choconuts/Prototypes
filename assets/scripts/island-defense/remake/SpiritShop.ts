@@ -7,6 +7,7 @@ import { Click } from './Click';
 import { createWidgetChild } from '../../toolkits/Functions';
 import { SlotView } from '../../common-view/SlotView';
 import { MagicCardView } from '../MagicCardView';
+import { AutoSortingLayer } from './AutoSortingLayer';
 const { ccclass, property } = _decorator;
 
 @ccclass('SpiritShop')
@@ -68,6 +69,8 @@ export class SpiritShop extends Component {
                 this.hoverSlot(slot, false);
             });
         });
+
+        this.getComponent(AutoSortingLayer)?.updateLayers();
     }
 
     updateAllCostLabels() {
