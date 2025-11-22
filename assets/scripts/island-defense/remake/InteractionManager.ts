@@ -9,6 +9,7 @@ import { MagicCardView } from '../MagicCardView';
 import { Completer, Info } from '../../toolkits/Functions';
 import { Unit } from '../Unit';
 import { UnitView } from '../UnitView';
+import { CoolDown } from './CoolDown';
 const { ccclass, property } = _decorator;
 
 
@@ -39,6 +40,9 @@ export class InteractionManager extends Component {
 
     @property
     visuals: Array<Node> = []
+
+    @property(CoolDown)
+    coolDown: CoolDown = null
 
     protected onLoad(): void {
         InteractionManager.instance = this;
@@ -196,10 +200,12 @@ export class InteractionManager extends Component {
     async nextTurn() {
         if (this.mode == InteractionMode.IDLE) {
             await Deck.instance.refreshHand();
+            this.coolDown.reset();
         }
     }
 
     async nextTurnAuto() {
+        const coolDown = this.coolDown?.cooldown();
         if (this.mode == InteractionMode.IDLE) {
             this.mode = InteractionMode.AUTO_PLAY_CARD;
             for (const slot of Deck.instance.getHandSlots()) {
@@ -212,7 +218,12 @@ export class InteractionManager extends Component {
             }, 300);
 
             await completer.promise;
-            await Deck.instance.refreshHand();
+
+            if (coolDown) {
+                await Deck.instance.refreshHand();
+                this.coolDown.reset();
+            }
+
             this.mode = InteractionMode.IDLE;
         }
     }
