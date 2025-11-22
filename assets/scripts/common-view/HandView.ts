@@ -3,6 +3,7 @@ import { SlotView } from './SlotView';
 import { Completer, getOrAddComponent } from '../toolkits/Functions';
 import { Hover } from '../common-modal/Hover';
 import { Drag } from '../common-modal/Drag';
+import { Click } from '../island-defense/remake/Click';
 const { ccclass, property } = _decorator;
 
 @ccclass('HandView')
@@ -24,6 +25,8 @@ export class HandView extends Component {
     hoverBehavior: string = 'default-hover-card'
     @property
     dragBehaviour: string = 'default-drag-card'
+    @property
+    clickBehaviour: string = 'click-card'
 
     @property
     liftBySlot: boolean = true
@@ -94,6 +97,11 @@ export class HandView extends Component {
             const drag = slot.addComponent(Drag);
             drag.proxyKey = this.dragBehaviour;
         }
+
+        if (this.clickBehaviour.length > 0) {
+            const click = slot.addComponent(Click);
+            click.proxyKey = this.clickBehaviour;
+        }
         return slot;
     }
 
@@ -111,13 +119,13 @@ export class HandView extends Component {
         this.getComponent(Layout).updateLayout(true);
     }
 
-    public async insertCard(card: Node, index?: number): Promise<boolean> {
+    public async insertCard(card: Node, index?: number): Promise<SlotView> {
         await this.lock?.promise;
         this.lock = new Completer<void>;
 
         if (this.slots.length >= this.maxCardNum) {
             this.lock.complete();
-            return false;
+            return null;
         }
 
         if (index == null || index < 0 || index >= this.maxCardNum) {
@@ -144,7 +152,11 @@ export class HandView extends Component {
         this.activeSlot(slot);
         this.updateLayout();
         this.lock.complete();
-        return true;
+        return slot;
+    }
+
+    public numCards() {
+        return this.slots.length;
     }
 
     public async removeCard(index: number): Promise<boolean> {

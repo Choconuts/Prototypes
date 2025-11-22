@@ -60,7 +60,7 @@ export class GridView extends Component {
 
     indexToCoord(index: number) {
         const j = index % this.gridNum.x;
-        return v2((index - j) / this.gridNum.x, j);
+        return v2(j, (index - j) / this.gridNum.x);
     }
 
     validCoord(coord: Vec2) {

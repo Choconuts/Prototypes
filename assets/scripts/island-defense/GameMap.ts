@@ -10,6 +10,8 @@ import { Hover } from '../common-modal/Hover';
 import { BlockView } from './BlockView';
 import { UnitView } from './UnitView';
 import { Unit } from './Unit';
+import { DeepSea } from './remake/DeepSea';
+import { Click } from './remake/Click';
 const { ccclass, property } = _decorator;
 
 export class BlockPattern {
@@ -30,6 +32,11 @@ export class GameMap extends Component {
     @property(GridView)
     gridView: GridView
 
+    @property
+    clickBehavior: string = 'click-block'
+    @property
+    hoverBehavior: string = 'block-hover'
+
     @property([BlockView])
     blocks: Array<BlockView> = []
 
@@ -44,6 +51,9 @@ export class GameMap extends Component {
     visualOpacity: number = 0.4
     baseInfo: Info
 
+    @property
+    remake: boolean = false
+
     lock: Completer<void> = new Completer
 
     protected onLoad(): void {
@@ -51,10 +61,7 @@ export class GameMap extends Component {
         GameManager.instance.gameReady.then(() => {
             this.baseInfo = Library.instance.get(this.database);
             this.gridView.slots.forEach((slot, index, array) => {
-                const block = Factory.instance.get(this.blockKey);
-                slot.node.addChild(block);
-                this.blocks.push(block.getComponent(BlockView));
-                this.createSelectHover(slot);
+                this.initSea(slot);
             });
             this.initLevelMap();
         });
@@ -68,6 +75,16 @@ export class GameMap extends Component {
         visual.addComponent(RectView);
         visual.node.active = false;
         slot.selectionMaskView = visual.node;
+    }
+
+    initSea(slot: SlotView) {
+        const block = Factory.instance.get(this.blockKey);
+        slot.node.addChild(block);
+        this.blocks.push(block.getComponent(BlockView));
+
+        if (!this.remake) {
+            this.createSelectHover(slot);
+        }
     }
 
     initBlock(coord: Vec2, blockType: string) {
@@ -89,6 +106,48 @@ export class GameMap extends Component {
                 this.initBlock(coord, blockType);
             }
         }
+
+        if (this.remake) {
+            if (this.clickBehavior.length > 0 || this.hoverBehavior.length > 0) {
+                this.gridView.slots.forEach((slot) => {
+                    if (this.clickBehavior.length > 0) {
+                        const click = slot.addComponent(Click);
+                        click.proxyKey = this.clickBehavior;
+                    }
+                    if (this.hoverBehavior.length > 0) {
+                        const click = slot.addComponent(Hover);
+                        click.proxyKey = this.hoverBehavior;
+                    }
+                });
+            }
+
+            const queue: Array<Vec2> = [];
+            const depthArray: Array<number> = new Array(this.blocks.length);
+            for (const pair of this.blockMap) {
+                const coord = this.gridView.indexToCoord(pair[0]);
+                const index = this.gridView.coordToIndex(coord);
+                depthArray[index] = -1;
+                queue.push(coord);
+            }
+
+            while (queue.length > 0) {
+                const coord = queue.shift();
+                const index = this.gridView.coordToIndex(coord);
+                const depth = depthArray[index];
+
+                const neighborCoords = this.gridView.getNeighborCoords(coord, false, false);
+                neighborCoords.forEach((neighborCoord, index, array) => {
+                    const neighborIndex = this.gridView.coordToIndex(neighborCoord);
+                    const neighborDepthSea = this.blocks[neighborIndex].getComponent(DeepSea);
+                    if (depthArray[neighborIndex] == null) {
+                        depthArray[neighborIndex] = depth + 1;
+                        neighborDepthSea.setDepth(depth + 1);
+                        queue.push(neighborCoord);
+                    }
+                });
+            }
+        }
+
         this.lock.complete();
     }
 

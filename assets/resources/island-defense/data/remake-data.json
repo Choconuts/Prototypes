@@ -1,0 +1,545 @@
+{
+    "block-type": {
+        "grass": {
+            "card-type": "block",
+            "card-name": "地形：草原",
+            "card-color": "#99BB77",
+            "desc-row1": "制造一片",
+            "desc-row2": "草地",
+            "block-type": "grass"
+        },
+        "wetland": {
+            "card-type": "block",
+            "card-name": "地形：水域",
+            "card-color": "#5599BB",
+            "desc-row1": "制造一片",
+            "desc-row2": "湿地",
+            "block-type": "wetland"
+        },
+        "sand": {
+            "card-type": "block",
+            "card-name": "地形：沙漠",
+            "card-color": "#DDCC99",
+            "desc-row1": "制造一片",
+            "desc-row2": "沙地",
+            "block-type": "sand"
+        },
+        "wood": {
+            "card-type": "block",
+            "card-name": "地形：森林",
+            "card-color": "#AA6633",
+            "desc-row1": "制造一片",
+            "desc-row2": "林地",
+            "block-type": "wood"
+        },
+        "rock": {
+            "card-type": "block",
+            "card-name": "地形：山脉",
+            "card-color": "#667788",
+            "desc-row1": "制造一片",
+            "desc-row2": "岩地",
+            "block-type": "rock"
+        },
+        "any": {
+            "card-type": "block",
+            "card-name": "地形：任意",
+            "card-color": "#9999AA",
+            "desc-row1": "制造一片",
+            "desc-row2": "随即地形",
+            "block-type": "any"
+        }
+    },
+    "animal-type": {
+        "lion": {
+            "card-type": "animal",
+            "card-name": "狮子",
+            "card-color": "#DDAA55",
+            "desc-row1": "攻击力：高",
+            "desc-row2": "魔力：中",
+            "region-display": [
+                null,   null,   null,   "wood",   null,
+                null,   null,   "grass",   null,   null,
+                null,   "grass",   null,   null,   null
+            ],
+            "region-targets": [11],
+            "region": [
+                {
+                    "display": [null, null, null, "wood", null, null, null, "grass", "grass"],
+                    "target": 7,
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "grass"
+                        },
+                        {
+                            "offset": [1, 0],
+                            "type": "grass"
+                        },
+                        {
+                            "offset": [2, 0],
+                            "type": "wood"
+                        }
+                    ]
+                }
+            ],
+            "attributes": {
+                "cost": 10,
+                "purify": 3,
+                "health": 12,
+                "attack": 6
+            }
+        },
+        "turtoise": {
+            "card-type": "animal",
+            "card-name": "乌龟",
+            "card-color": "#448855",
+            "desc-row1": "生命值：高",
+            "desc-row2": "魔力：高",
+            "region-display": [
+                null,   "wetland",   null,   "wetland",   null,
+                null,   null,   "rock",   null,   null,
+                null,   null,   null,   null,   null
+            ],
+            "region-targets": [7],
+            "region": [
+                {
+                    "display": [null, "wetland", null, "wetland", null, null, null, null, "rock"],
+                    "target": 7,
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "rock"
+                        },
+                        {
+                            "offset": [1, 0],
+                            "type": "wetland"
+                        },
+                        {
+                            "offset": [0, 1],
+                            "type": "wetland"
+                        }
+                    ]
+                }
+            ],
+            "attributes": {
+                "cost": 10,
+                "purify": 5,
+                "health": 25,
+                "attack": 0
+            }
+        },
+        "fox": {
+            "card-type": "animal",
+            "card-name": "狐狸",
+            "card-color": "#DD5544",
+            "desc-row1": "攻击力：低",
+            "desc-row2": "魔力：中",
+            "region-display": [
+                null,   "sand",   null,   null,   null,
+                null,   null,   "wood",   null,   null,
+                null,   null,   null,   null,   null
+            ],
+            "region-targets": [7],
+            "region": [
+                {
+                    "display": [null, null, null, "sand", null, null, null, null, "wood"],
+                    "target": 7,
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "wood"
+                        },
+                        {
+                            "offset": [1, 0],
+                            "type": "sand"
+                        }
+                    ]
+                }
+            ],
+            "attributes": {
+                "cost": 10,
+                "purify": 3,
+                "health": 10,
+                "attack": 2
+            }
+        },
+        "lizard": {
+            "card-type": "animal",
+            "card-name": "沙蜥蜴",
+            "card-color": "#99AA44",
+            "desc-row1": "生命值：低",
+            "desc-row2": "魔力：低",
+            "region-display": [
+                null,   "rock",   null,   null,   "sand",
+                "sand",   null,   "  or",   null,   null,
+                null,   null,   null,   null,   "rock"
+            ],
+            "region-targets": [4, 5],
+            "region": [
+                {
+                    "display": [null, null, null, "rock", null, null, null, null, "sand"],
+                    "target": 7,
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "sand"
+                        },
+                        {
+                            "offset": [1, 0],
+                            "type": "rock"
+                        }
+                    ]
+                },
+                {
+                    "display": [null, null, "rock", null, null, null, null, null, "sand"],
+                    "target": 7,
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "sand"
+                        },
+                        {
+                            "offset": [1, 1],
+                            "type": "rock"
+                        }
+                    ]
+                }
+            ],
+            "attributes": {
+                "cost": 10,
+                "purify": 2,
+                "health": 6,
+                "attack": 0
+            }
+        }
+    },
+    "animal-pool": [
+        {
+            "animal": "@animal-type@lion",
+            "level": 1
+        }
+    ],
+    "magic-type": {
+        "spirit-grass": {
+            "card-type": "magic",
+            "card-name": "结晶",
+            "card-color": "@block-type@grass@card-color",
+            "desc-row1": "获得",
+            "desc-row2": "1灵魂",
+            "region-display": [
+                null,   null,   null,   null,   null,
+                null,   null,   null,   null,   null,
+                null,   null,   null,   null,   null
+            ],
+            "region-targets": [7, 11],
+            "region": [],
+            "attributes": {
+                "strategy": "no-target",
+                "spirit": 1
+            }
+        },
+        "spirit-wood": {
+            "card-type": "magic",
+            "card-name": "结晶",
+            "card-color": "@block-type@wood@card-color",
+            "desc-row1": "获得",
+            "desc-row2": "1灵魂",
+            "region-display": [
+                null,   null,   null,   null,   null,
+                null,   null,   null,   null,   null,
+                null,   null,   null,   null,   null
+            ],
+            "region-targets": [7, 11],
+            "region": [],
+            "attributes": {
+                "strategy": "no-target",
+                "spirit": 1
+            }
+        },
+        "spirit-wetland": {
+            "card-type": "magic",
+            "card-name": "结晶",
+            "card-color": "@block-type@wetland@card-color",
+            "desc-row1": "获得",
+            "desc-row2": "1灵魂",
+            "region-display": [
+                null,   null,   null,   null,   null,
+                null,   null,   null,   null,   null,
+                null,   null,   null,   null,   null
+            ],
+            "region-targets": [7, 11],
+            "region": [],
+            "attributes": {
+                "strategy": "no-target",
+                "spirit": 1
+            }
+        },
+        "spirit-rock": {
+            "card-type": "magic",
+            "card-name": "结晶",
+            "card-color": "@block-type@rock@card-color",
+            "desc-row1": "获得",
+            "desc-row2": "1灵魂",
+            "region-display": [
+                null,   null,   null,   null,   null,
+                null,   null,   null,   null,   null,
+                null,   null,   null,   null,   null
+            ],
+            "region-targets": [7, 11],
+            "region": [],
+            "attributes": {
+                "strategy": "no-target",
+                "spirit": 1
+            }
+        },
+        "spirit-sand": {
+            "card-type": "magic",
+            "card-name": "结晶",
+            "card-color": "@block-type@sand@card-color",
+            "desc-row1": "获得",
+            "desc-row2": "1灵魂",
+            "region-display": [
+                null,   null,   null,   null,   null,
+                null,   null,   null,   null,   null,
+                null,   null,   null,   null,   null
+            ],
+            "region-targets": [7, 11],
+            "region": [],
+            "attributes": {
+                "strategy": "no-target",
+                "spirit": 1
+            }
+        },
+        "thunder": {
+            "card-type": "magic",
+            "card-name": "落雷",
+            "card-color": "@block-type@grass@card-color",
+            "desc-row1": "造成15伤害",
+            "desc-row2": "（建筑优先）",
+            "region-display": [
+                null,   null,   null,   null,   null,
+                null,   null,   "any",   null,   null,
+                null,   "grass",   null,   null,   null
+            ],
+            "region-targets": [7, 11],
+            "region": [
+                {
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "any"
+                        },
+                        {
+                            "offset": [1, 0],
+                            "type": "grass"
+                        }
+                    ]
+                },
+                {
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "grass"
+                        }
+                    ]
+                }
+            ],
+            "attributes": {
+                "strategy": "building-first",
+                "capture": 1,
+                "attack": 15
+            }
+        },
+        "mudslide": {
+            "card-type": "magic",
+            "card-name": "泥石流",
+            "card-color": "@block-type@rock@card-color",
+            "desc-row1": "造成5伤害",
+            "desc-row2": "（全体）",
+            "region-display": [
+                null,   null,   null,   null,   null,
+                null,   null,   "any",   null,   null,
+                null,   "rock",   null,   null,   null
+            ],
+            "region-targets": [7],
+            "region": [
+                {
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "any"
+                        },
+                        {
+                            "offset": [1, 0],
+                            "type": "rock"
+                        }
+                    ]
+                }
+            ],
+            "attributes": {
+                "strategy": "all",
+                "capture": -1,
+                "attack": 5
+            }
+        }
+    },
+    "card-pool": [
+        {
+            "magic": "@magic-type@thunder",
+            "block": "@block-type@grass"
+        },
+        {
+            "magic": "@magic-type@mudslide",
+            "block": "@block-type@wetland"
+        },
+        {
+            "magic": "@magic-type@mudslide",
+            "block": "@block-type@sand"
+        },
+        {
+            "magic": "@magic-type@thunder",
+            "block": "@block-type@wood"
+        },
+        {
+            "magic": "@magic-type@mudslide",
+            "block": "@block-type@rock"
+        }
+    ],
+    "level-config": {
+        "map": [
+            {
+                "coord": [7, 5],
+                "type": "wood"
+            },
+            {
+                "coord": [8, 5],
+                "type": "grass"
+            },
+            {
+                "coord": [7, 4],
+                "type": "rock"
+            }
+        ],
+        "deck": {
+            "cards": [
+                {
+                    "magic": "@magic-type@spirit-grass",
+                    "block": "@block-type@grass"
+                },
+                {
+                    "magic": "@magic-type@spirit-wetland",
+                    "block": "@block-type@wetland"
+                },
+                {
+                    "magic": "@magic-type@spirit-sand",
+                    "block": "@block-type@sand"
+                },
+                {
+                    "magic": "@magic-type@spirit-wood",
+                    "block": "@block-type@wood"
+                },
+                {
+                    "magic": "@magic-type@spirit-rock",
+                    "block": "@block-type@rock"
+                },
+                "@level-config@deck@cards@0",
+                "@level-config@deck@cards@1",
+                "@level-config@deck@cards@2",
+                "@level-config@deck@cards@3",
+                "@level-config@deck@cards@4"
+            ]
+        }
+    },
+    "building-type": {
+        "factory": {
+            "card-name": "工坊",
+            "card-color": "#DDCC77",
+            "desc-row1": "提升探索",
+            "desc-row2": "者的属性",
+            "region-display": [
+                null,   "any",   null,   null,   null,
+                "wood",   null,   "or",   null,   "any",
+                null,  null,   null,   "rock",   null
+            ],
+            "region-targets": [1, 9],
+            "region": [
+                {
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "any"
+                        },
+                        {
+                            "offset": [1, 0],
+                            "type": "rock"
+                        }
+                    ]
+                },
+                {
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "any"
+                        },
+                        {
+                            "offset": [1, 0],
+                            "type": "wood"
+                        }
+                    ]
+                }
+            ],
+            "attributes": {
+                "cost": 10,
+                "purify": 3,
+                "health": 30,
+                "attack": 0,
+                "derive-interval": -1
+            }
+        },
+        "village": {
+            "card-name": "村庄",
+            "card-color": "#DDCC77",
+            "desc-row1": "产生更多",
+            "desc-row2": "的探索者",
+            "region-display": [
+                null,   "any",   null,   null,   null,
+                "wetland",   null,   "or",   null,   "any",
+                null,  null,   null,   "grass",   null
+            ],
+            "region-targets": [1, 9],
+            "region": [
+                {
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "any"
+                        },
+                        {
+                            "offset": [1, 0],
+                            "type": "wetland"
+                        }
+                    ]
+                },
+                {
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "any"
+                        },
+                        {
+                            "offset": [1, 0],
+                            "type": "grass"
+                        }
+                    ]
+                }
+            ],
+            "attributes": {
+                "cost": 10,
+                "purify": 3,
+                "health": 30,
+                "attack": 0,
+                "derive-interval": 10
+            }
+        }
+    }
+}
