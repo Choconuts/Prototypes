@@ -54,7 +54,6 @@ export class MagicCardEffect extends Component {
             }
             else if (attributes.get('strategy').data == 'all') {
                 for (const enemy of enemies) {
-                    console.log('deal', damage)
                     enemy.dealDamage(damage);
                 }
             }

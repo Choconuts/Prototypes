@@ -17,6 +17,8 @@ export class BlockView extends Component {
     newColor: Color = Color.BLACK
     @property
     innerPadding: number = 0
+    @property
+    rectWidget: RectView = null
 
     baseInfo: Info
     info: Info
@@ -47,6 +49,35 @@ export class BlockView extends Component {
             const graphics = this.getComponent(Graphics);
             graphics.fillColor = this.newColor;
             this.getComponent(RectView).draw();
+        }
+        this.rectWidget = rect;
+        this.lock.complete();
+        return true;
+    }
+
+    async changeBlock(blockType): Promise<boolean> {
+        await this.lock?.promise;
+        this.lock = new Completer;
+
+        if (blockType != null) {
+            if (this.rectWidget == null) {
+                this.lock.complete();
+                return this.addBlock(blockType);
+            }
+            else {
+                this.rectWidget.node.active = true;
+                this.info = this.baseInfo.get('block-type').get(blockType);
+                const graphics = this.rectWidget.getComponent(Graphics);
+                graphics.fillColor = Color.fromHEX(new Color, this.info.get('card-color')?.data);
+                this.rectWidget.draw();
+                this.lock.complete();
+                return true;
+            }
+        }
+        else {
+            if (this.rectWidget != null) {
+                this.rectWidget.node.active = false;
+            }
         }
 
         this.lock.complete();

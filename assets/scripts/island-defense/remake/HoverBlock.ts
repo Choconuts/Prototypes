@@ -16,6 +16,9 @@ export class HoverBlock extends Component {
     @property(RectView)
     border: RectView
 
+    @property(Label)
+    label: Label
+
     protected onEnable(): void {
         if (InteractionManager.instance.mode == InteractionMode.IDLE) {
             this.startHover();
@@ -25,6 +28,21 @@ export class HoverBlock extends Component {
 
     protected onDisable(): void {
         this.border?.node.destroy();
+    }
+
+    protected update(dt: number): void {
+        const slot = this.getHover().getComponent(SlotView);
+        if (this.border != null && GameMap.instance.isBlock(slot)) {
+            this.border.node.active = false;
+        }
+        else {
+            if (InteractionManager.instance.canCreateBlock(slot)) {
+                this.setLabelColor(Color.WHITE);
+            }
+            else {
+                this.setLabelColor(Color.RED);
+            }
+        }
     }
 
     public startHover() {
@@ -41,6 +59,12 @@ export class HoverBlock extends Component {
 
     canCreateBlock(slot: SlotView) {
         return slot != null && !GameMap.instance.isBlock(slot) && !GameMap.instance.hasEnemy(slot)
+    }
+
+    setLabelColor(color: Color) {
+        if (this.label != null) {
+            this.label.color = color;
+        }
     }
 
     createBorder() {
@@ -61,6 +85,7 @@ export class HoverBlock extends Component {
             const cost = deepSea.depth + 1;
             label.string = '[-' + cost + ']\n创造';
             label.fontSize = 24;
+            this.label = label;
         }
     }
 

@@ -2,6 +2,13 @@ import { _decorator, Component, Node, NodeEventType } from 'cc';
 import { Proxy } from '../../proxy-manager/Proxy';
 import { GameManager } from '../../proxy-manager/GameManager';
 import { Completer } from '../../toolkits/Functions';
+import { InteractionManager, InteractionMode } from './InteractionManager';
+import { SlotView } from '../../common-view/SlotView';
+import { GameMap } from '../GameMap';
+import { DeepSea } from './DeepSea';
+import { Deck } from './Deck';
+import { Factory } from '../../proxy-manager/Factory';
+import { BlockView } from '../BlockView';
 const { ccclass, property } = _decorator;
 
 @ccclass('Click')
@@ -11,11 +18,20 @@ export class Click extends Component {
     @property
     proxy?: Proxy = null
 
-    completer: Completer<void>
 
     protected onLoad(): void {
         this.node.on(NodeEventType.MOUSE_DOWN, (event) => {
-            this.click();
+            if (this.proxyKey == 'click-block') {
+                if (InteractionManager.instance.mode == InteractionMode.IDLE) {
+                    this.startPlaceBlock();
+                }
+                else {
+                    this.endPlaceBlock();
+                }
+            }
+            else if (this.proxyKey == 'click-card') {
+                this.clickCard();
+            }
         });
 
         this.node.on(NodeEventType.MOUSE_UP, (event) => {
@@ -23,30 +39,30 @@ export class Click extends Component {
         });
     }
 
-    createProxy(): Proxy {
-        this.completer = new Completer;
-        const proxy = GameManager.instance.rootProxy.createProxy(this.node, this.proxyKey);
-        if (proxy != null) {
-            this.proxy = proxy;
-            this.completer.complete();
-        }
-        return proxy;
+    endPlaceBlock() {
+        InteractionManager.instance.endGenerateBlock(InteractionManager.instance.generateBlock == this.getComponent(SlotView));
     }
 
-    click() {
-        if (this.proxy == null) {
-            this.createProxy();
-        }
+    protected onDisable(): void {
+        this.endPlaceBlock();
     }
 
-    close() {
-        if (this.completer == null) {
-            this.proxy = this.proxy?.close();
-        }
-        else {
-            this.completer.promise.then(() => {
-                this.proxy = this.proxy?.close();
-            });
+    startPlaceBlock() {
+        const slot = this.getComponent(SlotView);
+        InteractionManager.instance.startGenerateBlock(slot);
+    }
+
+    protected clickCard(): void {
+        if (InteractionManager.instance.mode == InteractionMode.PLACE_BLOCK) {
+            const slot = this.getComponent(SlotView);
+            const chosen = Deck.instance.chooseCards([slot]);
+            for (let i = 0; i < chosen.length; i++) {
+                if (Deck.instance.chosenBlock != null) break;
+                if (slot != chosen[i]) {
+                    Deck.instance.chooseCards([chosen[i]]);
+                }
+            }
+            InteractionManager.instance.updateGenerateBlock();
         }
     }
 }

@@ -28,6 +28,9 @@ export class Deck extends Component {
 
     chosenCardMap: Map<SlotView, boolean> = new Map;
 
+    @property
+    chosenBlock: string = null
+
     protected onLoad(): void {
         Deck.instance = this;
         GameManager.instance.gameReady.then(() => {
@@ -46,7 +49,7 @@ export class Deck extends Component {
         }
     }
 
-    chooseCards(slots: Array<SlotView>) {
+    chooseCards(slots: Array<SlotView>): Array<SlotView> {
         for (const slot of slots) {
             if (!this.chosenCardMap.has(slot)) {
                 this.chosenCardMap.set(slot, false);
@@ -54,19 +57,46 @@ export class Deck extends Component {
             this.chosenCardMap.set(slot, !this.chosenCardMap.get(slot));
         }
 
-        const chosenSlots = [];
+        const chosenSlots: Array<SlotView> = this.getChosenSlots();
+
+        if (chosenSlots.length > 0) {
+            this.chosenBlock = chosenSlots[0].getComponentInChildren(MagicCardView).blockType();
+            for (const slot of chosenSlots) {
+                if (slot.getComponentInChildren(MagicCardView).blockType() != this.chosenBlock) {
+                    this.chosenBlock = null;
+                    break;
+                }
+            }
+        }
+        else {
+            this.chosenBlock = null;
+        }
+
+        this.handView.setCastMode(chosenSlots);
+        return chosenSlots;
+    }
+
+    getChosenSlots() {
+        const chosenSlots: Array<SlotView> = [];
         for (const pair of this.chosenCardMap) {
             if (pair[1]) {
                 chosenSlots.push(pair[0]);
             }
         }
-
-        this.handView.setCastMode(chosenSlots);
+        return chosenSlots;
     }
 
-    finishChooseCards() {
+    finishChooseCards(success: boolean) {
+        const slots = this.getChosenSlots();
+        this.chosenBlock = null;
         this.chosenCardMap.clear();
         this.handView.setCastMode(null);
+        if (success) {
+            slots.forEach((slot) => {
+                this.handView.updateSlotIndices();
+                this.handView.removeCard(slot.coord.x);
+            })
+        }
     }
 
     getFirstCardsSlots(num: number): SlotView[] {

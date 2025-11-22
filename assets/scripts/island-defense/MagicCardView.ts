@@ -53,7 +53,7 @@ export class MagicCardView extends Component {
     }
 
     blockType() {
-        return this.info?.get('block')?.get('block-type');
+        return this.info?.get('block')?.get('block-type').data;
     }
 
     randomID() {

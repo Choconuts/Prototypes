@@ -121,9 +121,6 @@ export class GameMap extends Component {
                     else {
                         console.error('', this.hoverBehavior);
                     }
-                    if (slot.getComponent(Hover) == null) {
-                        console.log('hover', );
-                    }
                 });
             }
 
