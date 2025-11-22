@@ -229,7 +229,12 @@
         {
             "magic": "@animal-type@lizard",
             "block": "@block-type@sand"
-        }
+        },
+        "@card-pool@0",
+        "@card-pool@1",
+        "@card-pool@2",
+        "@card-pool@3",
+        "@card-pool@4"
     ],
     "magic-type": {
         "spirit-grass": {
@@ -357,6 +362,7 @@
                 }
             ],
             "attributes": {
+                "cost": 8,
                 "strategy": "building-first",
                 "capture": 1,
                 "attack": 15
@@ -389,6 +395,7 @@
                 }
             ],
             "attributes": {
+                "cost": 8,
                 "strategy": "all",
                 "capture": -1,
                 "attack": 5

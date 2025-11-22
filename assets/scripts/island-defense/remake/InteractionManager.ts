@@ -143,24 +143,46 @@ export class InteractionManager extends Component {
         return selectables;
     }
 
-    async endPlayCard(slot: SlotView, noAnimation: boolean = false) {
+    clearVisuals() {
         for (const visual of this.visuals) {
             visual.active = false;
         }
         this.visuals = [];
-        let unit: UnitView = null;
-        if (slot != null) {
-            const card = this.generateBlock.getComponentInChildren(MagicCardView);
-            unit = GameMap.instance.generateUnit(slot.coord, card.getKey(), card.getType() == 'animal', card.getType() == 'building');
-            unit.getComponent(Unit)?.apply(card.cardInfo());
-            GameMap.instance.recalculatePurifyValue();
-        }
+    }
 
-        Deck.instance.finishChooseCards(unit != null, noAnimation);
+    stopCast() {
+        this.clearVisuals();
         if (this.mode == InteractionMode.PLAY_CARD) {
             this.mode = InteractionMode.IDLE;
         }
         this.generateBlock = null;
+    }
+
+    async endPlayCard(slot: SlotView, noAnimation: boolean = false) {
+        const card = this.generateBlock.getComponentInChildren(MagicCardView);
+        if (card.getType() == 'animal') {
+            let unit: UnitView = null;
+            if (slot != null) {
+                unit = GameMap.instance.generateUnit(slot.coord, card.getKey(), card.getType() == 'animal', card.getType() == 'building');
+                unit.getComponent(Unit)?.apply(card.cardInfo());
+                GameMap.instance.recalculatePurifyValue();
+            }
+
+            Deck.instance.finishChooseCards(unit != null, noAnimation);
+            this.stopCast();
+        }
+        else if (card.getType() == 'magic') {
+            console.log('cast', card.cardName());
+            if (this.mode == InteractionMode.PLAY_CARD) {
+                this.mode = InteractionMode.IDLE;
+            }
+            Deck.instance.finishChooseCards(false, noAnimation);
+            this.stopCast();
+        }
+        else {
+            Deck.instance.finishChooseCards(false, noAnimation);
+            this.stopCast();
+        }
     }
 
     async buyCard(): Promise<boolean> {
