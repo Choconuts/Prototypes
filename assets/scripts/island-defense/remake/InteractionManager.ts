@@ -182,6 +182,13 @@ export class InteractionManager extends Component {
         }
     }
 
+    async exitBuyCard() {
+        if (this.mode == InteractionMode.BUY_CARD) {
+            this.mode = InteractionMode.IDLE;
+            this.completer.complete(null);
+        }
+    }
+
     async chooseCard(slot: SlotView): Promise<boolean> {
         if (this.mode == InteractionMode.BUY_CARD) {
             const card = slot.getComponentInChildren(MagicCardView);

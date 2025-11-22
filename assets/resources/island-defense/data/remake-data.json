@@ -87,6 +87,9 @@
                 "purify": 3,
                 "health": 12,
                 "attack": 6
+            },
+            "display": {
+                "sprite": "lion"
             }
         },
         "turtoise": {
@@ -126,6 +129,9 @@
                 "purify": 5,
                 "health": 25,
                 "attack": 0
+            },
+            "display": {
+                "sprite": "lion"
             }
         },
         "fox": {
@@ -161,6 +167,9 @@
                 "purify": 3,
                 "health": 10,
                 "attack": 2
+            },
+            "display": {
+                "sprite": "lion"
             }
         },
         "lizard": {
@@ -210,6 +219,9 @@
                 "purify": 2,
                 "health": 6,
                 "attack": 0
+            },
+            "display": {
+                "sprite": "lion"
             }
         }
     },

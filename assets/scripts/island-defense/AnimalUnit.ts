@@ -2,6 +2,7 @@ import { _decorator, Component, Node } from 'cc';
 import { Info } from '../toolkits/Functions';
 import { UnitView } from './UnitView';
 import { Unit } from './Unit';
+import { LoadPicture } from './remake/LoadPicture';
 const { ccclass, property } = _decorator;
 
 @ccclass('AnimalUnit')
@@ -22,6 +23,11 @@ export class AnimalUnit extends Unit {
         unit.purify = info.get('attributes').get('purify').data;
 
         unit.dealDamage(0);
+
+        const loadPicture = this.getComponentInChildren(LoadPicture);
+        if (loadPicture != null) {
+            loadPicture.load(info);
+        }
     }
 }
 

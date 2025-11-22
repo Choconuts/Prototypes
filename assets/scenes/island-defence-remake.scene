@@ -26,7 +26,7 @@
     "_active": true,
     "_components": [],
     "_prefab": {
-      "__id__": 104
+      "__id__": 105
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -57,7 +57,7 @@
     },
     "autoReleaseAssets": false,
     "_globals": {
-      "__id__": 105
+      "__id__": 106
     },
     "_id": "055bdab4-52f6-4491-bd6d-73208e7f8c85"
   },
@@ -86,6 +86,9 @@
       },
       {
         "__id__": 7
+      },
+      {
+        "__id__": 104
       }
     ],
     "_prefab": null,
@@ -474,7 +477,7 @@
     "_priority": 0,
     "_fov": 45,
     "_fovAxis": 0,
-    "_orthoHeight": 449.85144644253324,
+    "_orthoHeight": 360,
     "_near": 0,
     "_far": 2000,
     "_color": {
@@ -1038,7 +1041,7 @@
     "_string": "灵魂\n[20]",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 29.9765625,
+    "_actualFontSize": 23.666666666666668,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -2517,7 +2520,7 @@
     "_string": "补满\n手牌",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 29.9765625,
+    "_actualFontSize": 23.666666666666668,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -2876,7 +2879,7 @@
     "_string": "释放\n全部",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 29.9765625,
+    "_actualFontSize": 23.666666666666668,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -3150,7 +3153,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 182.23656991138913,
+      "width": 182.2332548759353,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -3183,7 +3186,7 @@
     "_string": "净化值：0",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 59.953125,
+    "_actualFontSize": 47.333333333333336,
     "_fontSize": 40,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -3609,6 +3612,22 @@
     "_id": "beK9dJ9FRL34/O8EY2AwsK"
   },
   {
+    "__type__": "1fdfckiWlBObLEtN0mZg2x+",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 2
+    },
+    "_enabled": true,
+    "__prefab": null,
+    "directories": [
+      "island-defense/textures/remake"
+    ],
+    "verbose": false,
+    "_id": "87TXzlfe9IC4X/cpY+iTyc"
+  },
+  {
     "__type__": "cc.PrefabInfo",
     "root": null,
     "asset": null,
@@ -3619,28 +3638,28 @@
   {
     "__type__": "cc.SceneGlobals",
     "ambient": {
-      "__id__": 106
-    },
-    "shadows": {
       "__id__": 107
     },
-    "_skybox": {
+    "shadows": {
       "__id__": 108
     },
-    "fog": {
+    "_skybox": {
       "__id__": 109
     },
-    "octree": {
+    "fog": {
       "__id__": 110
     },
-    "skin": {
+    "octree": {
       "__id__": 111
     },
-    "lightProbeInfo": {
+    "skin": {
       "__id__": 112
     },
-    "postSettings": {
+    "lightProbeInfo": {
       "__id__": 113
+    },
+    "postSettings": {
+      "__id__": 114
     },
     "bakedWithStationaryMainLight": false,
     "bakedWithHighpLightmap": false
