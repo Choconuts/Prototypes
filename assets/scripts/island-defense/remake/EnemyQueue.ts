@@ -1,10 +1,11 @@
-import { _decorator, Component, Node, randomRange } from 'cc';
+import { _decorator, Component, Node, randomRange, Vec2 } from 'cc';
 import { GridView } from '../../common-view/GridView';
 import { GameManager } from '../../proxy-manager/GameManager';
 import { ScheduleView } from './ScheduleView';
 import { Factory } from '../../proxy-manager/Factory';
 import { ProgressView } from '../../common-view/ProgressView';
 import { GameMap } from '../GameMap';
+import { SlotView } from '../../common-view/SlotView';
 const { ccclass, property } = _decorator;
 
 @ccclass('EnemyQueue')
@@ -13,6 +14,10 @@ export class EnemyQueue extends Component {
     gridView: GridView
     @property
     scheduleKey: string = 'schedule-view'
+    @property
+    enemyKey = 'enemy-unit-remake'
+    @property
+    buildingKey = 'house-unit-remake'
     @property(ProgressView)
     progress: ProgressView
     @property
@@ -57,12 +62,61 @@ export class EnemyQueue extends Component {
         this.periods[1]?.setBlockType(random);
     }
 
-    async explore(blockTypes: Array<String>) {
+    validateNeighborsForExplore(neighbors: Array<Vec2>) {
+        for (const neighbor of neighbors) {
+            const slot = GameMap.instance.coordToSlot(neighbor);
 
+            if (!GameMap.instance.isBlock(slot)) {
+                return true;
+            }
+            else {
+                for (const enemy of GameMap.instance.getEnemies(slot)) {
+                    if (enemy.isBuilding) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    validateSlotForBuild(slot: SlotView) {
+        for (const enemy of GameMap.instance.getEnemies(slot)) {
+            if (!enemy.isBuilding) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    async explore(blockTypes: Array<String>) {
+        const blockSet = new Set(blockTypes);
+        if (blockSet.size == 0) return;
+
+        for (const pair of GameMap.instance.blockMap) {
+            if (blockSet.has(pair[1].blockType)) {
+                const coord = GameMap.instance.gridView.indexToCoord(pair[0]);
+                const neighbors = GameMap.instance.neighbors(coord);
+
+                if (this.validateNeighborsForExplore(neighbors)) {
+                    GameMap.instance.generateUnit(coord, this.enemyKey, false, false);
+                }
+            }
+        }
     }
 
     async build(blockTypes: Array<String>) {
+        const blockSet = new Set(blockTypes);
+        if (blockSet.size == 0) return;
+        for (const pair of GameMap.instance.blockMap) {
+            if (blockSet.has(pair[1].blockType)) {
+                const coord = GameMap.instance.gridView.indexToCoord(pair[0]);
 
+                if (this.validateSlotForBuild(GameMap.instance.coordToSlot(coord))) {
+                    GameMap.instance.generateUnit(coord, this.buildingKey, false, true);
+                }
+            }
+        }
     }
 
     randomMapSelection(blockCounts: Map<string, number>, totalCounts: number): string {
@@ -121,12 +175,12 @@ export class EnemyQueue extends Component {
             const schedule = this.periods[index];
             if (schedule.blockTypeA != null) {
                 await schedule.highlight();
-            }
-            if (index == 0) {
-                await this.build(schedule.blockTypes());
-            }
-            else if (index == 1) {
-                await this.explore(schedule.blockTypes());
+                if (index == 0) {
+                    await this.build(schedule.blockTypes());
+                }
+                else if (index == 1) {
+                    await this.explore(schedule.blockTypes());
+                }
             }
         }
 

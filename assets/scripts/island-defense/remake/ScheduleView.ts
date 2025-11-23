@@ -81,9 +81,8 @@ export class ScheduleView extends Component {
     async highlight(): Promise<void> {
         const completer: Completer<void> = new Completer;
 
-        tween(this.graphicC).to(this.duration, { fillColor: this.highlightColor }, { onUpdate: () => this.redraw(), easing: 'quadInOut' }).start();
-        tween(this.graphicC).delay(this.duration).to(this.duration, { fillColor: this.initColor }, 
-            { onUpdate: () => this.redraw(), easing: 'quadInOut', onComplete: () => completer.complete() }).start();
+        tween(this.graphicC).to(this.duration, { fillColor: this.highlightColor }, { onUpdate: () => this.redraw(), easing: 'quadInOut', onComplete: () => completer.complete() }).start();
+        tween(this.graphicC).delay(this.duration).to(this.duration, { fillColor: this.initColor }, { onUpdate: () => this.redraw(), easing: 'quadInOut' }).start();
         return completer.promise;
     }
 }

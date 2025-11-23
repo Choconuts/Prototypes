@@ -287,7 +287,11 @@ export class GameMap extends Component {
         const node = Factory.instance.get(unitKey);
         const unit = node?.getComponent(UnitView);
         if (unit == null) {
-            Factory.instance.put(unitKey, node);
+
+            if (node != null) {
+                Factory.instance.put(unitKey, node);
+            }
+            
             this.lock.complete();
             return null;
         }
@@ -537,6 +541,10 @@ export class GameMap extends Component {
 
         this.totalPurify = purify;
         return purify;
+    }
+
+    neighbors(coord: Vec2): Array<Vec2> {
+        return this.gridView.getNeighborCoords(coord, false, true);
     }
 }
 

@@ -9,7 +9,11 @@ const { ccclass, property } = _decorator;
 export class EnemyUnit extends Unit {
     onEnable() {
         const move = this.getComponentInChildren(MoveBehavior);
-        this.restartMove(move);
+
+        if (move != null) {
+            this.restartMove(move);
+        }
+
         this.getComponent(UnitView).dealDamage(0);
     }
 
