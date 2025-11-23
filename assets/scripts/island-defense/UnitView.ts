@@ -107,10 +107,10 @@ export class UnitView extends Component {
                 }
 
                 if (this.isBuildingFinished) {
-                    healthBar.setColor(Color.GREEN);
+                    healthBar.setColor(new Color(0, 255,0, 255));
                 }
                 else {
-                    healthBar.setColor(Color.GRAY);
+                    healthBar.setColor(new Color(128, 128, 144, 255));
                 }
             }
             else {
@@ -136,6 +136,8 @@ export class UnitView extends Component {
 
         if (this.isBuilding) {
             this.health = this.buildingInitHealth;
+            const healthBar = this.getComponentInChildren(ProgressView);
+            healthBar.setValueWithoutAnimation(0);
         }
     }
 }

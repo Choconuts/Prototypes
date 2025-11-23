@@ -38,6 +38,14 @@ export class ProgressView extends Component {
         return barRect;
     }
 
+    setValueWithoutAnimation(newValue: number) {
+        newValue = clamp(newValue, 0, 1);
+        const rect = this.progress.rect.clone();
+        rect.xMax = this.progress.rect.xMin + newValue * this.maxRectLength;
+        this.progress.rect = rect;
+        this.progress.draw();
+    }
+
     get value(): number {
         const length = this.progress.rect.xMax - this.progress.rect.xMin;
         return length / this.maxRectLength;

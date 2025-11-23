@@ -6,6 +6,8 @@ import { Factory } from '../../proxy-manager/Factory';
 import { ProgressView } from '../../common-view/ProgressView';
 import { GameMap } from '../GameMap';
 import { SlotView } from '../../common-view/SlotView';
+import { Unit } from '../Unit';
+import { Deck } from './Deck';
 const { ccclass, property } = _decorator;
 
 @ccclass('EnemyQueue')
@@ -99,10 +101,18 @@ export class EnemyQueue extends Component {
                 const neighbors = GameMap.instance.neighbors(coord);
 
                 if (this.validateNeighborsForExplore(neighbors)) {
-                    GameMap.instance.generateUnit(coord, this.enemyKey, false, false);
+                    const unit = GameMap.instance.generateUnit(coord, this.enemyKey, false, false);
+                    unit.getComponent(Unit)?.apply(this.getInfo());
                 }
             }
         }
+    }
+
+    getInfo(isBuilding: boolean = false) {
+        if (!isBuilding) {
+            return null;
+        }
+        return Deck.instance.baseInfo.get('building-type').get('village');
     }
 
     async build(blockTypes: Array<String>) {
@@ -113,7 +123,8 @@ export class EnemyQueue extends Component {
                 const coord = GameMap.instance.gridView.indexToCoord(pair[0]);
 
                 if (this.validateSlotForBuild(GameMap.instance.coordToSlot(coord))) {
-                    GameMap.instance.generateUnit(coord, this.buildingKey, false, true);
+                    const unit = GameMap.instance.generateUnit(coord, this.buildingKey, false, true);
+                    unit.getComponent(Unit)?.apply(this.getInfo(true));
                 }
             }
         }

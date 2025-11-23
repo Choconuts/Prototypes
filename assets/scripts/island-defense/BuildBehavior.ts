@@ -35,8 +35,8 @@ export class BuildBehavior extends Behavior {
     async waitMove() {
         if (this.mover != null) {
             await this.mover.completer.promise;
-            this.working = true;
         }
+        this.working = true;
     }
 
     enterCondition(): boolean {

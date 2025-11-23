@@ -18,9 +18,11 @@ export class HouseUnit extends Unit {
     update(deltaTime: number) {
         if (this.deriveInterval > 0) {
             const derive = this.getComponentInChildren(DeriveBehavior);
-            const unit = this.getComponent(UnitView);
-            if (unit.isBuildingFinished) {
-               derive.setInterval(this.deriveInterval);
+            if (derive != null) {
+                const unit = this.getComponent(UnitView);
+                if (unit.isBuildingFinished) {
+                derive.setInterval(this.deriveInterval);
+                }
             }
         }
     }
@@ -33,6 +35,8 @@ export class HouseUnit extends Unit {
         unit.attack = attributes.get('attack').data;
         unit.purify = attributes.get('purify').data;
         unit.isBuildingFinished = false;
+        unit.isBuilding = true;
+
         unit.dealDamage(0);
 
         const interval = attributes.get('derive-interval').data;
