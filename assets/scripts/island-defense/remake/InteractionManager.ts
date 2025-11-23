@@ -114,6 +114,7 @@ export class InteractionManager extends Component {
         slots = slots.sort((a, b) => random() - 0.5);
 
         if (card.getType() == 'magic') {
+            console.log('play', card.cardName(), slots.length);
             const strategy = card.getAttribute('strategy');
 
             for (const slot of slots) {
@@ -133,6 +134,7 @@ export class InteractionManager extends Component {
             }
         }
 
+        console.log('selected', card.cardName(), slots.length);
         return slots[0];
     }
 
@@ -143,7 +145,6 @@ export class InteractionManager extends Component {
                 Deck.instance.gainSpirit(card.gainSpirit());
                 await Deck.instance.discard(slot);
             }
-
         }
         else {
             if (this.mode == InteractionMode.IDLE) {
@@ -156,7 +157,7 @@ export class InteractionManager extends Component {
 
             if (autoCast) {
                 const target = this.randomSelectTarget(card, selectables);
-                this.endPlayCard(target, true);
+                await this.endPlayCard(target, true);
             }
         }
     }
@@ -243,7 +244,7 @@ export class InteractionManager extends Component {
                 GameMap.instance.recalculatePurifyValue();
             }
 
-            Deck.instance.finishChooseCards(unit != null, noAnimation);
+            await Deck.instance.finishChooseCards(slot != null, noAnimation);
             this.stopCast();
         }
         else if (card.getType() == 'magic') {
@@ -251,11 +252,11 @@ export class InteractionManager extends Component {
             if (this.mode == InteractionMode.PLAY_CARD) {
                 this.mode = InteractionMode.IDLE;
             }
-            Deck.instance.finishChooseCards(true, noAnimation);
+            await Deck.instance.finishChooseCards(slot != null, noAnimation);
             this.stopCast();
         }
         else {
-            Deck.instance.finishChooseCards(false, noAnimation);
+            await Deck.instance.finishChooseCards(true, noAnimation);
             this.stopCast();
         }
     }

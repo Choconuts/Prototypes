@@ -16,6 +16,12 @@ export class LoadPicture extends Component {
     load(info: Info) {
         const img = info.get('display').get('sprite').data;
         const sprite = ArtData.instance.get(img);
+
+        if (sprite == null) {
+            console.error(img, 'is null');
+            return;
+        }
+        
         const aspectRatio = sprite.originalSize.y / sprite.originalSize.x;
         const ui = this.getComponent(UITransform);
         ui.setContentSize(ui.contentSize.x, ui.contentSize.x * aspectRatio);

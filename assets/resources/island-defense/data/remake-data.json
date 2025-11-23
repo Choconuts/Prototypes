@@ -131,7 +131,7 @@
                 "attack": 1
             },
             "display": {
-                "sprite": "lion"
+                "sprite": "turtoise"
             }
         },
         "fox": {
@@ -171,7 +171,7 @@
                 "attack": 2
             },
             "display": {
-                "sprite": "lion"
+                "sprite": "fox"
             }
         },
         "lizard": {
@@ -207,7 +207,7 @@
                 "attack": 0
             },
             "display": {
-                "sprite": "lion"
+                "sprite": "lizard"
             }
         },
         "egret": {
@@ -247,7 +247,7 @@
                 "attack": 0
             },
             "display": {
-                "sprite": "lion"
+                "sprite": "egret"
             }
         }
     },
