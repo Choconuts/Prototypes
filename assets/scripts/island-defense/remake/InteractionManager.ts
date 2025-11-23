@@ -53,7 +53,8 @@ export class InteractionManager extends Component {
             return false;
         }
         const canPlaceBlock = slot != null && !GameMap.instance.isBlock(slot) && !GameMap.instance.hasEnemy(slot);
-        if (!canPlaceBlock) {
+        const adjacentToBlock = GameMap.instance.neighborBlocks(slot.node.worldPosition).length > 0;
+        if (!canPlaceBlock || !adjacentToBlock) {
             return false;
         }
         const deepSea = slot.getComponentInChildren(DeepSea);
@@ -70,7 +71,9 @@ export class InteractionManager extends Component {
         const num = deepSea.depth + 1;
         const slots = await Deck.instance.getFirstCardsSlots(num);
 
-        if (canPlaceBlock && slots.length > 0) {
+        const adjacentToBlock = GameMap.instance.neighborBlocks(slot.node.worldPosition).length > 0;
+
+        if (canPlaceBlock && slots.length > 0 && adjacentToBlock) {
             this.mode = InteractionMode.PLACE_BLOCK;
             this.generateBlock = slot;
             await Deck.instance.chooseCards(slots);

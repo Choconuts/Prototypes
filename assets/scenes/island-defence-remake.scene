@@ -26,7 +26,7 @@
     "_active": true,
     "_components": [],
     "_prefab": {
-      "__id__": 114
+      "__id__": 115
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -57,7 +57,7 @@
     },
     "autoReleaseAssets": false,
     "_globals": {
-      "__id__": 115
+      "__id__": 116
     },
     "_id": "055bdab4-52f6-4491-bd6d-73208e7f8c85"
   },
@@ -86,6 +86,9 @@
       },
       {
         "__id__": 7
+      },
+      {
+        "__id__": 114
       }
     ],
     "_prefab": null,
@@ -3911,6 +3914,22 @@
     "_id": "beK9dJ9FRL34/O8EY2AwsK"
   },
   {
+    "__type__": "1fdfckiWlBObLEtN0mZg2x+",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 2
+    },
+    "_enabled": true,
+    "__prefab": null,
+    "directories": [
+      "island-defense/textures/remake"
+    ],
+    "verbose": true,
+    "_id": "08LzCVNXVBh6UqcL8SJ/m5"
+  },
+  {
     "__type__": "cc.PrefabInfo",
     "root": null,
     "asset": null,
@@ -3921,28 +3940,28 @@
   {
     "__type__": "cc.SceneGlobals",
     "ambient": {
-      "__id__": 116
-    },
-    "shadows": {
       "__id__": 117
     },
-    "_skybox": {
+    "shadows": {
       "__id__": 118
     },
-    "fog": {
+    "_skybox": {
       "__id__": 119
     },
-    "octree": {
+    "fog": {
       "__id__": 120
     },
-    "skin": {
+    "octree": {
       "__id__": 121
     },
-    "lightProbeInfo": {
+    "skin": {
       "__id__": 122
     },
-    "postSettings": {
+    "lightProbeInfo": {
       "__id__": 123
+    },
+    "postSettings": {
+      "__id__": 124
     },
     "bakedWithStationaryMainLight": false,
     "bakedWithHighpLightmap": false
