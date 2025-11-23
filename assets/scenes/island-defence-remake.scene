@@ -2918,7 +2918,7 @@
     "progress": {
       "__id__": 76
     },
-    "periodInterval": 30,
+    "periodInterval": 5,
     "currentTime": 0,
     "firstAgeLength": 3,
     "age": 0,

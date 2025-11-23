@@ -47,7 +47,7 @@ export class BlockView extends Component {
 
         if (this.changeColor) {
             const graphics = this.getComponent(Graphics);
-            graphics.fillColor = this.newColor;
+            graphics.fillColor = Color.fromHEX(new Color, '#F1E9CB');
             this.getComponent(RectView).draw();
         }
         this.rectWidget = rect;

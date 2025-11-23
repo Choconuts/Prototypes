@@ -274,7 +274,19 @@ export class GameMap extends Component {
         return matchSlots;
     }
 
-    putOnMap(node: Node, worldPosition: Vec3) {
+    putOnMap(node: Node, worldPosition: Vec3, onGrid?: SlotView) {
+        if (onGrid != null) {
+            const grid = onGrid.getComponentInChildren(GridView);
+            const pos = grid.slots.filter((a) => a.node.children.length == 0);
+            if (pos.length > 0) {
+                const p = pos[randomRangeInt(0, pos.length)];
+                p.node.addChild(node);
+                node.position = v3(0, 0, 0);
+                node.angle = -grid.node.angle;
+                return;
+            }
+
+        }
         this.node.addChild(node);
         const transform = this.getComponent(UITransform);
         const relative = transform.convertToNodeSpaceAR(v3(worldPosition.x, worldPosition.y, 0));
@@ -291,7 +303,7 @@ export class GameMap extends Component {
             if (node != null) {
                 Factory.instance.put(unitKey, node);
             }
-            
+
             this.lock.complete();
             return null;
         }
@@ -299,13 +311,13 @@ export class GameMap extends Component {
         const initPosition = slot.node.worldPosition.clone();
 
         if (isAnimal) {
-            initPosition.add3f(0, -20, 0);
+            initPosition.add3f(10, -20, 0);
         }
         else if (isBuilding) {
-            initPosition.add3f(0, 20, 0);
+            initPosition.add3f(-10, 20, 0);
         }
 
-        this.putOnMap(node, initPosition);
+        this.putOnMap(node, initPosition, !isAnimal && !isBuilding && this.remake ? slot : null);
         this.units.push(unit);
 
         if (isAnimal) {
