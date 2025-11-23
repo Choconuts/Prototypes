@@ -135,7 +135,7 @@
       "proxy-manager/prefabs",
       "island-defense/prefabs"
     ],
-    "verbose": false,
+    "verbose": true,
     "initPoolSize": 2,
     "_id": "eaYPBkRSpJqoXvXMVyQVsy"
   },
@@ -2700,16 +2700,16 @@
     "cornerRadius": 20,
     "background": {
       "__type__": "cc.Color",
-      "r": 116,
-      "g": 122,
-      "b": 124,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "foreground": {
       "__type__": "cc.Color",
-      "r": 83,
-      "g": 145,
-      "b": 255,
+      "r": 0,
+      "g": 255,
+      "b": 0,
       "a": 255
     },
     "duration": 0.1,
@@ -4197,9 +4197,9 @@
     "_lineCap": 0,
     "_fillColor": {
       "__type__": "cc.Color",
-      "r": 116,
-      "g": 122,
-      "b": 124,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 0
     },
     "_miterLimit": 10,

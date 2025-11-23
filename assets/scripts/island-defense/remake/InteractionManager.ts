@@ -161,6 +161,41 @@ export class InteractionManager extends Component {
         this.generateBlock = null;
     }
 
+    async resolveMagicEffect(card: MagicCardView, slot: SlotView, noAnimation: boolean = false): Promise<boolean> {
+        if (slot == null) return false;
+        const strategy = card.getAttribute('strategy');
+        const effectType = card.getAttribute('effect-type');
+        const damage = effectType == 'damage' ? card.getAttribute('attack') : 0;
+        console.log('resolve', strategy, effectType, damage);
+        if (strategy == 'random-enemy') {
+            const enemies = GameMap.instance.getEnemies(slot);
+            if (enemies.length > 0) {
+                const enemy = enemies[randomRangeInt(0, enemies.length)];
+
+                if (effectType == 'damage') {
+                    enemy.dealDamage(damage);
+                }
+
+        console.log('deal', strategy, effectType, damage);
+                return true;
+            }
+        }
+        else if (strategy == 'all-enemy') {
+            const enemies = GameMap.instance.getEnemies(slot);
+            if (enemies.length > 0) {
+                for (const enemy of enemies) {
+                    if (effectType == 'damage') {
+                        enemy.dealDamage(damage);
+                    }
+                }
+        console.log('deal', strategy, effectType, damage);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     async endPlayCard(slot: SlotView, noAnimation: boolean = false) {
         const card = this.generateBlock.getComponentInChildren(MagicCardView);
         if (card.getType() == 'animal') {
@@ -175,11 +210,11 @@ export class InteractionManager extends Component {
             this.stopCast();
         }
         else if (card.getType() == 'magic') {
-            console.log('cast', card.cardName());
+            const success = await this.resolveMagicEffect(card, slot, noAnimation);
             if (this.mode == InteractionMode.PLAY_CARD) {
                 this.mode = InteractionMode.IDLE;
             }
-            Deck.instance.finishChooseCards(false, noAnimation);
+            Deck.instance.finishChooseCards(success, noAnimation);
             this.stopCast();
         }
         else {

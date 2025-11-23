@@ -2,7 +2,7 @@ import { _decorator, clamp, Color, Component, Graphics, Node, settings, Sorting2
 import { Behavior } from '../behavior-tree/Behavior';
 import { GameMap } from './GameMap';
 import { ProgressView } from '../common-view/ProgressView';
-import { getOrAddComponent, Info } from '../toolkits/Functions';
+import { Completer, getOrAddComponent, Info } from '../toolkits/Functions';
 const { ccclass, property } = _decorator;
 
 const sortingLayers = settings.querySettings("engine", "sortingLayers");
@@ -107,25 +107,30 @@ export class UnitView extends Component {
                 }
 
                 if (this.isBuildingFinished) {
-                    healthBar.setColor(new Color(0, 255,0, 255));
+                    healthBar.setColor(new Color(0, 255, 0, 255));
                 }
                 else {
                     healthBar.setColor(new Color(128, 128, 144, 255));
                 }
             }
             else {
-                if (this.health >= this.maxHealth || this.health <= 0) {
-                    healthBar.node.active = false;
-                }
-                else {
-                    healthBar.node.active = true;
-                }
+                // if (healthBar.value == 1 || healthBar.value == 0) {
+                //     healthBar.node.active = false;
+                // }
+                // else {
+                //     healthBar.node.active = true;
+                // }
             }
         }
     }
 
     dead() {
-        GameMap.instance.removeUnit(this);
+        const completer: Completer<void> = new Completer;
+        setTimeout(() => {
+            completer.complete();
+        }, 500);
+
+        GameMap.instance.removeUnit(this, completer.promise);
     }
 
     spawn(unitKey: string, isAnimal: boolean, isBuilding: boolean) {

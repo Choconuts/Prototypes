@@ -264,6 +264,7 @@
             "region": [],
             "attributes": {
                 "strategy": "no-target",
+                "effect-type": "spirit",
                 "spirit": 1
             }
         },
@@ -282,6 +283,7 @@
             "region": [],
             "attributes": {
                 "strategy": "no-target",
+                "effect-type": "spirit",
                 "spirit": 1
             }
         },
@@ -300,6 +302,7 @@
             "region": [],
             "attributes": {
                 "strategy": "no-target",
+                "effect-type": "spirit",
                 "spirit": 1
             }
         },
@@ -318,6 +321,7 @@
             "region": [],
             "attributes": {
                 "strategy": "no-target",
+                "effect-type": "spirit",
                 "spirit": 1
             }
         },
@@ -336,6 +340,7 @@
             "region": [],
             "attributes": {
                 "strategy": "no-target",
+                "effect-type": "spirit",
                 "spirit": 1
             }
         },
@@ -344,7 +349,7 @@
             "card-name": "落雷",
             "card-color": "@block-type@grass@card-color",
             "desc-row1": "造成15伤害",
-            "desc-row2": "（建筑优先）",
+            "desc-row2": "（随机）",
             "region-display": [
                 null,   null,   null,   null,   null,
                 null,   null,   "any",   null,   null,
@@ -375,7 +380,8 @@
             ],
             "attributes": {
                 "cost": 8,
-                "strategy": "building-first",
+                "effect-type": "damage",
+                "strategy": "random-enemy",
                 "capture": 1,
                 "attack": 15
             }
@@ -408,7 +414,8 @@
             ],
             "attributes": {
                 "cost": 8,
-                "strategy": "all",
+                "effect-type": "damage",
+                "strategy": "all-enemy",
                 "capture": -1,
                 "attack": 5
             }

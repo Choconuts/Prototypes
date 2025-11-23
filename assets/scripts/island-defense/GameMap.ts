@@ -297,6 +297,11 @@ export class GameMap extends Component {
         if (!this.gridView.validCoord(coord)) return;
         const slot = this.gridView.slots[this.gridView.coordToIndex(coord)]
         const node = Factory.instance.get(unitKey);
+        if (node == null) {
+            console.error('fatal', unitKey, 'node is null!');
+            console.log('pool', Factory.instance.poolMap);
+            console.log('pool', Factory.instance.prefabMap);
+        }
         const unit = node?.getComponent(UnitView);
         if (unit == null) {
 
@@ -311,10 +316,10 @@ export class GameMap extends Component {
         const initPosition = slot.node.worldPosition.clone();
 
         if (isAnimal) {
-            initPosition.add3f(10, -20, 0);
+            initPosition.add3f(10, -25, 0);
         }
         else if (isBuilding) {
-            initPosition.add3f(-10, 20, 0);
+            initPosition.add3f(-10, 25, 0);
         }
 
         this.putOnMap(node, initPosition, !isAnimal && !isBuilding && this.remake ? slot : null);
@@ -524,7 +529,7 @@ export class GameMap extends Component {
         return null;
     }
 
-    removeUnit(unit: UnitView) {
+    removeUnit(unit: UnitView, promise?: Promise<void>) {
         if (unit.isAnimal) {
             const idx = this.findAnimalIndex(unit);
             this.animalMap.delete(idx);
@@ -534,8 +539,17 @@ export class GameMap extends Component {
                 return enemy != unit;
             });
         }
-        unit.node.removeFromParent();
-        Factory.instance.put(unit.unitKey, unit.node);
+
+        if (promise == null) {
+            unit.node.removeFromParent();
+            Factory.instance.put(unit.unitKey, unit.node);
+        }
+        else {
+            promise.then(() => {
+                unit.node.removeFromParent();
+                Factory.instance.put(unit.unitKey, unit.node);
+            });
+        }
         this.recalculatePurifyValue();
     }
 

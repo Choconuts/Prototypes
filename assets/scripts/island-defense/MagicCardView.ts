@@ -99,6 +99,13 @@ export class MagicCardView extends Component {
     getKey() {
         return 'animal-unit-remake';
     }
+
+    getAttribute(tag: string) {
+        const attributes = this.cardInfo()?.get('attributes');
+        const info = attributes?.get(tag);
+        if (info == null || info.data == null) return null;
+        return info.data;
+    }
 }
 
 
