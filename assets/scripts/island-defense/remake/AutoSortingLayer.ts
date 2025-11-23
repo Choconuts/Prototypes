@@ -7,7 +7,7 @@ export class AutoSortingLayer extends Component {
     @property
     layer: number = 3
 
-    protected onLoad(): void {
+    protected start(): void {
         this.updateLayers();
     }
 

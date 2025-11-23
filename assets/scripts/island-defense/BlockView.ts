@@ -10,7 +10,7 @@ export class BlockView extends Component {
     @property
     database: string = 'magic-card-data'
     @property
-    blockType: string = null
+    blockType: string = ''
     @property
     changeColor: boolean = false
     @property(Color)

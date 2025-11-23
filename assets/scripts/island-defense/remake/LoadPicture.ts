@@ -19,7 +19,6 @@ export class LoadPicture extends Component {
         const aspectRatio = sprite.originalSize.y / sprite.originalSize.x;
         const ui = this.getComponent(UITransform);
         ui.setContentSize(ui.contentSize.x, ui.contentSize.x * aspectRatio);
-
         this.getComponent(Sprite).spriteFrame = sprite;
     }
 }
