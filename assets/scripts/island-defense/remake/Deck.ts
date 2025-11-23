@@ -215,7 +215,7 @@ export class Deck extends Component {
 
     randomCardsFromPool(num: number): Array<MagicCardView> {
         const cards: Array<MagicCardView> = [];
-        const arrayInfo = this.baseInfo.get('animal-pool');
+        const arrayInfo = this.baseInfo.get('card-pool');
         const arrayLength = arrayInfo.arrayLength;
 
         let candidates = [];

@@ -54,18 +54,16 @@
             "card-type": "animal",
             "card-name": "狮子",
             "card-color": "@block-type@grass@card-color",
-            "desc-row1": "攻击力：高",
-            "desc-row2": "魔力：中",
+            "desc-row1": "♥12 🗡6",
+            "desc-row2": "🌱 5",
             "region-display": [
-                null,   null,   null,   "wood",   null,
                 null,   null,   "grass",   null,   null,
-                null,   "grass",   null,   null,   null
+                null,   "grass",   null,   "grass",   null,
+                null,   null,   "wood",   null,   null
             ],
-            "region-targets": [11],
+            "region-targets": [2],
             "region": [
                 {
-                    "display": [null, null, null, "wood", null, null, null, "grass", "grass"],
-                    "target": 7,
                     "match": [
                         {
                             "offset": [0, 0],
@@ -76,7 +74,11 @@
                             "type": "grass"
                         },
                         {
-                            "offset": [2, 0],
+                            "offset": [0, 1],
+                            "type": "grass"
+                        },
+                        {
+                            "offset": [1, 1],
                             "type": "wood"
                         }
                     ]
@@ -84,7 +86,7 @@
             ],
             "attributes": {
                 "cost": 10,
-                "purify": 3,
+                "purify": 5,
                 "health": 12,
                 "attack": 6
             },
@@ -96,8 +98,8 @@
             "card-type": "animal",
             "card-name": "乌龟",
             "card-color": "@block-type@rock@card-color",
-            "desc-row1": "生命值：高",
-            "desc-row2": "魔力：高",
+            "desc-row1": "♥20 🗡1",
+            "desc-row2": "🌱 5",
             "region-display": [
                 null,   "wetland",   null,   "wetland",   null,
                 null,   null,   "rock",   null,   null,
@@ -106,8 +108,6 @@
             "region-targets": [7],
             "region": [
                 {
-                    "display": [null, "wetland", null, "wetland", null, null, null, null, "rock"],
-                    "target": 7,
                     "match": [
                         {
                             "offset": [0, 0],
@@ -125,10 +125,10 @@
                 }
             ],
             "attributes": {
-                "cost": 10,
-                "purify": 5,
-                "health": 25,
-                "attack": 0
+                "cost": 8,
+                "purify": 6,
+                "health": 20,
+                "attack": 1
             },
             "display": {
                 "sprite": "lion"
@@ -138,18 +138,16 @@
             "card-type": "animal",
             "card-name": "狐狸",
             "card-color": "@block-type@wood@card-color",
-            "desc-row1": "攻击力：低",
-            "desc-row2": "魔力：中",
+            "desc-row1": "♥10 🗡2",
+            "desc-row2": "🌱 4",
             "region-display": [
-                null,   "sand",   null,   null,   null,
-                null,   null,   "wood",   null,   null,
-                null,   null,   null,   null,   null
+                null,   null,   "sand",   null,   null,
+                null,   null,   null,   "sand",   null,
+                null,   null,   "wood",   null,   null
             ],
-            "region-targets": [7],
+            "region-targets": [12],
             "region": [
                 {
-                    "display": [null, null, null, "sand", null, null, null, null, "wood"],
-                    "target": 7,
                     "match": [
                         {
                             "offset": [0, 0],
@@ -158,13 +156,17 @@
                         {
                             "offset": [1, 0],
                             "type": "sand"
+                        },
+                        {
+                            "offset": [1, -1],
+                            "type": "sand"
                         }
                     ]
                 }
             ],
             "attributes": {
-                "cost": 10,
-                "purify": 3,
+                "cost": 9,
+                "purify": 4,
                 "health": 10,
                 "attack": 2
             },
@@ -176,18 +178,16 @@
             "card-type": "animal",
             "card-name": "沙蜥",
             "card-color": "@block-type@sand@card-color",
-            "desc-row1": "生命值：低",
-            "desc-row2": "魔力：低",
+            "desc-row1": "♥8 🗡0",
+            "desc-row2": "🌱 3",
             "region-display": [
-                null,   "rock",   null,   null,   "sand",
-                "sand",   null,   "  or",   null,   null,
-                null,   null,   null,   null,   "rock"
+                null,   null,   null,   "rock",   null,
+                null,   null,   "sand",   null,   null,
+                null,   null,   null,   null,   null
             ],
-            "region-targets": [4, 5],
+            "region-targets": [7],
             "region": [
                 {
-                    "display": [null, null, null, "rock", null, null, null, null, "sand"],
-                    "target": 7,
                     "match": [
                         {
                             "offset": [0, 0],
@@ -198,26 +198,52 @@
                             "type": "rock"
                         }
                     ]
-                },
+                }
+            ],
+            "attributes": {
+                "cost": 8,
+                "purify": 3,
+                "health": 8,
+                "attack": 0
+            },
+            "display": {
+                "sprite": "lion"
+            }
+        },
+        "egret": {
+            "card-type": "animal",
+            "card-name": "白鹭",
+            "card-color": "@block-type@wetland@card-color",
+            "desc-row1": "♥10 🗡0",
+            "desc-row2": "🌱 6",
+            "region-display": [
+                null,   null,   null,   "grass",   null,
+                null,   null,   "wetland",   null,   null,
+                null,   "grass",   null,   null,   null
+            ],
+            "region-targets": [7],
+            "region": [
                 {
-                    "display": [null, null, "rock", null, null, null, null, null, "sand"],
-                    "target": 7,
                     "match": [
                         {
                             "offset": [0, 0],
-                            "type": "sand"
+                            "type": "wetland"
                         },
                         {
-                            "offset": [1, 1],
-                            "type": "rock"
+                            "offset": [1, 0],
+                            "type": "grass"
+                        },
+                        {
+                            "offset": [-1, 0],
+                            "type": "grass"
                         }
                     ]
                 }
             ],
             "attributes": {
-                "cost": 10,
-                "purify": 2,
-                "health": 6,
+                "cost": 9,
+                "purify": 7,
+                "health": 10,
                 "attack": 0
             },
             "display": {
@@ -242,11 +268,10 @@
             "magic": "@animal-type@lizard",
             "block": "@block-type@sand"
         },
-        "@card-pool@0",
-        "@card-pool@1",
-        "@card-pool@2",
-        "@card-pool@3",
-        "@card-pool@4"
+        {
+            "magic": "@animal-type@egret",
+            "block": "@block-type@wetland"
+        }
     ],
     "magic-type": {
         "spirit-grass": {
@@ -379,11 +404,31 @@
                 }
             ],
             "attributes": {
-                "cost": 8,
+                "cost": 15,
                 "effect-type": "damage",
                 "strategy": "random-enemy",
                 "capture": 1,
                 "attack": 15
+            }
+        },
+        "nourish": {
+            "card-type": "magic",
+            "card-name": "滋养",
+            "card-color": "@block-type@wood@card-color",
+            "desc-row1": "获得",
+            "desc-row2": "3灵魂",
+            "region-display": [
+                null,   null,   null,   null,   null,
+                null,   null,  null,   null,   null,
+                null,   null,   null,   null,   null
+            ],
+            "region-targets": [7, 11],
+            "region": [],
+            "attributes": {
+                "cost": 12,
+                "strategy": "no-target",
+                "effect-type": "spirit",
+                "spirit": 3
             }
         },
         "mudslide": {
@@ -397,8 +442,16 @@
                 null,   null,   "any",   null,   null,
                 null,   "rock",   null,   null,   null
             ],
-            "region-targets": [7],
+            "region-targets": [7, 11],
             "region": [
+                {
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "rock"
+                        }
+                    ]
+                },
                 {
                     "match": [
                         {
@@ -413,29 +466,145 @@
                 }
             ],
             "attributes": {
-                "cost": 8,
+                "cost": 15,
                 "effect-type": "damage",
                 "strategy": "all-enemy",
                 "capture": -1,
                 "attack": 5
             }
+        },
+        "acid-rain": {
+            "card-type": "magic",
+            "card-name": "酸雨",
+            "card-color": "@block-type@wetland@card-color",
+            "desc-row1": "摧毁未完成",
+            "desc-row2": "的建筑",
+            "region-display": [
+                null,   null,   null,   "any",   null,
+                null,   null,   "any",   null,   null,
+                null,   "wetland",   null,   "any",   null
+            ],
+            "region-targets": [3, 7, 11, 13],
+            "region": [
+                {
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "wetland"
+                        }
+                    ]
+                },
+                {
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "any"
+                        },
+                        {
+                            "offset": [1, 0],
+                            "type": "wetland"
+                        }
+                    ]
+                },
+                {
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "any"
+                        },
+                        {
+                            "offset": [2, 0],
+                            "type": "wetland"
+                        }
+                    ]
+                },
+                {
+                    "match": [
+                        {
+                            "offset": [0, 0],
+                            "type": "any"
+                        },
+                        {
+                            "offset": [1, 1],
+                            "type": "wetland"
+                        }
+                    ]
+                }
+            ],
+            "attributes": {
+                "cost": 12,
+                "effect-type": "destroy",
+                "strategy": "uncompleted-buildings",
+                "capture": -1,
+                "attack": 1
+            }
+        },
+        "quicksand": {
+            "card-type": "magic",
+            "card-name": "流沙",
+            "card-color": "@block-type@sand@card-color",
+            "desc-row1": "消灭所有",
+            "desc-row2": "人类",
+            "region-display": [
+                null,   null,   null,   null,   null,
+                null,   null,   "sand",   null,   null,
+                null,   null,   null,   null,   null
+            ],
+            "region-targets": [7],
+            "region": [
+                {
+                    "match": [
+                        {
+                            "offset": [1, 0],
+                            "type": "sand"
+                        }
+                    ]
+                }
+            ],
+            "attributes": {
+                "cost": 15,
+                "effect-type": "destroy",
+                "strategy": "all-human",
+                "capture": -1,
+                "attack": 12
+            }
         }
     },
     "card-pool": [
+        {
+            "magic": "@animal-type@lion",
+            "block": "@block-type@grass"
+        },
+        {
+            "magic": "@animal-type@turtoise",
+            "block": "@block-type@rock"
+        },
+        {
+            "magic": "@animal-type@fox",
+            "block": "@block-type@wood"
+        },
+        {
+            "magic": "@animal-type@lizard",
+            "block": "@block-type@sand"
+        },
+        {
+            "magic": "@animal-type@egret",
+            "block": "@block-type@wetland"
+        },
         {
             "magic": "@magic-type@thunder",
             "block": "@block-type@grass"
         },
         {
-            "magic": "@magic-type@mudslide",
+            "magic": "@magic-type@acid-rain",
             "block": "@block-type@wetland"
         },
         {
-            "magic": "@magic-type@mudslide",
+            "magic": "@magic-type@quicksand",
             "block": "@block-type@sand"
         },
         {
-            "magic": "@magic-type@thunder",
+            "magic": "@magic-type@nourish",
             "block": "@block-type@wood"
         },
         {

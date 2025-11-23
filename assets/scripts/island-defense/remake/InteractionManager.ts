@@ -165,30 +165,40 @@ export class InteractionManager extends Component {
         if (slot == null) return false;
         const strategy = card.getAttribute('strategy');
         const effectType = card.getAttribute('effect-type');
-        const damage = effectType == 'damage' ? card.getAttribute('attack') : 0;
-        console.log('resolve', strategy, effectType, damage);
+        const isDamage = effectType == 'damage';
+        const isDestroy = effectType == 'destroy';
+
+        const damage = isDamage ? card.getAttribute('attack') : 0;
+
         if (strategy == 'random-enemy') {
             const enemies = GameMap.instance.getEnemies(slot);
             if (enemies.length > 0) {
                 const enemy = enemies[randomRangeInt(0, enemies.length)];
 
-                if (effectType == 'damage') {
+                if (isDamage) {
                     enemy.dealDamage(damage);
                 }
-
-        console.log('deal', strategy, effectType, damage);
                 return true;
             }
         }
-        else if (strategy == 'all-enemy') {
-            const enemies = GameMap.instance.getEnemies(slot);
+        else if (strategy == 'all-enemy' || strategy == 'all-human' || strategy == 'uncompleted-buildings') {
+            let enemies = GameMap.instance.getEnemies(slot);
+            if (strategy == 'all-human') {
+                enemies = enemies.filter((e) => !e.isBuilding);
+            }
+            else if (strategy == 'uncompleted-buildings') {
+                enemies = enemies.filter((e) => e.isBuilding && !e.isBuildingFinished);
+            }
+
             if (enemies.length > 0) {
                 for (const enemy of enemies) {
-                    if (effectType == 'damage') {
+                    if (isDamage) {
                         enemy.dealDamage(damage);
                     }
+                    else if (isDestroy) {
+                        enemy.dead();
+                    }
                 }
-        console.log('deal', strategy, effectType, damage);
                 return true;
             }
         }
