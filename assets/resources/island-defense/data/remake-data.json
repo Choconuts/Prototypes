@@ -43,7 +43,7 @@
         "any": {
             "card-type": "block",
             "card-name": "任意",
-            "card-color": "#9999AA",
+            "card-color": "#FFFCEC",
             "desc-row1": "制造一片",
             "desc-row2": "随即地形",
             "block-type": "any"

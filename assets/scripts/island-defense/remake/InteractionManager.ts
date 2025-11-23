@@ -44,6 +44,12 @@ export class InteractionManager extends Component {
     @property(CoolDown)
     coolDown: CoolDown = null
 
+    @property
+    asyncPlayMode: boolean = false
+
+    @property
+    resetEvent: Completer<void> = new Completer
+
     protected onLoad(): void {
         InteractionManager.instance = this;
     }
@@ -114,7 +120,6 @@ export class InteractionManager extends Component {
         slots = slots.sort((a, b) => random() - 0.5);
 
         if (card.getType() == 'magic') {
-            console.log('play', card.cardName(), slots.length);
             const strategy = card.getAttribute('strategy');
 
             for (const slot of slots) {
@@ -134,7 +139,6 @@ export class InteractionManager extends Component {
             }
         }
 
-        console.log('selected', card.cardName(), slots.length);
         return slots[0];
     }
 
@@ -324,7 +328,13 @@ export class InteractionManager extends Component {
 
             await completer.promise;
 
-            if (coolDown) {
+            if (this.asyncPlayMode) {
+                await Deck.instance.refreshHand();
+                const temp = this.resetEvent;
+                this.resetEvent = new Completer;
+                temp.complete();
+            }
+            else if (coolDown) {
                 await Deck.instance.refreshHand();
                 this.coolDown.reset();
             }

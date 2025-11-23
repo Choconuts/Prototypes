@@ -707,7 +707,7 @@
       "__id__": 13
     },
     "patternView": null,
-    "database": "magic-card-data",
+    "defaultColorHex": "#555769",
     "_id": ""
   },
   {

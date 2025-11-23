@@ -8,6 +8,7 @@ import { GameMap } from '../GameMap';
 import { SlotView } from '../../common-view/SlotView';
 import { Unit } from '../Unit';
 import { Deck } from './Deck';
+import { InteractionManager } from './InteractionManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('EnemyQueue')
@@ -62,6 +63,10 @@ export class EnemyQueue extends Component {
 
         const random = this.randomSchedule()[0];
         this.periods[1]?.setBlockType(random);
+
+        InteractionManager.instance.resetEvent.promise.then(() => {
+            this.asyncStep();
+        });
     }
 
     validateNeighborsForExplore(neighbors: Array<Vec2>) {
@@ -209,8 +214,20 @@ export class EnemyQueue extends Component {
         }
     }
 
+    asyncStep() {
+        if (InteractionManager.instance.asyncPlayMode) {
+            GameMap.instance.totalPurify;
+            const timeCost = 400 / (20 + GameMap.instance.totalPurify);
+            this.step(timeCost);
+        }
+
+        InteractionManager.instance.resetEvent.promise.then(() => {
+            this.asyncStep();
+        });
+    }
+
     protected update(dt: number): void {
-        if (!this.isWorking) {
+        if (!this.isWorking && !InteractionManager.instance.asyncPlayMode) {
             this.step(dt);
         }
     }

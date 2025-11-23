@@ -1,5 +1,7 @@
 import { _decorator, Button, Component, Node, Size, UITransform } from 'cc';
 import { GameMap } from '../GameMap';
+import { InteractionManager } from './InteractionManager';
+import { EnemyQueue } from './EnemyQueue';
 const { ccclass, property } = _decorator;
 
 @ccclass('CoolDown')
@@ -33,6 +35,11 @@ export class CoolDown extends Component {
     }
 
     update(deltaTime: number) {
+        if (InteractionManager.instance.asyncPlayMode) {
+            this.button.interactable = true;
+            return;
+        }
+
         if (this.value < this.totalCapacity) {
             this.value += deltaTime * (this.initSpeed + GameMap.instance.totalPurify * this.purifyFactor);
             this.button.interactable = false;

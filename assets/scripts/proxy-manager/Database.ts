@@ -26,16 +26,16 @@ export class Database extends Component {
 
     public async loadDirectory<T extends Asset>(directory: string, constructor: Constructor<T>): Promise<Map<string, T>> {
         const completer: Completer<T[]> = new Completer;
-        const keys: Stream<string> = new Stream;
+        // const keys: Stream<string> = new Stream;
         const result: Map<string, T> = new Map;
         
         this.log('loading directory:', 'resources/' + directory);
         resources.loadDir(directory, constructor, 
             (finished, total, item) => {
-                if (item?.info != null) {
-                    const filePath = item.info['path'];
-                    keys.put(path.basename(filePath));
-                }
+                // if (item?.info != null) {
+                //     const filePath = item.info['path'];
+                //     keys.put(path.basename(filePath));
+                // }
             }, 
             (err, data) => {
                 if (err == null) {
@@ -54,8 +54,8 @@ export class Database extends Component {
         }
         
         for (const data of dataList) {
-            const key = await keys.get();
-            result.set(key, data);
+            // const key = await keys.get();
+            result.set(data.name, data);
         }
 
         return result;
