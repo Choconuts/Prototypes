@@ -222,9 +222,6 @@
     "button": {
       "__id__": 94
     },
-    "enemyQueue": {
-      "__id__": 84
-    },
     "_id": "f5WzOKZ/FPVrMRNQkSpe00"
   },
   {
@@ -2923,7 +2920,7 @@
     "progress": {
       "__id__": 76
     },
-    "periodInterval": 60,
+    "periodInterval": 40,
     "currentTime": 0,
     "firstAgeLength": 3,
     "age": 0,

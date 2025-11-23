@@ -43,7 +43,7 @@
         "any": {
             "card-type": "block",
             "card-name": "任意",
-            "card-color": "#DDEEEE",
+            "card-color": "#EEEEDD",
             "desc-row1": "制造一片",
             "desc-row2": "随即地形",
             "block-type": "any"
@@ -408,7 +408,7 @@
                 "effect-type": "damage",
                 "strategy": "random-enemy",
                 "capture": 1,
-                "attack": 15
+                "attack": 12
             }
         },
         "nourish": {
@@ -425,7 +425,7 @@
             "region-targets": [7, 11],
             "region": [],
             "attributes": {
-                "cost": 12,
+                "cost": 10,
                 "strategy": "no-target",
                 "effect-type": "spirit",
                 "spirit": 3
@@ -433,7 +433,7 @@
         },
         "mudslide": {
             "card-type": "magic",
-            "card-name": "泥石流",
+            "card-name": "滚石",
             "card-color": "@block-type@rock@card-color",
             "desc-row1": "造成5伤害",
             "desc-row2": "（全体）",
@@ -466,7 +466,7 @@
                 }
             ],
             "attributes": {
-                "cost": 15,
+                "cost": 12,
                 "effect-type": "damage",
                 "strategy": "all-enemy",
                 "capture": -1,
@@ -532,7 +532,7 @@
                 }
             ],
             "attributes": {
-                "cost": 12,
+                "cost": 11,
                 "effect-type": "destroy",
                 "strategy": "uncompleted-buildings",
                 "capture": -1,
@@ -562,7 +562,7 @@
                 }
             ],
             "attributes": {
-                "cost": 15,
+                "cost": 13,
                 "effect-type": "destroy",
                 "strategy": "all-human",
                 "capture": -1,
