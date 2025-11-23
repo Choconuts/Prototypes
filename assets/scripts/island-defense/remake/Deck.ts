@@ -38,6 +38,9 @@ export class Deck extends Component {
     @property(Label)
     spiritLabel: Label
 
+    @property
+    debug: boolean = false
+
     lock: Completer<void> = new Completer
 
     protected onLoad(): void {

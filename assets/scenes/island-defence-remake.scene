@@ -480,7 +480,7 @@
     "_priority": 0,
     "_fov": 45,
     "_fovAxis": 0,
-    "_orthoHeight": 449.85144644253324,
+    "_orthoHeight": 449.3510555121189,
     "_near": 0,
     "_far": 2000,
     "_color": {
@@ -1019,6 +1019,7 @@
     "spiritLabel": {
       "__id__": 30
     },
+    "debug": false,
     "_id": "a72+xCdN1L1KuD/W7wAYH5"
   },
   {
@@ -2918,7 +2919,7 @@
     "progress": {
       "__id__": 76
     },
-    "periodInterval": 10,
+    "periodInterval": 60,
     "currentTime": 0,
     "firstAgeLength": 3,
     "age": 0,

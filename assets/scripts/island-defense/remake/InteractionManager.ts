@@ -1,4 +1,4 @@
-import { _decorator, assert, Component, Enum, Node, randomRangeInt, tween } from 'cc';
+import { _decorator, assert, Component, Enum, Node, random, randomRangeInt, tween } from 'cc';
 import { SlotView } from '../../common-view/SlotView';
 import { BlockView } from '../BlockView';
 import { GameMap } from '../GameMap';
@@ -109,6 +109,33 @@ export class InteractionManager extends Component {
         this.generateBlock = null;
     }
 
+    randomSelectTarget(card: MagicCardView, slots: Array<SlotView>): SlotView {
+        if (slots.length == 0) return null;
+        slots = slots.sort((a, b) => random() - 0.5);
+
+        if (card.getType() == 'magic') {
+            const strategy = card.getAttribute('strategy');
+
+            for (const slot of slots) {
+                if (strategy == 'random-enemy' || strategy == 'all-enemy' || strategy == 'all-human' || strategy == 'uncompleted-buildings') {
+                    let enemies = GameMap.instance.getEnemies(slot);
+                    if (strategy == 'all-human') {
+                        enemies = enemies.filter((e) => !e.isBuilding);
+                    }
+                    else if (strategy == 'uncompleted-buildings') {
+                        enemies = enemies.filter((e) => e.isBuilding && !e.isBuildingFinished);
+                    }
+
+                    if (enemies.length > 0) {
+                        return slot;
+                    }
+                }
+            }
+        }
+
+        return slots[0];
+    }
+
     async startPlayCard(slot: SlotView, autoCast: boolean = false) {
         const card = slot.getComponentInChildren(MagicCardView);
         if (!card.needTarget()) {
@@ -128,8 +155,8 @@ export class InteractionManager extends Component {
             const selectables = await this.setSelectable(card, autoCast);
 
             if (autoCast) {
-                slot = selectables[randomRangeInt(0, selectables.length)];
-                this.endPlayCard(slot, true);
+                const target = this.randomSelectTarget(card, selectables);
+                this.endPlayCard(target, true);
             }
         }
     }
@@ -224,7 +251,7 @@ export class InteractionManager extends Component {
             if (this.mode == InteractionMode.PLAY_CARD) {
                 this.mode = InteractionMode.IDLE;
             }
-            Deck.instance.finishChooseCards(success, noAnimation);
+            Deck.instance.finishChooseCards(true, noAnimation);
             this.stopCast();
         }
         else {
