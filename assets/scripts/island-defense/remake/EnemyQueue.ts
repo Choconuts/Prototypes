@@ -166,7 +166,7 @@ export class EnemyQueue extends Component {
         }
 
         const blockTypeA = this.randomMapSelection(blockCounts, totalCounts);
-        totalCounts -= blockCounts[blockTypeA];
+        totalCounts -= blockCounts.get(blockTypeA);
         blockCounts.delete(blockTypeA);
 
         const blockTypeB = this.randomMapSelection(blockCounts, totalCounts);
